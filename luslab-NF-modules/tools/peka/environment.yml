@@ -1,0 +1,10 @@
+# You can use this file to create a conda environment for the nf-core peka module:
+#   conda env create -f environment.yml
+name: nfcore-module-peka
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.7
+  - bedtools=2.29.2
