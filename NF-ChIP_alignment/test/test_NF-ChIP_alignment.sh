@@ -1,8 +1,4 @@
-#!/bin/bash
-#SBATCH --job-name=10x
-#SBATCH -t 72:00:00
-#SBATCH --mail-type=ALL,ARRAY_TASKS
-#SBATCH --mail-user=alex.thiery@crick.ac.uk
+#!/bin/sh
 
 export TERM=xterm
 
@@ -12,13 +8,16 @@ ml Nextflow/20.01.0
 ml Singularity/3.4.2
 ml Graphviz
 
+## UPDATE PIPLINE
+nextflow pull nf-core/chipseq
+
+## RUN alignment
 nextflow run nf-core/chipseq \
 -r 1.2.0 \
--profile crick \
+-c /camp/home/thierya/scratch/otic-reprogramming/NF-ChIP_alignment/conf/crick.config \
 --input /camp/home/thierya/scratch/otic-reprogramming/NF-ChIP_alignment/test/ChIP_design_test.csv \
 --fasta /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa \
 --gtf /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf \
--c /camp/home/thierya/scratch/otic-reprogramming/NF-ChIP_alignment/test/local.config \
 --save_reference \
 -resume
 
