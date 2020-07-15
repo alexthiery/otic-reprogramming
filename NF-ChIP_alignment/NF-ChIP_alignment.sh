@@ -25,7 +25,7 @@ nextflow run nf-core/chipseq \
 --bwa_index /camp/home/thierya/scratch/otic-reprogramming/NF-ChIP_alignment/genome/BWAIndex/Gallus_gallus.GRCg6a.dna.toplevel.fa \
 --macs_gsize 1.05e9 \
 --skip_diff_analysis \
---outdir ./results \
+--outdir /camp/home/thierya/working/analysis/otic-reprogramming/NF-ChIP_alignment/results \
 --email alex.thiery@crick.ac.uk \
 -resume
 
