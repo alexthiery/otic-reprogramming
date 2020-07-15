@@ -1,4 +1,0 @@
-group,replicate,fastq_1,fastq_2,antibody,control
-ss11-input,1,./seqtk/WTCHG_45718_279_1_sequence.sub.fastq.gz,./seqtk/WTCHG_45718_279_2_sequence.sub.fastq.gz,,
-ss11-K4me3,1,./seqtk/WTCHG_45718_276_1_sequence.sub.fastq.gz,./seqtk/WTCHG_45718_276_2_sequence.sub.fastq.gz,K4me3,ss11-input
-ss11-K27Ac,1,./seqtk/WTCHG_45718_214_1_sequence.sub.fastq.gz,./seqtk/WTCHG_45718_214_2_sequence.sub.fastq.gz,K27Ac,ss11-input
