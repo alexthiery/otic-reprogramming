@@ -1,0 +1,5 @@
+group,replicate,fastq_1,fastq_2
+ss8,1,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200008_701501_1.fastq.gz,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200009_701501_2.fastq.gz
+ss8,1,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200009_701501_1.fastq.gz,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200008_701501_2.fastq.gz
+ss8,2,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200008_704501_1.fastq.gz,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200008_704501_2.fastq.gz
+ss8,2,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200009_704501_1.fastq.gz,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200009_704501_2.fastq.gz
