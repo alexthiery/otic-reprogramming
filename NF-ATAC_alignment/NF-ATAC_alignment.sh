@@ -19,12 +19,11 @@ nextflow run nf-core/atacseq \
 -r 1.2.0 \
 -profile crick \
 -with-singularity /camp/apps/misc/stp/babs/nf-core/singularity/atacseq/1.2.0/nfcore-atacseq-1.2.0.img \
---input /camp/home/thierya/scratch/otic-reprogramming/NF-ATAC_alignment/ATAC_design.csv \
+--input /camp/home/thierya/working/analysis/otic-reprogramming/NF-ATAC_alignment/ATAC_design.csv \
 --fasta /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa \
 --gtf /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf \
 --macs_gsize 1.05e9 \
 --skip_diff_analysis \
---outdir /camp/home/thierya/working/analysis/otic-reprogramming/NF-ATAC_alignment/results \
 --email alex.thiery@crick.ac.uk \
 -resume
 
