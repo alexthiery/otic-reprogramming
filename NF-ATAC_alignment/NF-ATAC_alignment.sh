@@ -9,7 +9,7 @@ export TERM=xterm
 ## LOAD REQUIRED MODULES
 ml purge
 ml Nextflow/20.01.0
-ml Graphviz
+ml Singularity/2.6.0-foss-2016b
 
 ## UPDATE PIPLINE
 nextflow pull nf-core/atacseq
@@ -18,6 +18,7 @@ nextflow pull nf-core/atacseq
 nextflow run nf-core/atacseq \
 -r 1.2.0 \
 -profile crick \
+-with-singularity /camp/apps/misc/stp/babs/nf-core/singularity/atacseq/1.2.0/nfcore-atacseq-1.2.0.img \
 --input /camp/home/thierya/scratch/otic-reprogramming/NF-ATAC_alignment/ATAC_design.csv \
 --fasta /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa \
 --gtf /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf \
