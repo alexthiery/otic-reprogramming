@@ -1,0 +1,4 @@
+results
+.nextflow*
+work
+NF-ChIP_alignment/genome
