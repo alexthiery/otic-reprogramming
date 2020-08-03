@@ -1,0 +1,4 @@
+sample_id,data1,strip1,strip2
+ss8,/Users/alex/dev/repos/otic-reprogramming/data/ss8_9/*fastq.gz,-1234.fastq.gz,
+ss11,/Users/alex/dev/repos/otic-reprogramming/data/ss11_123fq/*fastq.gz,_1.fastq.gz,_2.fastq.gz
+ss15,/Users/alex/dev/repos/otic-reprogramming/data/ss15_123fq/*fastq.gz,_1.fastq.gz,_2.fastq.gz
