@@ -23,6 +23,7 @@ nextflow run nf-core/atacseq \
 --fasta /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa \
 --gtf /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf \
 --macs_gsize 1.05e9 \
+--narrow_peak \
 --skip_diff_analysis \
 --email alex.thiery@crick.ac.uk \
 -resume
