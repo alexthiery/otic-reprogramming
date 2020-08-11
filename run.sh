@@ -14,7 +14,10 @@ ml Graphviz
 
 nextflow pull alexthiery/otic-reprogramming -r dev
 
-NXF_VER=20.07.1 nextflow run alexthiery/otic-reprogramming \
+export NXF_VER=20.07.1
+export NXF_SINGULARITY_CACHEDIR=/camp/home/thierya/working/NF_singularity
+
+nextflow run alexthiery/otic-reprogramming \
 -hub github \
 -r dev \
 -profile crick \
