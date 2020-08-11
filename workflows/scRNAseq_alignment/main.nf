@@ -15,10 +15,11 @@ params.verbose = true
 include {smartseq2_fastq_metadata} from "$baseDir/../../luslab-nf-modules/tools/metadata/main.nf"
 include {cutadapt} from "$baseDir/../../luslab-nf-modules/tools/cutadapt/main.nf"
 include {hisat2_build; hisat2_splice_sites; hisat2_splice_align} from "$baseDir/../../luslab-nf-modules/tools/hisat2/main.nf"
-// include {assert_channel_count} from "$baseDir/../../luslab-nf-modules/workflows/test_flows/main.nf"
 include {samtools_view as samtools_view_a;samtools_view as samtools_view_b; samtools_sort} from "$baseDir/../../luslab-nf-modules/tools/samtools/main.nf"
 include {htseq_count} from "$baseDir/../../luslab-nf-modules/tools/htseq/main.nf"
 include {velocyto_run_smartseq2} from "$baseDir/../../luslab-nf-modules/tools/velocyto/main.nf"
+
+// include {assert_channel_count} from "$baseDir/../../luslab-nf-modules/workflows/test_flows/main.nf"
 
 
 /*------------------------------------------------------------------------------------*/
@@ -26,22 +27,15 @@ include {velocyto_run_smartseq2} from "$baseDir/../../luslab-nf-modules/tools/ve
 --------------------------------------------------------------------------------------*/
 
 Channel
-    .value(file("/Users/alex/dev/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa"))
+    .value(file(params.genome))
     .set {ch_genome}
 
 Channel
-    .value(file("/Users/alex/dev/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf"))
+    .value(file(params.gtf))
     .set {ch_gtf}
 
-
-// command to move subset of files for testing
-// for file in $(find /Volumes/lab-luscomben/home/users/thierya/raw_data/ailin_scRNAseq/Samples/*/Files/*1234.fastq.gz | head -2); do rsync -azP $file /Users/alex/dev/repos/otic-reprogramming/data/ss8_9 ; done
-// for file in $(find /Volumes/lab-luscomben/home/users/thierya/raw_data/ailin_scRNAseq/ss11_123fq/* | head -4); do rsync -azP $file /Users/alex/dev/repos/otic-reprogramming/data/ss11_123fq ; done
-// // for file in $(find /Volumes/lab-luscomben/home/users/thierya/raw_data/ailin_scRNAseq/ss15_123fq/* | head -4); do rsync -azP $file /Users/alex/dev/repos/otic-reprogramming/data/ss15_123fq ; done
-
-
 workflow {
-    smartseq2_fastq_metadata ("/Users/alex/dev/repos/otic-reprogramming/workflows/scRNAseq_alignment/sample.csv")
+    smartseq2_fastq_metadata (params.sample_csv)
     cutadapt (params.modules['cutadapt'], smartseq2_fastq_metadata.out)
     hisat2_build ( params.modules['hisat2_build'], ch_genome )
     hisat2_splice_sites ( params.modules['hisat2_splice_sites'], ch_gtf )
@@ -51,7 +45,7 @@ workflow {
     samtools_sort ( params.modules['samtools_sort'], samtools_view_a.out.bam )
     samtools_view_b ( params.modules['samtools_view_b'], samtools_sort.out.bam )
     
-    // velocyto_run_smartseq2 ( params.modules['velocyto_run_smartseq2'], samtools_sort.out.bam, ch_gtf )
+    velocyto_run_smartseq2 ( params.modules['velocyto_run_smartseq2'], samtools_sort.out.bam, ch_gtf )
 
     htseq_count ( params.modules['htseq_count'], samtools_view_b.out.bam, ch_gtf )
 
@@ -61,3 +55,11 @@ workflow {
     // //Check count
     // assert_channel_count ( htseq_count.out.counts, "sam", 2)
 }
+
+
+
+
+// command to move subset of files for testing
+// for file in $(find /Volumes/lab-luscomben/home/users/thierya/raw_data/ailin_scRNAseq/Samples/*/Files/*1234.fastq.gz | head -2); do rsync -azP $file /Users/alex/dev/repos/otic-reprogramming/data/ss8_9 ; done
+// for file in $(find /Volumes/lab-luscomben/home/users/thierya/raw_data/ailin_scRNAseq/ss11_123fq/* | head -4); do rsync -azP $file /Users/alex/dev/repos/otic-reprogramming/data/ss11_123fq ; done
+// // for file in $(find /Volumes/lab-luscomben/home/users/thierya/raw_data/ailin_scRNAseq/ss15_123fq/* | head -4); do rsync -azP $file /Users/alex/dev/repos/otic-reprogramming/data/ss15_123fq ; done
