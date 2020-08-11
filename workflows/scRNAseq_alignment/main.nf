@@ -36,8 +36,13 @@ workflow smartseq2_align {
         samtools_view_a ( params.modules['samtools_view_a'], hisat2_splice_align.out.sam )
         samtools_sort ( params.modules['samtools_sort'], samtools_view_a.out.bam )
         samtools_view_b ( params.modules['samtools_view_b'], samtools_sort.out.bam )
-        
-        velocyto_run_smartseq2 ( params.modules['velocyto_run_smartseq2'], samtools_sort.out.bam, gtf )
+
+        // group bams into a single channel for velocyto
+        ch_velocyto_bam = samtools_sort.out.bam
+            .map { [[sample_id:"grouped_bams"], file(it[1], checkIfExists: true)] }
+            .groupTuple(by: 0)
+
+        velocyto_run_smartseq2 ( params.modules['velocyto_run_smartseq2'], ch_velocyto_bam, gtf )
 
         htseq_count ( params.modules['htseq_count'], samtools_view_b.out.bam, gtf )
         htseq_count.out.counts | view
