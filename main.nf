@@ -5,10 +5,6 @@ nextflow.enable.dsl=2
 
 include {smartseq2_align} from "$baseDir/workflows/scRNAseq_alignment/main.nf"
 
-params.modules['cutadapt'].args = '-a CTGTCTCTTATA'
-params.verbose = true
-
-
 Channel
     .value(file(params.genome))
     .set {ch_genome}
