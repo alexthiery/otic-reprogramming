@@ -12,6 +12,8 @@ ml Nextflow/20.07.1
 ml Singularity/3.4.2
 ml Graphviz
 
+nextflow pull alexthiery/otic-reprogramming -r dev
+
 NXF_VER=20.07.1 nextflow run alexthiery/otic-reprogramming \
 -hub github \
 -r dev \
