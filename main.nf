@@ -15,6 +15,8 @@ Channel
 
 workflow {
     smartseq2_align (ch_genome, ch_gtf, params.sample_csv)
+    smartseq2_align.out.velocyto_counts | view
+    smartseq2_align.out.merged_counts | view
 }
 
 
