@@ -15,6 +15,8 @@ Channel
 
 workflow {
     smartseq2_align (ch_genome, ch_gtf, params.sample_csv)
+    smartseq2_align.out.velocyto_counts | view
+    smartseq2_align.out.merged_counts | view
 }
 
 
@@ -25,7 +27,12 @@ workflow {
 // for file in $(find /Volumes/lab-luscomben/home/users/thierya/raw_data/ailin_scRNAseq/ss11_123fq/* | head -4); do rsync -azP $file /Users/alex/dev/repos/otic-reprogramming/data/ss11_123fq ; done
 // // for file in $(find /Volumes/lab-luscomben/home/users/thierya/raw_data/ailin_scRNAseq/ss15_123fq/* | head -4); do rsync -azP $file /Users/alex/dev/repos/otic-reprogramming/data/ss15_123fq ; done
 
-
+// mkdir -p /camp/home/thierya/working/raw_data/test/ss8_9
+// mkdir -p /camp/home/thierya/working/raw_data/test/ss11_123fq
+// mkdir -p /camp/home/thierya/working/raw_data/test/ss15_123fq
+// for file in $(find /camp/home/thierya/working/raw_data/ailin_scRNAseq/Samples/*/Files/*1234.fastq.gz | head -2); do rsync -azP $file /camp/home/thierya/working/raw_data/test/ss8_9 ; done
+// for file in $(find /camp/home/thierya/working/raw_data/ailin_scRNAseq/ss11_123fq/* | head -2); do rsync -azP $file /camp/home/thierya/working/raw_data/test/ss11_123fq ; done
+// for file in $(find /camp/home/thierya/working/raw_data/ailin_scRNAseq/ss15_123fq/* | head -2); do rsync -azP $file /camp/home/thierya/working/raw_data/test/ss15_123fq ; done
 
 // workflow {
 //     smartseq2_align (ch_genome, ch_gtf, params.sample_csv, params.modules['cutadapt'], params.modules['hisat2_build'], params.modules['hisat2_splice_sites'], params.modules['hisat2_splice_align'],
