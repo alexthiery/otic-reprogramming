@@ -22,5 +22,5 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: alexthiery/custom-nf-modules-${{matrix.module-name}}
           path: custom-nf-modules/${{matrix.module-name}}
-          dockerfile: tools/${{matrix.module-name}}/${{matrix.docker-file}}
+          dockerfile: custom-nf-modules/${{matrix.module-name}}/${{matrix.docker-file}}
           tags:  ${{matrix.tag}}
