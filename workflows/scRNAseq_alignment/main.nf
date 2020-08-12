@@ -26,7 +26,6 @@ workflow smartseq2_align {
 
     main:
         smartseq2_fastq_metadata (sample_csv)
-        smartseq2_fastq_metadata.out | view
         
         cutadapt (params.modules['cutadapt'], smartseq2_fastq_metadata.out)
         hisat2_build ( params.modules['hisat2_build'], genome )
