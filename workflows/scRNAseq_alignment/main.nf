@@ -44,6 +44,5 @@ workflow smartseq2_align {
         velocyto_run_smartseq2 ( params.modules['velocyto_run_smartseq2'], ch_velocyto_bam, gtf )
 
         htseq_count ( params.modules['htseq_count'], samtools_view_b.out.bam, gtf )
-        htseq_count.out.counts | view
 }
 
