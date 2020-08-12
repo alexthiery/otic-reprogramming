@@ -11,7 +11,7 @@ jobs:
         matrix:
             tag: ['latest']
             docker-file: ['Dockerfile']
-            module-name: ['runr']
+            module-name: ['rscript']
 
     steps:
       - uses: actions/checkout@v2
