@@ -15,7 +15,7 @@ process merge_counts {
         path(input)
 
     output:
-        path("${opts.output}")
+        path("${opts.output}"), emit: counts
 
     script:
         //SHELL
