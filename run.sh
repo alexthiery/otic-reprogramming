@@ -6,6 +6,14 @@
 
 export TERM=xterm
 
+# # command to symlinking samples ready for alignment
+# mkdir -p /camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss8
+# mkdir -p /camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss11
+# mkdir -p /camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss15
+# ln -s /camp/home/thierya/working/raw_data/ailin_scRNAseq/Samples/*/Files/*1234.fastq.gz /camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss8
+# ln -s /camp/home/thierya/working/raw_data/ailin_scRNAseq/ss11_123fq/* /camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss11
+# ln -s /camp/home/thierya/working/raw_data/ailin_scRNAseq/ss15_123fq/* /camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss15
+
 ## LOAD REQUIRED MODULES
 ml purge
 ml Nextflow/20.07.1
