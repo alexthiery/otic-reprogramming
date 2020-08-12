@@ -1,0 +1,4 @@
+sample_id,data1,strip1,strip2
+ss8,/camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss8,-1234.fastq.gz,
+ss11,/camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss11,_1.fastq.gz,_2.fastq.gz
+ss15,/camp/home/thierya/working/raw_data/otic-reprogamming/scRNAseq/ss15,_1.fastq.gz,_2.fastq.gz
