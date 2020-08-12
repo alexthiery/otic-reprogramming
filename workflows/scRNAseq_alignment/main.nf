@@ -12,7 +12,7 @@ include {hisat2_build; hisat2_splice_sites; hisat2_splice_align} from "$baseDir/
 include {samtools_view as samtools_view_a;samtools_view as samtools_view_b; samtools_sort} from "$baseDir/luslab-nf-modules/tools/samtools/main.nf"
 include {htseq_count} from "$baseDir/luslab-nf-modules/tools/htseq/main.nf"
 include {velocyto_run_smartseq2} from "$baseDir/luslab-nf-modules/tools/velocyto/main.nf"
-
+include {merge_counts} from "$baseDir/custom-nf-modules/runR/main.nf"
 
 /*------------------------------------------------------------------------------------*/
 /* Define sub workflow
@@ -23,6 +23,7 @@ workflow smartseq2_align {
         genome
         gtf
         sample_csv
+        merge_samples_bin
 
     main:
         smartseq2_fastq_metadata (sample_csv)
@@ -36,13 +37,16 @@ workflow smartseq2_align {
         samtools_sort ( params.modules['samtools_sort'], samtools_view_a.out.bam )
         samtools_view_b ( params.modules['samtools_view_b'], samtools_sort.out.bam )
         
-        // group bams into a single channel for velocyto
-        ch_velocyto_bam = samtools_sort.out.bam
-            .map { [[sample_id:"all_cells"], file(it[1], checkIfExists: true)] }
-            .groupTuple(by: 0)
+        // // group bams into a single channel for velocyto
+        // ch_velocyto_bam = samtools_sort.out.bam
+        //     .map { [[sample_id:"all_cells"], file(it[1], checkIfExists: true)] }
+        //     .groupTuple(by: 0)
 
-        velocyto_run_smartseq2 ( params.modules['velocyto_run_smartseq2'], ch_velocyto_bam, gtf )
+        // velocyto_run_smartseq2 ( params.modules['velocyto_run_smartseq2'], ch_velocyto_bam, gtf )
 
         htseq_count ( params.modules['htseq_count'], samtools_view_b.out.bam, gtf )
+
+        // merge cell counts into csv
+        merge_counts (params.modules['merge_counts'], htseq_count.out.counts)
 }
 
