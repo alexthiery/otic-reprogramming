@@ -11,7 +11,7 @@ jobs:
         matrix:
             tag: ['latest']
             docker-file: ['Dockerfile']
-            module-name: ['hisat2']
+            module-name: ['runR']
 
     steps:
       - uses: actions/checkout@v2
