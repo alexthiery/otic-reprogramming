@@ -47,5 +47,9 @@ workflow smartseq2_align {
 
         // merge cell counts into csv
         merge_counts (params.modules['merge_counts'], htseq_count.out.counts.collect())
+
+    emit:
+        velocyto_run_smartseq2.out
+        merge_counts.out
 }
 
