@@ -49,7 +49,7 @@ workflow smartseq2_align {
         merge_counts (params.modules['merge_counts'], htseq_count.out.counts.collect())
 
     emit:
-        velocyto_run_smartseq2.out
-        merge_counts.out
+        velocyto_counts = velocyto_run_smartseq2.out.velocyto
+        merged_counts = merge_counts.out.counts
 }
 
