@@ -47,7 +47,7 @@ workflow smartseq2_align {
 
         // group counts into a single channel for velocyto
         ch_all_counts = htseq_count.out.counts
-            .map { [file(it[1], checkIfExists: true)] }
+            .map { [[sample_id:"all_cells"], file(it[1], checkIfExists: true)] }
             .groupTuple(by: 0)
 
         // merge cell counts into csv

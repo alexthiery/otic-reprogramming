@@ -12,10 +12,10 @@ process merge_counts {
 
     input:
         val opts
-        path(input)
+        tuple val(meta), path(input)
 
     output:
-        path "${opts.output}", emit: counts
+        tuple val(meta), path("${opts.output}"), emit: counts
 
     script:
         //SHELL
