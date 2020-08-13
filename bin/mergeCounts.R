@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-files = list.files('htseq_count', full.names=T)
+files = list.files('*.txt', full.names=T)
 
 dataset = do.call(cbind, lapply(files, function(f){
 	df = read.table(f, row.names=1)
