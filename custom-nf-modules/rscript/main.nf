@@ -31,3 +31,4 @@ process merge_counts {
         ${merge_counts_command}
         """
 }
+

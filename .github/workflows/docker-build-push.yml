@@ -5,22 +5,22 @@ on:
     branches: [ master ]
 
 jobs:
-    build-push-docker:
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                tag: ['latest']
-                docker-file: ['Dockerfile']
-                module-name: ['runR']
-    
-        steps:
-        - uses: actions/checkout@v2
-        - name: Build and push image
-            uses: docker/build-push-action@v1.1.0
-            with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
-            repository: alexthiery/custom-nf-modules-${{matrix.module-name}}
-            path: custom-nf-modules/${{matrix.module-name}}
-            dockerfile: tools/${{matrix.module-name}}/${{matrix.docker-file}}
-            tags:  ${{matrix.tag}}
+  build-push-docker:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+            tag: ['latest']
+            docker-file: ['Dockerfile']
+            module-name: ['rscript']
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and push image
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: alexthiery/custom-nf-modules-${{matrix.module-name}}
+          path: custom-nf-modules/${{matrix.module-name}}
+          dockerfile: custom-nf-modules/${{matrix.module-name}}/${{matrix.docker-file}}
+          tags:  ${{matrix.tag}}
