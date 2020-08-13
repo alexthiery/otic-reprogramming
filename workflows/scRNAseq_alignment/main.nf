@@ -12,7 +12,7 @@ include {hisat2_build; hisat2_splice_sites; hisat2_splice_align} from "$baseDir/
 include {samtools_view as samtools_view_a;samtools_view as samtools_view_b; samtools_sort} from "$baseDir/luslab-nf-modules/tools/samtools/main.nf"
 include {htseq_count} from "$baseDir/luslab-nf-modules/tools/htseq/main.nf"
 include {velocyto_run_smartseq2} from "$baseDir/luslab-nf-modules/tools/velocyto/main.nf"
-include {merge_counts} from "$baseDir/custom-nf-modules/runR/main.nf"
+include {merge_counts} from "$baseDir/custom-nf-modules/rscript/main.nf"
 
 /*------------------------------------------------------------------------------------*/
 /* Define sub workflow
@@ -45,8 +45,13 @@ workflow smartseq2_align {
 
         htseq_count ( params.modules['htseq_count'], samtools_view_b.out.bam, gtf )
 
+        // group counts into a single channel for velocyto
+        ch_all_counts = htseq_count.out.counts
+            .map { [file(it[1], checkIfExists: true)] }
+            .groupTuple(by: 0)
+
         // merge cell counts into csv
-        merge_counts (params.modules['merge_counts'], htseq_count.out.counts.collect())
+        merge_counts (params.modules['merge_counts'], ch_all_counts)
 
     emit:
         velocyto_counts = velocyto_run_smartseq2.out.velocyto
