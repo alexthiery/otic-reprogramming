@@ -5,13 +5,13 @@ nextflow.enable.dsl=2
 
 // include {smartseq2_align} from "$baseDir/workflows/scRNAseq_alignment/main.nf"
 
-// Channel
-//     .value(file(params.genome))
-//     .set {ch_genome}
+Channel
+    .value(file(params.genome, checkIfExists: true))
+    .set {ch_genome}
 
-// Channel
-//     .value(file(params.gtf))
-//     .set {ch_gtf}
+Channel
+    .value(file(params.gtf, checkIfExists: true))
+    .set {ch_gtf}
 
 // workflow {
 //     smartseq2_align (ch_genome, ch_gtf, params.smartseq2_sample_csv)
@@ -26,8 +26,7 @@ nextflow.enable.dsl=2
 include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
 
 workflow {
-    peak_intersect (params.peak_intersect_sample_csv)
-    bedtools_subtract (bedtools_intersect.out, ch_K27me3)
+    peak_intersect (params.peak_intersect_sample_csv, ch_genome, ch_gtf)
 }
 
 
