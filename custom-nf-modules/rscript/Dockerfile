@@ -35,7 +35,7 @@ RUN apt-get update \
 
 # RUN pip install pandas
 
-RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
+# RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
 
 # RUN R -e "devtools::install_github('juliendelile/Antler', dependencies = TRUE)"
 # RUN R -e "install.packages(c('Rtsne', 'gProfileR', 'tidyverse', 'stringr', 'Seurat', 'BiocManager'))"
