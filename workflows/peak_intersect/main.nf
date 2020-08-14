@@ -3,32 +3,36 @@
 // Define DSL2
 nextflow.enable.dsl=2
 
-import {bedtools_intersect} from 
+include {fastq_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
+include {bedtools_intersect} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
+include {bedtools_subtract} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
+include {homer_annotatePeaks} from "$baseDir/luslab-nf-modules/tools/homer/main.nf"
 
-testData_ChIP = [
-    ['K4me1', "/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K4me1_R1_peaks.broadPeak"],
-    ['K4me3', "/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K4me3_R1_peaks.broadPeak"],
-    ['K27Ac', "/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K27Ac_R1_peaks.broadPeak"],
-    ['K27me3', "/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K27me3_R1_peaks.broadPeak"]
-]
 
-testData_ATAC = [
-    ['Sample1', "/Users/alex/dev/repos/otic-reprogramming/testData/ATAC/ss8_R1.mLb.clN_peaks.narrowPeak"]
-]
 
-// Define test data input channel
-Channel
-    .from(testData_ChIP)
-    .map { row -> [ row[0], file(row[1], checkIfExists: true) ] }
-    .set {ch_testData_ChIP}
+/*------------------------------------------------------------------------------------*/
+/* Define sub workflow
+--------------------------------------------------------------------------------------*/
 
-Channel
-    .from(testData_ATAC)
-    .map { row -> [ row[0], file(row[1], checkIfExists: true) ] }
-    .set {ch_testData_ATAC}
+workflow peak_intersect {
+    take:
+        sample_csv
+        genome
+        gtf
 
-workflow {
+    main:
+        fastq_metadata (sample_csv)
 
+        bedtools_intersect(params.modules['bedtools_intersect'], fastq_metadata.out.filter{ it[0].sample_id == 'K27Ac' }, fastq_metadata.out.filter{ it[0].sample_id == 'ATAC' }.map{ it[1] } )
+
+        bedtools_subtract(params.modules['bedtools_subtract'], bedtools_intersect.out, fastq_metadata.out.filter{ it[0].sample_id == 'K4me3' }.map{ it[1] } )
+
+        homer_annotatePeaks(params.modules['homer_annotatePeaks'], bedtools_subtract.out, genome, gtf)
+
+        homer_annotatePeaks.out | view
+        // cutadapt (params.modules['cutadapt'], smartseq2_fastq_metadata.out)
+
+    // emit:
+    //     velocyto_counts = velocyto_run_smartseq2.out.velocyto
+    //     merged_counts = merge_counts.out.counts
 }
-
-(ch_testData_ChIP.filter { it[0] == 'K27Ac' }.subscribe { println it }, ch_testData_ATAC.filter { it[0] == 'Sample1' }.subscribe { println it })

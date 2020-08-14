@@ -45,8 +45,13 @@ workflow smartseq2_align {
 
         htseq_count ( params.modules['htseq_count'], samtools_view_b.out.bam, gtf )
 
+        // group counts into a single channel for velocyto
+        ch_all_counts = htseq_count.out.counts
+            .map { [[sample_id:"all_cells"], file(it[1], checkIfExists: true)] }
+            .groupTuple(by: 0)
+
         // merge cell counts into csv
-        merge_counts (params.modules['merge_counts'], htseq_count.out.counts.collect())
+        merge_counts (params.modules['merge_counts'], ch_all_counts)
 
     emit:
         velocyto_counts = velocyto_run_smartseq2.out.velocyto
