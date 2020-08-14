@@ -8,20 +8,25 @@ ARG WHEN
 # Install apt packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    build-essential
-    # cmake \
-    # libbamtools-dev \
-    # libboost-dev \
-    # libboost-iostreams-dev \
-    # libboost-log-dev \
-    # libboost-system-dev \
-    # libboost-test-dev \
-    # libxml2-dev \
-    # libz-dev \
-    # curl \
-    # libhdf5-cpp-100 \ 
-    # libarmadillo7 \
-    # libarmadillo-dev
+    build-essential=12.6 \
+    libhdf5-dev=1.10.4+repack-10 \
+    libboost-filesystem1.67-dev
+
+
+RUN R -e "BiocManager::install('pcaMethods')"
+RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
+RUN R -e "devtools::install_github('juliendelile/Antler', dependencies = TRUE)"
+
+
+
+RUN R -e "devtools::install_github('hadley/multidplyr')"
+
+RUN R -e "install.packages('BiocManager')"
+RUN R -e "BiocManager::install(version = '3.11')"
+RUN R -e "BiocManager::install('monocle')"
+
+
+
 
 #  git=1:2.20.1-2+deb10u3 \
 #  apt-utils=1.8.2 \
@@ -35,25 +40,8 @@ RUN apt-get update \
 
 # RUN pip install pandas
 
-# RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
-
-# RUN R -e "devtools::install_github('juliendelile/Antler', dependencies = TRUE)"
 # RUN R -e "install.packages(c('Rtsne', 'gProfileR', 'tidyverse', 'stringr', 'Seurat', 'BiocManager'))"
-# RUN R -e "BiocManager::install('monocle')"
-# RUN R -e "devtools::install_github('hadley/multidplyr')"
-# RUN R -e "BiocManager::install('pcaMethods')"
 
-
-# #' Extra packages are also required
-
-# if (!requireNamespace("BiocManager", quietly = TRUE))
-#    install.packages("BiocManager")
-# # BiocManager::install("monocle")
-# # devtools::install_github('hadley/multidplyr')
-
-# # velocyto.R only runs on UNIX
-# # BiocManager::install("pcaMethods")
-# # devtools::install_github("velocyto-team/velocyto.R")
 
 
 # RUN R -e "devtools::install_version('Seurat', version = '3.1.5', dependencies= NA)"
