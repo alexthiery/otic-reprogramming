@@ -8,20 +8,20 @@ ARG WHEN
 # Install apt packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    libbamtools-dev \
-    libboost-dev \
-    libboost-iostreams-dev \
-    libboost-log-dev \
-    libboost-system-dev \
-    libboost-test-dev \
-    libxml2-dev \
-    libz-dev \
-    curl \
-    libhdf5-cpp-100 \ 
-    libarmadillo7 \
-    libarmadillo-dev
+    build-essential
+    # cmake \
+    # libbamtools-dev \
+    # libboost-dev \
+    # libboost-iostreams-dev \
+    # libboost-log-dev \
+    # libboost-system-dev \
+    # libboost-test-dev \
+    # libxml2-dev \
+    # libz-dev \
+    # curl \
+    # libhdf5-cpp-100 \ 
+    # libarmadillo7 \
+    # libarmadillo-dev
 
 #  git=1:2.20.1-2+deb10u3 \
 #  apt-utils=1.8.2 \
