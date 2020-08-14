@@ -12,16 +12,15 @@ RUN apt-get update \
     libhdf5-dev=1.10.4+repack-10 \
     libboost-filesystem1.67-dev
 
-
 RUN R -e "BiocManager::install('pcaMethods')"
 RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
 RUN R -e "devtools::install_github('juliendelile/Antler', dependencies = TRUE)"
-
 RUN R -e "devtools::install_github('hadley/multidplyr')"
 
 RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install(version = '3.10')"
 RUN R -e "BiocManager::install('monocle')"
+RUN R -e "BiocManager::install('ChIPpeakAnno')"
 
-
-RUN R -e "install.packages(c('Rtsne', 'gprofiler2', 'stringr', 'Seurat'))"
+RUN R -e "devtools::install_version('Seurat', version = '3.1.5', dependencies= NA)"
+RUN R -e "devtools::install_version('getopt', version = '1.20.3', dependencies=T)"
