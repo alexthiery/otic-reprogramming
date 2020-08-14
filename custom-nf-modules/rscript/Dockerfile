@@ -28,7 +28,7 @@ RUN apt-get update \
 #  unzip=6.0-23+deb10u1 \
 #  procps=2:3.3.15-2 \
 #  build-essential=12.6 \
-#  zlib1g-dev=1:1.2.11.dfsg-1 \
+#  zlib1g-dev=1:1.2.11.dfsg-1 \ 
 #  libxt-dev \
 #  libmagick++-dev \
 #  python-pip
