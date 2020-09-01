@@ -6,7 +6,7 @@ nextflow.enable.dsl=2
 include {fastq_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
 include {bedtools_intersect} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
 include {bedtools_subtract} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
-include {homer_annotatePeaks} from "$baseDir/luslab-nf-modules/tools/homer/main.nf"
+include {homer_annotate_peaks} from "$baseDir/luslab-nf-modules/tools/homer/main.nf"
 
 
 
@@ -27,9 +27,9 @@ workflow peak_intersect {
 
         bedtools_subtract(params.modules['bedtools_subtract'], bedtools_intersect.out, fastq_metadata.out.filter{ it[0].sample_id == 'K4me3' }.map{ it[1] } )
 
-        homer_annotatePeaks(params.modules['homer_annotatePeaks'], bedtools_subtract.out, genome, gtf)
+        homer_annotate_peaks(params.modules['homer_annotate_peaks'], bedtools_subtract.out, genome, gtf)
 
-        homer_annotatePeaks.out | view
+        homer_annotate_peaks.out | view
         // cutadapt (params.modules['cutadapt'], smartseq2_fastq_metadata.out)
 
     // emit:
