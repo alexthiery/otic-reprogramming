@@ -57,4 +57,3 @@ workflow smartseq2_align {
         velocyto_counts = velocyto_run_smartseq2.out.velocyto
         merged_counts = merge_counts.out.counts
 }
-

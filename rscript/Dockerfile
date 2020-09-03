@@ -18,6 +18,7 @@ RUN R -e "devtools::install_github('juliendelile/Antler', dependencies = TRUE)"
 RUN R -e "devtools::install_github('hadley/multidplyr')"
 
 RUN R -e "install.packages('BiocManager')"
+RUN R -e "install.packages('plyr')"
 RUN R -e "BiocManager::install(version = '3.10')"
 RUN R -e "BiocManager::install('monocle')"
 RUN R -e "BiocManager::install('ChIPpeakAnno')"
