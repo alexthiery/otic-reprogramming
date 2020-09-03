@@ -8,14 +8,14 @@ process merge_counts {
                       if (opts.publish_results == "none") null
                       else filename }
 
-    container 'alexthiery/10x_neural_tube:v1.0'
+    container 'alexthiery/rscript:latest'
 
     input:
         val opts
         tuple val(meta), path(input)
 
     output:
-        tuple val(meta), path("${opts.output}"), emit: counts
+        tuple val(meta), path("*.csv"), emit: counts
 
     script:
         //SHELL
