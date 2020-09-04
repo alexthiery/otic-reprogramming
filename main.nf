@@ -23,13 +23,23 @@ nextflow.enable.dsl=2
 
 
 
+// /*------------------------------------------------------------------------------------*/
+// /* Workflow to run peaks intersect
+// --------------------------------------------------------------------------------------*/
 
+include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
 
-// include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
+Channel
+    .value(file(params.genome, checkIfExists: true))
+    .set {ch_genome}
 
-// workflow {
-//     peak_intersect (params.peak_intersect_sample_csv, ch_genome, ch_gtf)
-// }
+Channel
+    .value(file(params.gtf, checkIfExists: true))
+    .set {ch_gtf}
+
+workflow {
+    peak_intersect (params.peak_intersect_sample_csv, ch_genome, ch_gtf)
+}
 
 
 
@@ -51,17 +61,17 @@ nextflow.enable.dsl=2
 
 
 
-
-include {merge_counts} from "/Users/alex/dev/repos/otic-reprogramming/rscript/main.nf"
-// workflow for just merging the output of htseq count for testing
-
-Channel
-    .fromPath("/Users/alex/dev/repos/otic-reprogramming/output/htseq_count/*txt")
-    .map { [[sample_id:"all_cells"], file(it, checkIfExists: true)] }
-    .groupTuple(by: 0)
-    .set {ch_all_counts}
+// // workflow for just merging the output of htseq count for testing
+// include {merge_counts} from "/Users/alex/dev/repos/otic-reprogramming/rscript/main.nf"
 
 
-workflow {
-    merge_counts (params.modules['merge_counts'], ch_all_counts)
-}
+// Channel
+//     .fromPath("/Users/alex/dev/repos/otic-reprogramming/output/htseq_count/*txt")
+//     .map { [[sample_id:"all_cells"], file(it, checkIfExists: true)] }
+//     .groupTuple(by: 0)
+//     .set {ch_all_counts}
+
+
+// workflow {
+//     merge_counts (params.modules['merge_counts'], ch_all_counts)
+// }
