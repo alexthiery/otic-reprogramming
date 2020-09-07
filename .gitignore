@@ -6,3 +6,5 @@ data
 testData
 output
 .rstudio
+.Rhistory
+.cache
