@@ -8,7 +8,7 @@ assayData = do.call(cbind, lapply(files, function(f){
 
 # ss11 ss15 WTCHG_528508_201189.txt -> 201189
 # ss89 TSS_P2_E2_13-1234.txt -> P2E2
-phenoData <- setNames(plyr::ldply(basename(files), .fun = function(x) {
+phenoData <- setNames(ldply(basename(files), .fun = function(x) {
   if (grepl("ss11", x)) {
     c(strsplit(tools::file_path_sans_ext(x), split = "_")[[1]][[3]], "ss11", 1, "sc")
   } else  if (grepl("ss15", x)) {
