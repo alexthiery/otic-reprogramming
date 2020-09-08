@@ -4,7 +4,10 @@ work
 NF-ChIP_alignment/genome
 data
 testData
-output
+output/**/*
 .rstudio
 .Rhistory
 .cache
+
+# allow
+!output/merged_counts/*
