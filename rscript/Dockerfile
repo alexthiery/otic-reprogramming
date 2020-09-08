@@ -14,7 +14,7 @@ RUN apt-get update \
 
 RUN R -e "BiocManager::install('pcaMethods')"
 RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
-RUN R -e "devtools::install_github('juliendelile/Antler', dependencies = TRUE)"
+RUN R -e "devtools::install_github('juliendelile/Antler_dev@994c1b5b', auth_token='aafbbda529e912b5b09a6bc0a0582a4ab7e4f165')"
 RUN R -e "devtools::install_github('hadley/multidplyr')"
 
 RUN R -e "install.packages('BiocManager')"
