@@ -10,4 +10,4 @@ output/**/*
 .cache
 
 # allow
-!output/merged_counts/*
+!output/merged_counts/assayData.csv
