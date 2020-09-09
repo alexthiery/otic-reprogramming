@@ -21,6 +21,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: alexthiery/modules-${{matrix.module-name}}
-          path: ${{matrix.module-name}}
+          path: modules/${{matrix.module-name}}
           dockerfile: modules/${{matrix.module-name}}/${{matrix.docker-file}}
           tags:  ${{matrix.tag}}
