@@ -14,7 +14,7 @@ RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install(version = '3.10')"
 RUN R -e "BiocManager::install('pcaMethods')"
 RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
-RUN R -e "devtools::install_github('juliendelile/Antler_dev@994c1b5b', auth_token='538dd8b13c75e38ce275c12607877034a95ffb30')"
+RUN R -e "devtools::install_github('juliendelile/Antler_dev@994c1b5b', auth_token='5c347d4c2469668bed149f05014f0e823d1f3049')"
 RUN R -e "devtools::install_github('hadley/multidplyr')"
 RUN R -e "BiocManager::install('monocle')"
 
