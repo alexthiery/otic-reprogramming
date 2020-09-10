@@ -3,31 +3,8 @@
 // Define DSL2
 nextflow.enable.dsl=2
 
-// include {smartseq2_align} from "$baseDir/workflows/scRNAseq_alignment/main.nf"
-
-// Channel
-//     .value(file(params.genome, checkIfExists: true))
-//     .set {ch_genome}
-
-// Channel
-//     .value(file(params.gtf, checkIfExists: true))
-//     .set {ch_gtf}
-
-// workflow {
-//     smartseq2_align (ch_genome, ch_gtf, params.smartseq2_sample_csv)
-//     smartseq2_align.out.velocyto_counts | view
-//     smartseq2_align.out.merged_counts | view
-// }
-
-// include {merge_counts} from "$baseDir/custom-nf-modules/rscript/main.nf"
-
-
-
-/*------------------------------------------------------------------------------------*/
-/* Workflow to run peaks intersect
---------------------------------------------------------------------------------------*/
-
-include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
+include {add_gfp} from "$baseDir/workflows/add_gfp/main.nf"
+include {smartseq2_align} from "$baseDir/workflows/scRNAseq_alignment/main.nf"
 
 Channel
     .value(file(params.genome, checkIfExists: true))
@@ -38,40 +15,24 @@ Channel
     .set {ch_gtf}
 
 workflow {
-    peak_intersect (params.peak_intersect_sample_csv, ch_genome, ch_gtf)
+    // add gfp to genome and gtf
+    add_gfp (ch_genome, ch_gtf)
+    // align using smartseq2 workflow
+    smartseq2_align (add_gfp.out.genome, add_gfp.out.gtf, params.smartseq2_sample_csv)
+    smartseq2_align.out.velocyto_counts | view
+    smartseq2_align.out.merged_counts | view
 }
 
 
 
-// /*------------------------------------------------------------------------------------*/
-// /* Run tests
-// --------------------------------------------------------------------------------------*/
 
-// // Run workflow
-// workflow {
-//     // intersect peak files
-//     bedtools_intersect(ch_K27Ac, ch_atacData)
+/*------------------------------------------------------------------------------------*/
+/* Workflow to run peaks intersect
+--------------------------------------------------------------------------------------*/
 
-//     bedtools_subtract(bedtools_intersect.out, ch_K27me3)
-    
-//     // View outputs
-//     bedtools_intersect.out | view
-// }
-
-
-
-
-// // workflow for just merging the output of htseq count for testing
-// include {merge_counts} from "/Users/alex/dev/repos/otic-reprogramming/rscript/main.nf"
-
-
-// Channel
-//     .fromPath("/Users/alex/dev/repos/otic-reprogramming/output/htseq_count/*txt")
-//     .map { [[sample_id:"all_cells"], file(it, checkIfExists: true)] }
-//     .groupTuple(by: 0)
-//     .set {ch_all_counts}
+// include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
 
 
 // workflow {
-//     merge_counts (params.modules['merge_counts'], ch_all_counts)
+//     peak_intersect (params.peak_intersect_sample_csv, ch_genome, ch_gtf)
 // }
