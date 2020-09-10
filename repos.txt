@@ -1,1 +1,2 @@
-alexthiery/modules-antler-dev:latest
+alexthiery/modules-antler:latest
+alexthiery/modules-rscript:latest
