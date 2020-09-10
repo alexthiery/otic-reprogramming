@@ -1,9 +1,7 @@
 FROM rocker/tidyverse:3.6.3
 
 LABEL authors="alex.thiery@crick.ac.uk" \
-      description="Docker image containing all requirements to run R analysis"
-
-ARG WHEN
+      description="Docker image containing all requirements to run scRNAseq analysis in Antler-dev"
 
 # Install apt packages
 RUN apt-get update \
