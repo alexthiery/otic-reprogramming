@@ -26,10 +26,10 @@ workflow peak_intersect {
 
         bedtools_subtract(params.modules['bedtools_subtract'], bedtools_intersect.out, fastq_metadata.out.filter{ it[0].sample_id == 'K27me3' }.map{ it[1] } )
 
-        awk(params.modules['awk'], bedtools_subtract.out)
 
+        homer_annotate_peaks(params.modules['homer_annotate_peaks'], bedtools_subtract.out, genome, gtf)
 
-        // homer_annotate_peaks(params.modules['homer_annotate_peaks'], bedtools_subtract.out, genome, gtf)
+        awk(params.modules['awk'], homer_annotate_peaks.out)
 
         // homer_annotate_peaks.out | view
 
