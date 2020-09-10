@@ -8,7 +8,7 @@ process merge_counts {
                       if (opts.publish_results == "none") null
                       else filename }
 
-    container 'rocker/tidyverse:latest'
+    container 'alexthiery/modules-rscript:latest'
 
     input:
         val opts
