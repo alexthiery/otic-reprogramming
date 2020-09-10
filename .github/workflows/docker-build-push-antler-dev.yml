@@ -3,7 +3,8 @@ name: docker-build-push-antler-dev
 on:
   push:
     branches: [ master ]
-    paths: [ './modules/antler-dev/Dockerfile' ]
+    paths: 
+      - 'modules/antler-dev/Dockerfile'
 
 jobs:
   build-push-docker:
