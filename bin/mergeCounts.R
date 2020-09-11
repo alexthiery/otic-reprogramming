@@ -4,8 +4,6 @@ library(plyr)
 
 files = list.files(pattern = '.txt', full.names=T)
 
-files = list.files(path = "~/dev/repos/otic-reprogramming/output/htseq_count", pattern = ".txt", full.names = T)
-
 assayData = do.call(cbind, lapply(files, function(f){
 	df = read.table(f, row.names=1)
 	df[seq(nrow(df)-5),, drop=F]
