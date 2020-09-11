@@ -52,8 +52,10 @@ process add_gtf_gfp {
         //SHELL
         """
         cat ${gfp_seq} | sed 's/>.*/>GFP/' > GFP.fa
-        echo -e "GFP\tunknown\texon\t1\t\$(cat GFP.fa | grep -v "^>" | tr -d "\n" | wc -c)\t.\t+\t.\tgene_id 'GFP'; transcript_id 'GFP'; gene_name 'GFP'; gene_biotype 'protein_coding';" > GFP.gtf
+        echo -e 'GFP\tunknown\texon\t1\t'"\$(cat GFP.fa | grep -v "^>" | tr -d "\n" | wc -c)"'\t.\t'"${opts.strand}"'\t.\tgene_id "GFP"; transcript_id "GFP"; gene_name "GFP"; gene_biotype "protein_coding";' > GFP.gtf
         cp ${gtf} ${gtf.baseName}_GFP.gtf
         cat GFP.gtf >> ${gtf.baseName}_GFP.gtf
         """
 }
+
+//$(cat GFP.fa | grep -v "^>" | tr -d "\n" | wc -c)
