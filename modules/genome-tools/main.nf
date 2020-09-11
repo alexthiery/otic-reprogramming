@@ -15,16 +15,14 @@ process add_genome_gfp {
     input:
         val(opts)
         path(fa)
+        path(gfp_seq)
 
     output:
         path("${fa.baseName}_GFP.fa")
 
     script:
-
-        //SHELL
         """
-        wget -O GFP_orig.fa ${opts.gfp_url}
-        cat GFP_orig.fa | sed 's/>.*/>GFP/' > GFP.fa
+        cat ${gfp_seq} | sed 's/>.*/>GFP/' > GFP.fa
         cp ${fa} ${fa.baseName}_GFP.fa
         cat GFP.fa >> ${fa.baseName}_GFP.fa
         """
@@ -44,6 +42,7 @@ process add_gtf_gfp {
     input:
         val(opts)
         path(gtf)
+        path(gfp_seq)
 
     output:
         path("${gtf.baseName}_GFP.gtf")
@@ -52,8 +51,7 @@ process add_gtf_gfp {
 
         //SHELL
         """
-        wget -O GFP_orig.fa ${opts.gfp_url}
-        cat GFP_orig.fa | sed 's/>.*/>GFP/' > GFP.fa
+        cat ${gfp_seq} | sed 's/>.*/>GFP/' > GFP.fa
         echo -e "GFP\tunknown\texon\t1\t\$(cat GFP.fa | grep -v "^>" | tr -d "\n" | wc -c)\t.\t+\t.\tgene_id 'GFP'; transcript_id 'GFP'; gene_name 'GFP'; gene_biotype 'protein_coding';" > GFP.gtf
         cp ${gtf} ${gtf.baseName}_GFP.gtf
         cat GFP.gtf >> ${gtf.baseName}_GFP.gtf

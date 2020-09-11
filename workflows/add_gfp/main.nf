@@ -16,10 +16,11 @@ workflow add_gfp {
     take:
         genome
         gtf
+        gfp_seq
 
     main:
-        add_genome_gfp (params.modules['add_genome_gfp'], genome)
-        add_gtf_gfp (params.modules['add_gtf_gfp'], gtf)
+        add_genome_gfp (params.modules['add_genome_gfp'], genome, gfp_seq)
+        add_gtf_gfp (params.modules['add_gtf_gfp'], gtf, gfp_seq)
 
     emit:
         genome = add_genome_gfp.out

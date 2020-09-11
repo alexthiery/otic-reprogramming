@@ -14,13 +14,17 @@ Channel
     .value(file(params.gtf, checkIfExists: true))
     .set {ch_gtf}
 
+Channel
+    .value(file(params.gfp_seq, checkIfExists: true))
+    .set {ch_gfp_seq}
+
 workflow {
     // add gfp to genome and gtf
-    add_gfp (ch_genome, ch_gtf)
+    add_gfp (ch_genome, ch_gtf, ch_gfp_seq)
     // align using smartseq2 workflow
-    smartseq2_align (add_gfp.out.genome, add_gfp.out.gtf, params.smartseq2_sample_csv)
-    smartseq2_align.out.velocyto_counts | view
-    smartseq2_align.out.merged_counts | view
+    // smartseq2_align (add_gfp.out.genome, add_gfp.out.gtf, params.smartseq2_sample_csv)
+    // smartseq2_align.out.velocyto_counts | view
+    // smartseq2_align.out.merged_counts | view
 }
 
 
