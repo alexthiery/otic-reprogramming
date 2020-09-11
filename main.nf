@@ -22,9 +22,9 @@ workflow {
     // add gfp to genome and gtf
     add_gfp (ch_genome, ch_gtf, ch_gfp_seq)
     // align using smartseq2 workflow
-    // smartseq2_align (add_gfp.out.genome, add_gfp.out.gtf, params.smartseq2_sample_csv)
-    // smartseq2_align.out.velocyto_counts | view
-    // smartseq2_align.out.merged_counts | view
+    smartseq2_align (add_gfp.out.genome, add_gfp.out.gtf, params.smartseq2_sample_csv)
+    smartseq2_align.out.velocyto_counts | view
+    smartseq2_align.out.merged_counts | view
 }
 
 
