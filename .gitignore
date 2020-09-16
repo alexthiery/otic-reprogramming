@@ -8,6 +8,8 @@ output/**/*
 .rstudio
 .Rhistory
 .cache
+.local
+.conda
 
 # allow
 !output/merged_counts/assayData.csv
