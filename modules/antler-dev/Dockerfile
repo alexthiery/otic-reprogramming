@@ -20,4 +20,4 @@ RUN R -e "BiocManager::install('monocle')"
 
 RUN R -e "devtools::install_version('Seurat', version = '3.1.5', dependencies= NA)"
 RUN R -e "devtools::install_version('getopt', version = '1.20.3', dependencies=T)"
-RUN R -e "devtools::install_version('umap', version = '‎0.2.6.0', dependencies=T)"
+RUN R -e "devtools::install_version('umap', version = '‎0.2.5.0', dependencies=T)"
