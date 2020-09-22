@@ -392,12 +392,12 @@ corr.mat2 = fastCor(t(m_oep$getReadcounts(data_status='Normalized')), method="sp
 m_oep$identifyGeneModules(
   method="TopCorr_DR",
   corr=corr.mat2,
-  corr_t = 0.3,
+  corr_t = 0.4,
   topcorr_mod_min_cell=0, # default
   topcorr_mod_consistency_thres=0.4, # default
   topcorr_mod_skewness_thres=-Inf, # default
   topcorr_min_cell_level=5,
-  topcorr_num_max_final_gms=100,
+  topcorr_num_max_final_gms=75,
   data_status='Normalized'
 )
 
