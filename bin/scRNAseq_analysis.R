@@ -433,7 +433,7 @@ m_oep$plotGeneModules(
 
 #' Manual feature selection
 
-bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3") # 'ZNF385C', 'NELL1' # "CXCL14", "EYA4", "RERE", "SOX13", 
+bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
 
 m_oep$topCorr_DR$genemodules.selected = Filter(function(x){any(bait_genes %in% x)}, m_oep$topCorr_DR$genemodules)
 
@@ -558,7 +558,7 @@ TSNEcoexpression.plots(m_oep, m_oep$topCorr_DR$genemodules.selected, gene1 = "FO
 
 makeTSNEplots(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.Pax-2", seed=1,
               cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',])))],
-              perplexity=perp, pca=pca, eta=eta, plot_folder = curr.plot.folder, main = 'Pax-2')
+              perplexity=perp, pca=pca, eta=eta, plot_folder = tsne_path, main = 'Pax-2')
 
 
 #####################################################################################
