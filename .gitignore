@@ -11,5 +11,11 @@ output/**/*
 .local
 .conda
 
+bin.Rproj
+.Rprofile
+renv
+renv.lock
+
 # allow
 !output/merged_counts/assayData.csv
+.Rproj.user
