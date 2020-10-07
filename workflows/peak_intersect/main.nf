@@ -33,7 +33,7 @@ workflow peak_intersect {
 
         // homer_annotate_peaks.out | view
 
-        // homer_find_motifs(params.modules['homer_find_motifs'], bedtools_subtract.out, genome)
+        homer_find_motifs(params.modules['homer_find_motifs'], awk.out.file, genome)
 
         // homer_find_motifs.out | view
         // cutadapt (params.modules['cutadapt'], smartseq2_fastq_metadata.out)
