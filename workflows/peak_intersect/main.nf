@@ -22,7 +22,7 @@ workflow peak_intersect {
     main:
         fastq_metadata (sample_csv)
 
-        bedtools_intersect(params.modules['bedtools_intersect'], fastq_metadata.out.filter{ it[0].sample_id == 'K27Ac' }, fastq_metadata.out.filter{ it[0].sample_id == 'ATAC' }.map{ it[1] } )
+        bedtools_intersect(params.modules['bedtools_intersect'], fastq_metadata.out.filter{ it[0].sample_id == 'ATAC' }, fastq_metadata.out.filter{ it[0].sample_id == 'K27Ac' }.map{ it[1] } )
 
         bedtools_subtract(params.modules['bedtools_subtract'], bedtools_intersect.out, fastq_metadata.out.filter{ it[0].sample_id == 'K27me3' }.map{ it[1] } )
 
