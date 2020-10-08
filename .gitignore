@@ -10,11 +10,7 @@ output/**/*
 .cache
 .local
 .conda
-
-bin.Rproj
-.Rprofile
-renv
-renv.lock
+enhancers
 
 # allow
 !output/merged_counts/assayData.csv

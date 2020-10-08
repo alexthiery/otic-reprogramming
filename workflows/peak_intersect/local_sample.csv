@@ -1,6 +1,4 @@
 sample_id,data1
-K4me1,/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K4me1_R1_peaks.broadPeak
-K4me3,/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K4me3_R1_peaks.broadPeak
-K27Ac,/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K27Ac_R1_peaks.broadPeak
-K27me3,/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K27me3_R1_peaks.broadPeak
 ATAC,/Users/alex/dev/repos/otic-reprogramming/testData/ATAC/ss8_R1.mLb.clN_peaks.narrowPeak
+H3K27Ac,/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K27Ac_R1_peaks.broadPeak
+H3K27me3,/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K27me3_R1_peaks.broadPeak
