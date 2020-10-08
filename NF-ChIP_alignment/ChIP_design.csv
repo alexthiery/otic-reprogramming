@@ -1,6 +1,4 @@
 group,replicate,fastq_1,fastq_2,antibody,control
-ss8-input,1,/camp/home/thierya/working/raw_data/ChIP/Input_GATCAG_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/Input_GATCAG_L002_R2_001.fastq.gz,,
-ss8-K4me1,1,/camp/home/thierya/working/raw_data/ChIP/K4me1_ACAGTG_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K4me1_ACAGTG_L002_R2_001.fastq.gz,K4me1,ss8-input
-ss8-K4me3,1,/camp/home/thierya/working/raw_data/ChIP/K4me3_GCCAAT_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K4me3_GCCAAT_L002_R2_001.fastq.gz,K4me3,ss8-input
-ss8-K27Ac,1,/camp/home/thierya/working/raw_data/ChIP/K27Ac_CAGATC_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K27Ac_CAGATC_L002_R2_001.fastq.gz,K27Ac,ss8-input
-ss8-K27me3,1,/camp/home/thierya/working/raw_data/ChIP/K27me3_ACTTGA_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K27me3_ACTTGA_L002_R2_001.fastq.gz,K27me3,ss8-input
+input,1,/camp/home/thierya/working/raw_data/ChIP/Input_GATCAG_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/Input_GATCAG_L002_R2_001.fastq.gz,,
+K27Ac,1,/camp/home/thierya/working/raw_data/ChIP/K27Ac_CAGATC_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K27Ac_CAGATC_L002_R2_001.fastq.gz,K27Ac,input
+K27me3,1,/camp/home/thierya/working/raw_data/ChIP/K27me3_ACTTGA_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K27me3_ACTTGA_L002_R2_001.fastq.gz,K27me3,input
