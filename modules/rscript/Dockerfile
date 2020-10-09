@@ -11,6 +11,7 @@ RUN R -e 'BiocManager::install("biomaRt")'
 RUN R -e 'BiocManager::install("DESeq2")'
 RUN R -e 'BiocManager::install("apeglm")'
 
+RUN R -e 'install.packages("getopt")'
 RUN R -e 'install.packages("plyr")'
 RUN R -e 'install.packages("readr")'
 RUN R -e 'install.packages("RColorBrewer")'
