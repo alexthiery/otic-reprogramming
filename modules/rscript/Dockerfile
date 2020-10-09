@@ -3,6 +3,14 @@ FROM rocker/tidyverse:3.6.3
 LABEL authors="alex.thiery@crick.ac.uk" \
       description="Docker image containing all requirements to run downstream ChIP/ATAC/bulk-RNAseq"
 
+# Install apt packages
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    build-essential=12.6 \
+    libhdf5-dev=1.10.4+repack-10 \
+    libboost-filesystem1.67-dev
+
+
 RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install(version = '3.10')"
 
