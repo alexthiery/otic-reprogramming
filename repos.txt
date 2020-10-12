@@ -1,2 +1,2 @@
 alexthiery/modules-antler:latest
-alexthiery/modules-rscript:latest
+alexthiery/modules-r_analysis:latest

@@ -11,7 +11,7 @@ jobs:
         matrix:
             tag: ['latest']
             docker-file: ['Dockerfile']
-            module-name: ['rscript']
+            module-name: ['r_analysis']
 
     steps:
       - uses: actions/checkout@v2
