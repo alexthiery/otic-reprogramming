@@ -134,7 +134,7 @@ volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
 volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annotations$gene_id)]
 
 # select genes to add as labels on volcano plot
-labels <- head(volc_dat, 50)
+labels <- head(volc_dat[!volc_dat$sig == "Not sig",], 50)
 labels <- labels[!grepl("ENSGAL", labels$gene),]
 
 # Get biomart GO annotations for TFs
