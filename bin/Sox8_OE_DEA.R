@@ -25,7 +25,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   if (opt$runtype == "user"){
     output_path = "./output/sox8_oe/plots/"
     rds_path = "./output/sox8_oe/rds_files/"
-    input_files <- list.files("./testData/sox8_oe/alignment_output/", pattern = "*.txt$", full.names = T)
+    input_files <- list.files("./output/results-sox8_oe/featureCounts", pattern = "*.txt$", full.names = T)
     
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
@@ -62,42 +62,29 @@ samples_IDs <- data.frame(Sample = c("Sox8OE1", "Sox8OE2", "Sox8OE3", "Control1"
                                  "WTCHG_706842_207180", "WTCHG_706842_208192"),
                           stringsAsFactors = F)
 
+# read in count data and rename columns
+read_counts <- as.data.frame(read.table(input_files, header = T, stringsAsFactors = F))
+colnames(read_counts) <- unlist(lapply(colnames(read_counts), function(x) ifelse(grepl("WTCHG", x), samples_IDs$Sample[grepl(gsub("_1Aligned.*", "", x ), samples_IDs$ID)], x)))
+colnames(read_counts)[1] <- "gene_id"
+
+# remove samples with poor quality
+read_counts <- read_counts[,!is.na(colnames(read_counts))]
 
 
-# read in the data tables for each sample, remove the extra columns which label chr pos etc, and add relevant column names
-# read in samples >> select columns for reads and annotations >> rename columns
-read_counts <- list()
-for(ID in samples_IDs$ID){
-  sample = samples_IDs[['Sample']][samples_IDs$ID %in% ID]
-  read_counts[[sample]] <- as.data.frame(read.table(input_files[grepl(ID, input_files)], header = T, stringsAsFactors = F))
-  read_counts[[sample]] <- read_counts[[sample]][,c('Geneid', "gene_name", colnames(read_counts[[sample]])[grepl(ID, colnames(read_counts[[sample]]))])]
-  names(read_counts[[sample]]) <- c('gene_ID', 'gene_ann', sample)
-}
-
-# make gene annotations dataframe >> if gene name exists then take gene name, else take ensembl ID and make new name column
-gene_annotations <- read_counts[[1]] %>%
-  mutate(gene_name = ifelse(!is.na(gene_ann), gene_ann, gene_ID)) %>%
-  dplyr::select(gene_ID, gene_name)
+# if gene name exists then take gene name, else take ensembl ID and make new name column
+read_counts <- read_counts %>% mutate(gene_name = ifelse(!is.na(gene_name), gene_name, gene_id))
 
 # make duplicated gene names unique using "_"
-gene_annotations$gene_name <- make.unique(gene_annotations$gene_name, sep = "_")
+read_counts$gene_name <- make.unique(read_counts$gene_name, sep = "_")
 
-# drop annotation column before merging
-read_counts <- lapply(read_counts, function(x) { x["gene_ann"] <- NULL; x })
-
-# merge dataframes together before integrating gene names as there may be some duplicated gene annotations
-read_counts <- Reduce(function(x,y) merge(x = x, y = y, by = "gene_ID"), read_counts)
-
-read_counts$gene_name <- gene_annotations$gene_name[match(read_counts$gene_ID, gene_annotations$gene_ID)]
-
-# place gene names at front of dataframe
-read_counts <- read_counts[,c(1, 8, 2:7)]
+# make gene annotations dataframe
+gene_annotations <- read_counts %>% dplyr::select(gene_id, gene_name)
 
 # write CSV for output list
 write.csv(read_counts, paste0(output_path, "read_counts.csv"), row.names = F)
 
-# make rownames gene_ID and remove ID and names column before making deseq object
-rownames(read_counts) <- read_counts$gene_ID
+# make rownames gene_id and remove ID and names column before making deseq object
+rownames(read_counts) <- read_counts$gene_id
 read_counts[,1:2] <- NULL
 
 ### Add sample group to metadata
@@ -110,7 +97,7 @@ deseq$Group <- droplevels(deseq$Group)
 deseq$Group <- relevel(deseq$Group, ref = "Control")
 
 ### Filter genes which have fewer than 10 readcounts
-deseq <- deseq[rowSums(counts(deseq)) > 10, ]
+deseq <- deseq[rowSums(counts(deseq)) >= 10, ]
 
 ### Run deseq test - size factors for normalisation during this step are calculated using median of ratios method
 deseq <- DESeq(deseq)
@@ -125,7 +112,7 @@ graphics.off()
 # dispersion toward more likely (lower) LFC estimates.
 res <- lfcShrink(deseq, coef="Group_Sox8_vs_Control", type="apeglm")
 
-res$gene_name <- gene_annotations$gene_name[match(rownames(res), gene_annotations$gene_ID)]
+res$gene_name <- gene_annotations$gene_name[match(rownames(res), gene_annotations$gene_id)]
 
 
 # plot MA with cutoff for significant genes = padj < 0.05
@@ -136,39 +123,70 @@ graphics.off()
 
 # Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5 (remove annotation column first)
 volc_dat <- as.data.frame(res[,-6])
-volc_dat$sig <- apply(volc_dat, 1, function(x) if(is.na(x["padj"])){
+volc_dat$sig <- apply(volc_dat, 1, function(x) if(is.na(x["padj"]) | x["padj"]>=0.05 | abs(x["log2FoldChange"]) <=1.5){
   "Not sig"
-}else if(!x["padj"]<0.05 & !abs(x["log2FoldChange"]) > 1.5){
-  "Not sig"
-} else if(x["padj"]<0.05 & abs(x["log2FoldChange"]) > 1.5){
-  "adjusted p-value and log2FC"
-} else if(x["padj"]<0.05){
-  "adjusted p-value"
-} else{NA}
+} else{"Differentially expressed (padj <0.05, absolute log2 FC >1.5"}
 )
 
-volc_dat <- volc_dat[order(abs(volc_dat$pvalue)),]
+volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
 
 # add gene name to volcano data
-volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annotations$gene_ID)]
+volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annotations$gene_id)]
+
+# select genes to add as labels on volcano plot
+labels <- head(volc_dat, 50)
+labels <- labels[!grepl("ENSGAL", labels$gene),]
+
+# Get biomart GO annotations for TFs
+ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
+TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
+                   filters = 'ensembl_gene_id',
+                   values = rownames(res_sub),
+                   mart = ensembl)
+
+# subset genes based on transcription factor GO terms
+TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
+
+
+
+
+
 
 png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
-ggplot(volc_dat, aes(log2FoldChange, -log10(pvalue))) +
+ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
   geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
-  scale_fill_manual(breaks = c("Not sig", "adjusted p-value", "adjusted p-value and log2FC"),
-                    values= alpha(c("gray40", "gray80", "red"), 0.3)) +
-  scale_color_manual(breaks = c("Not sig", "adjusted p-value", "adjusted p-value and log2FC"),
-                     values=c("gray40", "gray80", "red")) +
-  theme_bw() +
+  scale_fill_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
+                    values= alpha(c("gray40", "red"), 0.3)) +
+  scale_color_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
+                     values=c("gray40", "red")) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
   theme(legend.position = "top", legend.title = element_blank()) +
   guides(colour = guide_legend(override.aes = list(size=2))) +
-  geom_text_repel(data=head(volc_dat, 40), size = 2.5, aes(label=gene), segment.color = "gray80") +
+  geom_text_repel(data=labels, size = 2.5, aes(label=gene), segment.color = "gray80") +
   geom_vline(xintercept = 1.5, linetype="dashed",
              color = "gray20", size=0.4) +
   geom_vline(xintercept = -1.5, linetype="dashed",
              color = "gray20", size=0.4) +
   geom_hline(yintercept = -log10(0.05), linetype="dashed",
-             color = "gray20", size=0.4)
+             color = "gray20", size=0.4) +
+  theme(legend.position = "none")
+graphics.off()
+
+
+
+png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
+ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
+  geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
+  scale_fill_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
+                    values= alpha(c("gray40", "red"), 0.3)) +
+  scale_color_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
+                     values=c("gray40", "red")) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+  theme(legend.position = "none") +
+  guides(colour = guide_legend(override.aes = list(size=2))) +
+  geom_text_repel(data=head(volc_dat, 40), size = 2.5, aes(label=gene), segment.color = "gray80")
 graphics.off()
 
 
@@ -179,20 +197,20 @@ graphics.off()
 # raw counts dataframe
 raw_counts <- as.data.frame(counts(deseq))
 colnames(raw_counts) <- paste0("counts_", colnames(raw_counts))
-raw_counts$gene_ID <- rownames(raw_counts)
+raw_counts$gene_id <- rownames(raw_counts)
 
 # normalised counts dataframe
 norm_counts <- as.data.frame(counts(deseq, normalized=TRUE))
 colnames(norm_counts) <- paste0("norm_size.adj_", colnames(norm_counts))
-norm_counts$gene_ID <- rownames(norm_counts)
+norm_counts$gene_id <- rownames(norm_counts)
 
 # differential expression statistics dataframe
 DE_res <- as.data.frame(res)
-DE_res$gene_ID <- rownames(DE_res)
+DE_res$gene_id <- rownames(DE_res)
 
 # merge raw_counts, norm_counts and DE_res together into a single dataframe
-all_dat <- merge(raw_counts, norm_counts, by = 'gene_ID')
-all_dat <- merge(all_dat, DE_res, by = 'gene_ID')
+all_dat <- merge(raw_counts, norm_counts, by = 'gene_id')
+all_dat <- merge(all_dat, DE_res, by = 'gene_id')
 
 # move position of gene names column
 all_dat <- all_dat[,c(1, ncol(all_dat), 2:{ncol(all_dat)-1})]
@@ -288,7 +306,7 @@ res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
 
 # subset TFs from all_dat
 
-all_dat_TF <- all_dat[all_dat$gene_ID %in% rownames(res_sub_TF),]
+all_dat_TF <- all_dat[all_dat$gene_id %in% rownames(res_sub_TF),]
 
 cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Sox8 overexpression and control samples (Sox8 - Control)
 Reads are aligned to Galgal6 \n
@@ -304,7 +322,7 @@ write.table(all_dat_TF, paste0(output_path, "Supplementary_2.csv"), append=TRUE,
 ##############################################################
 
 rld.plot <- assay(rld)
-rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_ID)]
+rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
 # plot DE TFs
 png(paste0(output_path, "Sox8OE_TFs_HM.png"), height = 25, width = 20, units = "cm", res = 200)
@@ -394,7 +412,7 @@ write.table(venn.genes.df, paste0(output_path, "Supplementary_3.csv"), append=TR
 
 # plot heatmap
 rld.plot <- assay(rld)
-rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_ID)]
+rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
 png(paste0(output_path, "anyOticvsSox8OE.png"),height = 8, width = 21, units = "cm", res = 200)
 pheatmap(rld.plot[venn.genes$Shared,], cluster_rows=T, show_rownames=T,
@@ -496,7 +514,7 @@ SOX8_NC_shared <- rownames(res_sub)[rownames(res_sub) %in% NC_enriched_TFs]
 
 NC_TF_DE_dat <- assay(rld)
 NC_TF_DE_dat <- NC_TF_DE_dat[rownames(NC_TF_DE_dat) %in% SOX8_NC_shared,]
-rownames(NC_TF_DE_dat) <- gene_annotations$gene_name[match(rownames(NC_TF_DE_dat), gene_annotations$gene_ID)]
+rownames(NC_TF_DE_dat) <- gene_annotations$gene_name[match(rownames(NC_TF_DE_dat), gene_annotations$gene_id)]
 
 png(paste0(output_path, "SOX8_NC_shared.heatmap.ens.png"),height = 10, width = 21, units = "cm", res = 200)
 pheatmap(NC_TF_DE_dat, cluster_rows=T, show_rownames=T,
@@ -511,7 +529,7 @@ graphics.off()
 
 NC_TF_dat <- assay(rld)
 NC_TF_dat <- NC_TF_dat[rownames(NC_TF_dat) %in% NC_enriched_TFs,]
-rownames(NC_TF_dat) <- gene_annotations$gene_name[match(rownames(NC_TF_dat), gene_annotations$gene_ID)]
+rownames(NC_TF_dat) <- gene_annotations$gene_name[match(rownames(NC_TF_dat), gene_annotations$gene_id)]
 
 png(paste0(output_path, "NC_enriched_TFs.heatmap.png"),height = 25, width = 21, units = "cm", res = 200)
 pheatmap(NC_TF_dat, cluster_rows=T, show_rownames=T,
@@ -526,7 +544,7 @@ graphics.off()
 # save CSV of norm counts and Sox8OE DEA for TFs from Williams et al. 2019
 ################################################################################
 
-all_dat_NC_TF <- all_dat[all_dat$gene_ID %in% NC_enriched_TFs,]
+all_dat_NC_TF <- all_dat[all_dat$gene_id %in% NC_enriched_TFs,]
 
 cat("This table shows genes subset from Williams et al. (2019) Developmental Cell bulk RNAseq data
 Bulk RNAseq was carried out on citrine positive and citrine negative cells following electroporation of the NC specific enhancer NC1
