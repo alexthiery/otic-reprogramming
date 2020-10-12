@@ -10,7 +10,7 @@ RUN apt-get update \
     libjpeg-dev\
     libpng-dev \
     git=1:2.20.1-2+deb10u3 \
-    apt-utils=1.8.2 \
+    apt-utils=1.8.2.1 \
     unzip=6.0-23+deb10u1 \
     procps=2:3.3.15-2 \
     build-essential=12.6 \
@@ -19,7 +19,6 @@ RUN apt-get update \
     zlib1g-dev=1:1.2.11.dfsg-1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
 
 RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install(version = '3.10')"
