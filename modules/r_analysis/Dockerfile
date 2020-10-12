@@ -10,7 +10,6 @@ RUN apt-get update \
     libhdf5-dev=1.10.4+repack-10 \
     libboost-filesystem1.67-dev
 
-
 RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install(version = '3.10')"
 
