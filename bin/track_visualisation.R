@@ -1,8 +1,6 @@
 # Change plot path
-plot.path <- "~/dev/repos/otic-reprogramming/output/enhancer_visualisation/"
+plot.path <- "./"
 dir.create(plot.path)
-
-BiocManager::install("ChIPpeakAnno")
 
 library(ChIPpeakAnno)
 
