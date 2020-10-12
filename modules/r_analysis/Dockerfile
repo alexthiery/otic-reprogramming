@@ -1,7 +1,7 @@
 FROM rocker/tidyverse:3.6.3
 
 LABEL authors="alex.thiery@crick.ac.uk" \
-      description="Docker image containing all requirements to run downstream ChIP/ATAC/bulk-RNAseq"
+      description="Docker image containing all requirements to run all R analysis for otic reprogramming project"
 
 # Install apt packages
 RUN apt-get update \
