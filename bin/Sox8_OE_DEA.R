@@ -225,7 +225,7 @@ res_down <- res_down[order(res_down$log2FoldChange),]
 nrow(res_up)
 nrow(res_down)
 
-# 511 genes DE with padj 0.05 & abs(logFC) > 1.5 (398 upregulated, 112 downregulated)
+# 511 genes DE with padj 0.05 & abs(logFC) > 1.5 (399 upregulated, 112 downregulated)
 
 # non-DE genes
 res_remain <- all_dat[!rownames(all_dat) %in% rownames(res_up) & !rownames(all_dat) %in% rownames(res_down),]
