@@ -8,13 +8,13 @@ nextflow.enable.dsl=2
 // include {process_counts} from "$baseDir/workflows/process_counts/main.nf"
 // include {velocyto_smartseq2} from "$baseDir/workflows/velocyto_smartseq2/main.nf"
 
-Channel
-    .value(file(params.genome, checkIfExists: true))
-    .set {ch_genome}
+// Channel
+//     .value(file(params.genome, checkIfExists: true))
+//     .set {ch_genome}
 
-Channel
-    .value(file(params.gtf, checkIfExists: true))
-    .set {ch_gtf}
+// Channel
+//     .value(file(params.gtf, checkIfExists: true))
+//     .set {ch_gtf}
 
 // Channel
 //     .value(file(params.gfp_seq, checkIfExists: true))
@@ -40,13 +40,31 @@ Channel
 
 
 
+// /*------------------------------------------------------------------------------------*/
+// /* Workflow to run peaks intersect
+// --------------------------------------------------------------------------------------*/
+
+// include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
+
+
+// workflow {
+//     peak_intersect (params.peak_intersect_sample_csv, ch_genome, ch_gtf)
+// }
+
+
+
 /*------------------------------------------------------------------------------------*/
-/* Workflow to run peaks intersect
+/* Workflow to run sox8 DEA
 --------------------------------------------------------------------------------------*/
 
-include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
+include {r_analysis as lmx1a_dea} from "$baseDir/modules/r_analysis/main.nf"
+
+Channel
+    .fromPath(params.lmx1a_counts)
+    .set { ch_lmx1a_counts }
+
 
 
 workflow {
-    peak_intersect (params.peak_intersect_sample_csv, ch_genome, ch_gtf)
+    lmx1a_dea( params.modules['lmx1a_dea'], ch_lmx1a_counts )
 }

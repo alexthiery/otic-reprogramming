@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --job-name=NF-sox8
+#SBATCH --job-name=NF-lmx1a
 #SBATCH -t 72:00:00
 #SBATCH --mail-type=ALL,ARRAY_TASKS
 #SBATCH --mail-user=alex.thiery@crick.ac.uk

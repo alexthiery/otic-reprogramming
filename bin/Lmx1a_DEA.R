@@ -3,7 +3,8 @@
 # Define arguments for Rscript
 library(getopt)
 spec = matrix(c(
-  'runtype', 'l', 2, "character"
+  'runtype', 'l', 2, "character",
+  'cores'   , 'c', 2, "integer"
 ), byrow=TRUE, ncol=4)
 opt = getopt(spec)
 
@@ -23,21 +24,17 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 # Set paths and load data
 {
   if (opt$runtype == "user"){
-    output_path = "./output/lmx1a/plots/"
-    rds_path = "./output/lmx1a/rds_files/"
+    output_path = "./output/lmx1a/output/"
     input_files <- list.files("./output/results-lmx1a/featureCounts", pattern = "*.txt$", full.names = T)
     
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
     
-    sapply(list.files(opt$custom_functions, full.names = T), source)
-    output_path = "plots/"
-    rds_path = "rds_files/"
-    input_files <- list.files("./", pattern = "*.txt$", full.names = T)
+    output_path = "output/"
+    input_files <- list.files("featureCounts/", pattern = "*.txt$", full.names = T)
   }
   
   dir.create(output_path, recursive = T)
-  dir.create(rds_path, recursive = T)
   
   library(biomaRt)
   library(tidyverse)
