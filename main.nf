@@ -53,12 +53,14 @@ Channel
 
 include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
 include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
+include {r_analysis as enhancer_profile} from "$baseDir/modules/r_analysis/main.nf"
 
 workflow {
     parse_metadata (params.peak_intersect_sample_csv)
-    peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
-    enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.combine())
 
+    peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
+
+    enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
 }
         
 
