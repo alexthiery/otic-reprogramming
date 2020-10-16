@@ -6,6 +6,8 @@ LABEL authors="alex.thiery@crick.ac.uk" \
 # Install apt packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+    libbz2-dev \
+    liblzma-dev \
     build-essential=12.6 \
     libhdf5-dev=1.10.4+repack-10 \
     libboost-filesystem1.67-dev
