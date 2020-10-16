@@ -13,6 +13,7 @@ RUN apt-get update \
 RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install(version = '3.10')"
 
+RUN R -e 'BiocManager::install("rtracklayer")'
 RUN R -e 'BiocManager::install("ChIPpeakAnno")'
 RUN R -e 'BiocManager::install("biomaRt")'
 RUN R -e 'BiocManager::install("DESeq2")'
