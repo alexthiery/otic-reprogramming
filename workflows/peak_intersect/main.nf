@@ -37,4 +37,7 @@ workflow peak_intersect {
 
         // Run motif enrichment analysis on remaining peaks
         homer_find_motifs(params.modules['homer_find_motifs'], awk.out.file, genome)
+
+    emit:
+        putative_enhancers = awk.out.file_no_meta
 }
