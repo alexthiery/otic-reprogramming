@@ -146,29 +146,6 @@ ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
                      values=c("gray40", "red")) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-  theme(legend.position = "top", legend.title = element_blank()) +
-  guides(colour = guide_legend(override.aes = list(size=2))) +
-  geom_text_repel(data=labels, size = 2.5, aes(label=gene), segment.color = "gray80") +
-  geom_vline(xintercept = 1.5, linetype="dashed",
-             color = "gray20", size=0.4) +
-  geom_vline(xintercept = -1.5, linetype="dashed",
-             color = "gray20", size=0.4) +
-  geom_hline(yintercept = -log10(0.05), linetype="dashed",
-             color = "gray20", size=0.4) +
-  theme(legend.position = "none")
-graphics.off()
-
-
-
-png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
-ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
-  geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
-  scale_fill_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
-                    values= alpha(c("gray40", "red"), 0.3)) +
-  scale_color_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
-                     values=c("gray40", "red")) +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
   theme(legend.position = "none") +
   guides(colour = guide_legend(override.aes = list(size=2))) +
   geom_text_repel(data=labels, size = 2.5, aes(label=gene), segment.color = "gray80")
@@ -209,8 +186,21 @@ res_down <- res_down[order(res_down$log2FoldChange),]
 
 nrow(res_up)
 nrow(res_down)
-
 # 423 genes DE with padj 0.05 & abs(logFC) > 1.5 (104 upregulated, 319 downregulated)
+
+
+# Write DE data as a csv
+res_de <- rbind(res_up, res_down) %>% arrange(-log2FoldChange)
+
+cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Lmx1a overexpression and control samples (Lmx1a - Control)
+Reads are aligned to Galgal6 \n
+Statistics:
+Normalised count: read counts adjusted for library size
+pvalue: unadjusted pvalue for differential expression test between Lmx1a overexpression and control samples
+padj: pvalue for differential expression test between Lmx1a overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+    file = paste0(output_path, "Supplementary_1.csv"))
+write.table(res_de, paste0(output_path, "Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+
 
 # non-DE genes
 res_remain <- all_dat[!rownames(all_dat) %in% rownames(res_up) & !rownames(all_dat) %in% rownames(res_down),]
@@ -226,8 +216,9 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Lmx1a overexpression and control samples
 padj: pvalue for differential expression test between Lmx1a overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Supplementary_1.csv"))
-write.table(all_dat, paste0(output_path, "Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Supplementary_2.csv"))
+write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+
 
 ####################################################################################
 ### Plot sample-sample distances and PC plots to show relationship between samples
@@ -267,9 +258,3 @@ pheatmap(assay(rld)[rownames(res_sub),], cluster_rows=T, show_rownames=FALSE,
          cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
          scale = "row", treeheight_row = 20, treeheight_col = 40)
 graphics.off()
-
-
-
-
-
-
