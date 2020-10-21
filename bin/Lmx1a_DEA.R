@@ -66,10 +66,6 @@ read_counts <- as.data.frame(read.table(input_files, header = T, stringsAsFactor
 colnames(read_counts) <- unlist(lapply(colnames(read_counts), function(x) ifelse(grepl("WTCHG", x), samples_IDs$Sample[grepl(gsub("_1Aligned.*", "", x ), samples_IDs$ID)], x)))
 colnames(read_counts)[1] <- "gene_id"
 
-# # remove samples with poor quality
-# read_counts <- read_counts[,!is.na(colnames(read_counts))]
-
-
 # if gene name exists then take gene name, else take ensembl ID and make new name column
 read_counts <- read_counts %>% mutate(gene_name = ifelse(!is.na(gene_name), gene_name, gene_id))
 
@@ -122,9 +118,14 @@ graphics.off()
 
 # Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5 (remove annotation column first)
 volc_dat <- as.data.frame(res[,-6])
-volc_dat$sig <- apply(volc_dat, 1, function(x) if(is.na(x["padj"]) | x["padj"]>=0.05 | abs(x["log2FoldChange"]) <=1.5){
-  "Not sig"
-} else{"Differentially expressed (padj <0.05, absolute log2 FC >1.5"}
+
+volc_dat$sig <- apply(volc_dat, 1, function(x) {
+  if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] > 1.5){
+    "upregulated"
+  } else if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] < -1.5){
+    "downregulated"
+  } else {"not sig"}
+}
 )
 
 volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
@@ -133,22 +134,37 @@ volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
 volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annotations$gene_id)]
 
 # select genes to add as labels on volcano plot
-labels <- head(volc_dat[!volc_dat$sig == "Not sig",], 50)
+labels <- head(volc_dat[!volc_dat$sig == "Not sig",], 200)
 labels <- labels[!grepl("ENSGAL", labels$gene),]
+
+# Get biomart GO annotations for TFs
+ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
+TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
+                   filters = 'ensembl_gene_id',
+                   values = rownames(labels),
+                   mart = ensembl)
+
+# subset genes based on transcription factor GO terms
+TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
+
+# filter labels by transcription factors
+labels <- labels[rownames(labels) %in% TF_subset,]
+
 
 
 png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
 ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
   geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
-  scale_fill_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
-                    values= alpha(c("gray40", "red"), 0.3)) +
-  scale_color_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
-                     values=c("gray40", "red")) +
+  scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
+                    values= alpha(c("gray40", "red", "green"), 0.3)) +
+  scale_color_manual(breaks = c("not sig", "downregulated", "upregulated"),
+                     values= c("gray40", "red", "green")) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-  theme(legend.position = "none") +
+  theme(legend.position = "top", legend.title = element_blank()) +
   guides(colour = guide_legend(override.aes = list(size=2))) +
-  geom_text_repel(data=labels, size = 2.5, aes(label=gene), segment.color = "gray80")
+  geom_text_repel(data=labels, size = 2.5, aes(label=gene), segment.color = "gray80") +
+  theme(legend.position = "none")
 graphics.off()
 
 
@@ -192,7 +208,7 @@ nrow(res_down)
 # Write DE data as a csv
 res_de <- rbind(res_up, res_down) %>% arrange(-log2FoldChange)
 
-cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Lmx1a overexpression and control samples (Lmx1a - Control)
+cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Lmx1a and control samples (Lmx1a - Control)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
@@ -210,7 +226,7 @@ res_remain <- res_remain[order(-res_remain$log2FoldChange),]
 all_dat <- rbind(res_up, res_down, res_remain)
 
 # Write all data as a csv
-cat("This table shows the differential expression results for all genes when comparing Lmx1a overexpression and control samples (Lmx1a - Control)
+cat("This table shows the differential expression results for all genes when comparing Lmx1a and control samples (Lmx1a - Control)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
@@ -257,4 +273,54 @@ png(paste0(output_path, "Lmx1a_HM.png"), height = 30, width = 21, units = "cm", 
 pheatmap(assay(rld)[rownames(res_sub),], cluster_rows=T, show_rownames=FALSE,
          cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
          scale = "row", treeheight_row = 20, treeheight_col = 40)
+graphics.off()
+
+
+#########
+# Get biomart GO annotations for TFs
+#########
+
+ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
+TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
+                   filters = 'ensembl_gene_id',
+                   values = rownames(res_sub),
+                   mart = ensembl)
+
+# subset genes based on transcription factor GO terms
+TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
+
+res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
+
+
+##############################################################
+## Save CSV for differentially expressed transcription factors
+##############################################################
+
+# subset TFs from all_dat
+
+all_dat_TF <- all_dat[all_dat$gene_id %in% rownames(res_sub_TF),]
+
+cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Lmx1a and control samples (Lmx1a - Control)
+Reads are aligned to Galgal6 \n
+Statistics:
+Normalised count: read counts adjusted for library size
+pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
+padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+    file = paste0(output_path, "Supplementary_3.csv"))
+write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+
+##############################################################
+# Plot heatmap for differentially expressed transcription factors
+##############################################################
+
+rld.plot <- assay(rld)
+rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
+
+# plot DE TFs
+png(paste0(output_path, "lmx1a_TFs_heatmap.png"), height = 15, width = 20, units = "cm", res = 200)
+pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
+         show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
+         annotation_col=as.data.frame(col_data["Group"]), scale = "row",
+         main = "Lmx1a enriched TFs (logFC > 1.5, padj = 0.05)",
+         border_color = NA)
 graphics.off()
