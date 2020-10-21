@@ -120,9 +120,14 @@ graphics.off()
 
 # Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5 (remove annotation column first)
 volc_dat <- as.data.frame(res[,-6])
-volc_dat$sig <- apply(volc_dat, 1, function(x) if(is.na(x["padj"]) | x["padj"]>=0.05 | abs(x["log2FoldChange"]) <=1.5){
-  "Not sig"
-} else{"Differentially expressed (padj <0.05, absolute log2 FC >1.5"}
+
+volc_dat$sig <- apply(volc_dat, 1, function(x) {
+    if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] > 1.5){
+    "upregulated"
+    } else if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] < -1.5){
+    "downregulated"
+    } else {"not sig"}
+  }
 )
 
 volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
@@ -152,10 +157,10 @@ labels <- labels[rownames(labels) %in% TF_subset,]
 png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
 ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
   geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
-  scale_fill_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
-                    values= alpha(c("gray40", "red"), 0.3)) +
-  scale_color_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
-                     values=c("gray40", "red")) +
+  scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
+                    values= alpha(c("gray40", "red", "green"), 0.3)) +
+  scale_color_manual(breaks = c("not sig", "downregulated", "upregulated"),
+                     values= c("gray40", "red", "green")) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) +
   theme(legend.position = "top", legend.title = element_blank()) +
