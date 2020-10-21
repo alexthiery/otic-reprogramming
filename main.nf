@@ -56,10 +56,10 @@ include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tool
 include {r_analysis as enhancer_profile} from "$baseDir/modules/r_analysis/main.nf"
 
 workflow {
+
+    // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
     parse_metadata (params.peak_intersect_sample_csv)
-
     peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
-
     enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
 }
         
