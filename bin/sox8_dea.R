@@ -131,21 +131,21 @@ volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
 volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annotations$gene_id)]
 
 # select genes to add as labels on volcano plot
-labels <- head(volc_dat[!volc_dat$sig == "Not sig",], 50)
+labels <- head(volc_dat[!volc_dat$sig == "Not sig",], 200)
 labels <- labels[!grepl("ENSGAL", labels$gene),]
 
-# # Get biomart GO annotations for TFs
-# ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
-# TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
-#                    filters = 'ensembl_gene_id',
-#                    values = rownames(res_sub),
-#                    mart = ensembl)
+# Get biomart GO annotations for TFs
+ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
+TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
+                   filters = 'ensembl_gene_id',
+                   values = rownames(labels),
+                   mart = ensembl)
 
-# # subset genes based on transcription factor GO terms
-# TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
+# subset genes based on transcription factor GO terms
+TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
 
-
-
+# filter labels by transcription factors
+labels <- labels[rownames(labels) %in% TF_subset,]
 
 
 
@@ -161,30 +161,9 @@ ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
   theme(legend.position = "top", legend.title = element_blank()) +
   guides(colour = guide_legend(override.aes = list(size=2))) +
   geom_text_repel(data=labels, size = 2.5, aes(label=gene), segment.color = "gray80") +
-  geom_vline(xintercept = 1.5, linetype="dashed",
-             color = "gray20", size=0.4) +
-  geom_vline(xintercept = -1.5, linetype="dashed",
-             color = "gray20", size=0.4) +
-  geom_hline(yintercept = -log10(0.05), linetype="dashed",
-             color = "gray20", size=0.4) +
   theme(legend.position = "none")
 graphics.off()
 
-
-
-# png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
-# ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
-#   geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
-#   scale_fill_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
-#                     values= alpha(c("gray40", "red"), 0.3)) +
-#   scale_color_manual(breaks = c("Not sig", "Differentially expressed (padj <0.05, absolute log2 FC >1.5"),
-#                      values=c("gray40", "red")) +
-#   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-#         panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-#   theme(legend.position = "none") +
-#   guides(colour = guide_legend(override.aes = list(size=2))) +
-#   geom_text_repel(data=head(volc_dat, 40), size = 2.5, aes(label=gene), segment.color = "gray80")
-# graphics.off()
 
 
 # ################################################################################
