@@ -26,8 +26,8 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   if (opt$runtype == "user"){
     output_path = "./output/merge_smartseq_bulk/output/"
     
-    assay <- read.csv("./results/scRNAseq_alignment/merged_counts/output/assayData.csv", sep = '\t',  row.names = 1)
-    pheno <- read.csv("./results/scRNAseq_alignment/merged_counts/output/phenoData.csv", sep = '\t',  row.names = 1)
+    assay <- read.csv("./results/scRNAseq_alignment/merged_counts/output/assayData.csv", sep = '\t',  row.names = 1, check.names = FALSE)
+    pheno <- read.csv("./results/scRNAseq_alignment/merged_counts/output/phenoData.csv", sep = '\t',  row.names = 1, check.names = FALSE)
     
     # read in count data
     read_counts <- as.data.frame(read.table("./output/results-sox8_oe/featureCounts/merged_gene_counts.txt", header = T, stringsAsFactors = F, row.names = 1))
@@ -37,8 +37,8 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     
     output_path = "output/"
     
-    assay <- read.csv("./assayData.csv", sep = '\t',  row.names = 1)
-    pheno <- read.csv("./phenoData.csv", sep = '\t',  row.names = 1)
+    assay <- read.csv("./assayData.csv", sep = '\t',  row.names = 1, check.names = FALSE)
+    pheno <- read.csv("./phenoData.csv", sep = '\t',  row.names = 1, check.names = FALSE)
     
     # read in count data
     read_counts <- as.data.frame(read.table("./featureCounts/merged_gene_counts.txt", header = T, stringsAsFactors = F, row.names = 1))
@@ -70,8 +70,8 @@ if(setequal(rownames(assay), rownames(read_counts))){
   combined_pheno <- rbind(pheno, bulk_pheno)
 } else {stop("Bulk and single cell data contain different gene names. Check that samples are aligned to the same genome version.")}
 
-write.table(x=combined_assay, file=paste0(output_path, 'assayData.csv'), sep='\t', row.names=TRUE, quote=FALSE, col.names=NA)
-write.table(x=combined_pheno, file=paste0(output_path, 'phenoData.csv'), sep='\t', row.names=TRUE, quote=FALSE, col.names=NA)
+write.table(x=combined_assay, file=paste0(output_path, 'assayData_bulk.csv'), sep='\t', row.names=TRUE, quote=FALSE, col.names=NA)
+write.table(x=combined_pheno, file=paste0(output_path, 'phenoData_bulk.csv'), sep='\t', row.names=TRUE, quote=FALSE, col.names=NA)
 
 
 
