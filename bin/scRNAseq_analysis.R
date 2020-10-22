@@ -1,9 +1,11 @@
 custom_functions = "./bin/custom_functions/"
 input_path = "./output/"
+output_path = "./output/antler"
 plot_path = "./output/antler/plots/"
 rds_path = "./output/antler/rds_files/"
 dir.create(plot_path, recursive = T)
 dir.create(rds_path, recursive = T)
+
 
 # loadload required packages
 library(Antler)
@@ -212,24 +214,6 @@ saveRDS(m2, paste0(rds_path, 'm2.rds'))
 # m2 = readRDS(paste0(rds_path, 'm2.rds'))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ############################################################
 
 # Code taken from Julien for plotting gene modules generated from all data but now including bulk samples
@@ -240,34 +224,40 @@ saveRDS(m2, paste0(rds_path, 'm2.rds'))
 
 #' Adding bulk samples + extra genes on initial heatmap I
 
-mb = Antler$new(plot_folder=output_path, num_cores=4)
+m_bulk = Antler$new(plot_folder=plot_path, num_cores=4)
 
-mb$loadDataset(folderpath='./dataset/scOEP_with_all_bulks/')
+m_bulk$loadDataset(folderpath= paste0(input_path, "merge_smartseq_bulk/output"), assayData_filename = "assayData_bulk.csv", phenoData_filename = "phenoData_bulk.csv")
 
-mb$setCurrentGeneNames(geneID_mapping_file=system.file("extdata", "Annotations/biomart_ensemblid_genename_ggallus.csv", package="Antler"))
+m_bulk$setCurrentGeneNames(geneID_mapping_file=system.file("extdata", "Annotations/biomart_ensemblid_genename_ggallus.csv", package="Antler"))
 
-mb$removeOutliers(lowread_thres = 5e5,  # select cells with more than 500000 reads 
-                  genesmin = 1000,      # select cells expressing more than 1k genes
-                  cellmin = 3,
-                  data_status='Raw')          # select genes expressed in more than 3 cells)
+#' Remove outliers genes and cells
+m_bulk$removeOutliers( lowread_thres = 5e5,   # select cells with more than 500000 reads 
+                  genesmin = 1000,       # select cells expressing more than 1k genes
+                  cellmin = 3,           # select genes expressed in more than 3 cells)
+                  data_status='Raw')
 
 annotations = list(
   "blank"=c('241112', '250184', '265102', '272111', '248185', '274173'),
   "bulk"=c('225110', '251172', '273103', '280110', '235161', '246161'),
   "human"=c('233111', '249196', '257101', '264112', '233185', '247173')
 )
-mb$excludeCellsFromIds(which(mb$getCellsNames() %in% unlist(annotations)))
+m_bulk$excludeCellsFromIds(which(m$getCellsNames() %in% unlist(annotations)))
 
-# Remove cells having more than 6% of mitochondrial read counts
-mb$removeGenesFromRatio(
-  candidate_genes=grep('^MT-', mb$getGeneNames(), value=T),
-  threshold = 0.06)
 
-mb$normalize(method="Count-Per-Million")
+#' Remove cells having more than 6% of mitochondrial read counts
+m_bulk$removeGenesFromRatio(
+  candidate_genes=grep('^MT-', m_bulk$getGeneNames(), value=T),
+  threshold = 0.06
+)
 
-mb$topCorr_DR$genemodules.selected <- m2$topCorr_DR$genemodules.selected
 
-gl=c('FGF3', 'FGF10', 'FGF8', 'GSC', 'ACVR2A', 'EYA2', 'FZD1', 'NEUROD1', 'NEUROD2', 'NEUROD4', 'HES5', 'NOTCH1', 'DLL1', 'JAG2', 'ISL1', 'RPLP1', 'GAPDH')
+m_bulk$normalize(method="Count-Per-Million")
+
+m_bulk$topCorr_DR$genemodules.selected <- m2$topCorr_DR$genemodules.selected
+
+
+
+bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "PAX3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "BLIMP1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO1") #, "CXCR4")
 
 mb$identifyCellClusters(method='hclust', used_genes="topCorr_DR.genemodules.selected", data_status='Normalized')
 
