@@ -51,7 +51,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 
 # make dictionary of sample names and readcount files
 # samples are renamed from original sample sheet for downstream analysis. Original sample IDs can be found under Sample_ReadMe.txt
-samples_IDs <- data.frame(Sample = c("Sox8OE1", "Sox8OE2", "Sox8OE3", "Control1", "Control2", "Control3"),
+samples_IDs <- data.frame(Sample = c("sox81", "sox82", "sox83", "control1", "control2", "control3"),
                           ID = c("WTCHG_706842_201108", "WTCHG_706842_202120", "WTCHG_706842_203132", "WTCHG_706842_205156",
                                  "WTCHG_706842_207180", "WTCHG_706842_208192"),
                           stringsAsFactors = F)
@@ -62,12 +62,12 @@ read_counts <- read_counts[,-1]
 
 # rename columns
 colnames(read_counts) <- unlist(lapply(colnames(read_counts), function(x) samples_IDs$Sample[grepl(gsub("_1Aligned.*", "", x ), samples_IDs$ID)]))
-bulk_pheno <- data.frame(timepoint = rep("sox8", 6), replicate_id = rep(1, 6), treatment = rep("bulk", 6), row.names = colnames(read_counts))
+bulk_pheno <- data.frame(timepoint = rep(0, 6), replicate_id = rep(1, 6), treatment = rep("bulk", 6), row.names = colnames(read_counts))
 
 if(setequal(rownames(assay), rownames(read_counts))){
   read_counts <- read_counts[match(rownames(assay), rownames(read_counts)),]
   combined_assay <- cbind(read_counts, assay)
-  combined_pheno <- rbind(pheno, bulk_pheno)
+  combined_pheno <- rbind(bulk_pheno, pheno)
 } else {stop("Bulk and single cell data contain different gene names. Check that samples are aligned to the same genome version.")}
 
 write.table(x=combined_assay, file=paste0(output_path, 'assayData_bulk.csv'), sep='\t', row.names=TRUE, quote=FALSE, col.names=NA)
