@@ -211,6 +211,147 @@ graphics.off()
 saveRDS(m2, paste0(rds_path, 'm2.rds'))
 # m2 = readRDS(paste0(rds_path, 'm2.rds'))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+
+# Code taken from Julien for plotting gene modules generated from all data but now including bulk samples
+
+
+
+#' ### Bulk comparison
+
+#' Adding bulk samples + extra genes on initial heatmap I
+
+mb = Antler$new(plot_folder=output_path, num_cores=4)
+
+mb$loadDataset(folderpath='./dataset/scOEP_with_all_bulks/')
+
+mb$setCurrentGeneNames(geneID_mapping_file=system.file("extdata", "Annotations/biomart_ensemblid_genename_ggallus.csv", package="Antler"))
+
+mb$removeOutliers(lowread_thres = 5e5,  # select cells with more than 500000 reads 
+                  genesmin = 1000,      # select cells expressing more than 1k genes
+                  cellmin = 3,
+                  data_status='Raw')          # select genes expressed in more than 3 cells)
+
+annotations = list(
+  "blank"=c('241112', '250184', '265102', '272111', '248185', '274173'),
+  "bulk"=c('225110', '251172', '273103', '280110', '235161', '246161'),
+  "human"=c('233111', '249196', '257101', '264112', '233185', '247173')
+)
+mb$excludeCellsFromIds(which(mb$getCellsNames() %in% unlist(annotations)))
+
+# Remove cells having more than 6% of mitochondrial read counts
+mb$removeGenesFromRatio(
+  candidate_genes=grep('^MT-', mb$getGeneNames(), value=T),
+  threshold = 0.06)
+
+mb$normalize(method="Count-Per-Million")
+
+mb$topCorr_DR$genemodules.selected <- m2$topCorr_DR$genemodules.selected
+
+gl=c('FGF3', 'FGF10', 'FGF8', 'GSC', 'ACVR2A', 'EYA2', 'FZD1', 'NEUROD1', 'NEUROD2', 'NEUROD4', 'HES5', 'NOTCH1', 'DLL1', 'JAG2', 'ISL1', 'RPLP1', 'GAPDH')
+
+mb$identifyCellClusters(method='hclust', used_genes="topCorr_DR.genemodules.selected", data_status='Normalized')
+
+mb$plotGeneModules(
+  basename='AllCellsAPrioriGMselection_extraGenes',
+  displayed.gms = 'topCorr_DR.genemodules.selected',
+  displayed.geneset=m$favorite_genes,
+  use.dendrogram='hclust',
+  display.clusters=NULL,
+  file_settings=list(list(type='pdf', width=10, height=10)),
+  data_status='Normalized',
+  gene_transformations=c('log', 'logscaled'),
+  extra_colors=apply(mb$getReadcounts('Normalized')[gl, ], 1, function(x){ unname(log(1+x)/max(log(1+x))) %>% {colorRampPalette(c("#0464DF", "#FFE800"))(n = 1000)[1+as.integer(999*.)]}}),
+  pretty.params=list("size_factor"=5, "ngenes_per_lines" = 8, "side.height.fraction"=.3)
+)
+
+#' <a href="./suppl_files/AllCellsAPrioriGMselection_extraGenes_topCorr_DR.genemodules.selected_Normalized_logscaled.pdf">Download PDF</a>
+
+#' <p align="center"><img src="./suppl_files/AllCellsAPrioriGMselection_extraGenes_topCorr_DR.genemodules.selected_Normalized_logscaled.png" width="100%"></p>
+#'  
+
+#' Adding bulk samples + extra genes on initial heatmap II
+mb$dR$genemodules <- m2$dR$genemodules
+
+mb$identifyCellClusters(method='hclust', clust_name="withBulk", used_genes="dR.genemodules", data_status='Normalized', numclusters=2)
+
+pData(mb$expressionSet)$cells_colors <- generateCellColors(pData(mb$expressionSet), hue_shift=.3)
+
+mb$plotGeneModules(
+  basename='AllCellsManualGMselection_extraGenes',
+  displayed.gms = 'dR.genemodules',
+  displayed.geneset=m$favorite_genes,
+  use.dendrogram='withBulk',
+  display.clusters='withBulk',
+  file_settings=list(list(type='pdf', width=10, height=10)),
+  data_status='Normalized',
+  gene_transformations=c('log', 'logscaled'),
+  extra_colors=apply(mb$getReadcounts('Normalized')[gl, ], 1, function(x){ unname(log(1+x)/max(log(1+x))) %>% {colorRampPalette(c("#0464DF", "#FFE800"))(n = 1000)[1+as.integer(999*.)]}}),
+  pretty.params=list("size_factor"=5, "ngenes_per_lines" = 6, "side.height.fraction"=.3)
+)
+
+#' <a href="./suppl_files/AllCellsManualGMselection_extraGenes_dR.genemodules_Normalized_logscaled.pdf">Download PDF</a>
+
+#' <p align="center"><img src="./suppl_files/AllCellsManualGMselection_extraGenes_dR.genemodules_Normalized_logscaled.png" width="100%"></p>
+#'  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##################################################################################################################################
 # Plot tsne prior to removing Pax2- cells
 
