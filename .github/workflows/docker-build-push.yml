@@ -11,7 +11,7 @@ jobs:
         matrix:
             tag: ['latest']
             docker-file: ['Dockerfile']
-            module-name: ['r_analysis']
+            module-name: ['r_analysis', 'antler-development2019']
 
     steps:
       - uses: actions/checkout@v2
