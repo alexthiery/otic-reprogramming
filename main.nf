@@ -40,28 +40,28 @@ nextflow.enable.dsl=2
 
 
 
-// /*------------------------------------------------------------------------------------*/
-// /* Workflow to run peaks intersect
-// --------------------------------------------------------------------------------------*/
-Channel
-    .value(file(params.genome, checkIfExists: true))
-    .set {ch_genome}
+// // /*------------------------------------------------------------------------------------*/
+// // /* Workflow to run peaks intersect
+// // --------------------------------------------------------------------------------------*/
+// Channel
+//     .value(file(params.genome, checkIfExists: true))
+//     .set {ch_genome}
 
-Channel
-    .value(file(params.gtf, checkIfExists: true))
-    .set {ch_gtf}
+// Channel
+//     .value(file(params.gtf, checkIfExists: true))
+//     .set {ch_gtf}
 
-include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
-include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
-include {r_analysis as enhancer_profile} from "$baseDir/modules/r_analysis/main.nf"
+// include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
+// include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
+// include {r_analysis as enhancer_profile} from "$baseDir/modules/r_analysis/main.nf"
 
-workflow {
+// workflow {
 
-    // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
-    parse_metadata (params.peak_intersect_sample_csv)
-    peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
-    enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
-}
+//     // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
+//     parse_metadata (params.peak_intersect_sample_csv)
+//     peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
+//     enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
+// }
         
 
 
@@ -96,7 +96,7 @@ workflow {
 
 
 
-// Run merge scRNAseq test
+// // Run merge scRNAseq test
 // /*------------------------------------------------------------------------------------*/
 // /* Module inclusions
 // --------------------------------------------------------------------------------------*/
@@ -126,3 +126,39 @@ workflow {
 // workflow {
 //     process_counts( ch_testData )
 // }
+
+
+
+
+
+
+
+// Run merge smartseq bulk test
+/*------------------------------------------------------------------------------------*/
+/* Module inclusions
+--------------------------------------------------------------------------------------*/
+include {r_analysis as merge_smartseq_bulk} from "$baseDir/modules/r_analysis/main.nf"
+include {process_counts} from "$baseDir/workflows/process_counts/main.nf"
+
+/*------------------------------------------------------------------------------------*/
+/* Set input channel
+--------------------------------------------------------------------------------------*/
+
+Channel
+    .fromPath("$baseDir/output/htseq_count/*.txt")
+    .map { [[sample_id:"test"], file(it, checkIfExists: true) ]}
+    .set { ch_testData }
+
+Channel
+    .fromPath(params.sox8_counts)
+    .set { ch_sox8_counts }
+
+/*------------------------------------------------------------------------------------*/
+/* Workflow to run process_counts DEA
+--------------------------------------------------------------------------------------*/
+
+workflow {
+    process_counts( ch_testData )
+    // merge smartseq single cell counts with bulk data and output in Antler format
+    merge_smartseq_bulk( params.modules['merge_smartseq_bulk'], process_counts.out.processed_counts.listFiles().combine(ch_sox8_counts).flatten().collect() )
+}

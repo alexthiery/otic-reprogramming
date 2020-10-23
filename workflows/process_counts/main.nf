@@ -26,6 +26,6 @@ workflow process_counts {
         // merge cell counts into csv
         merge_counts (params.modules['merge_counts'], ch_all_counts)
 
-    // emit:
-    //     processed_counts = merge_counts.out.counts
+    emit:
+        processed_counts = merge_counts.out
 }
