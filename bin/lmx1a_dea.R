@@ -140,21 +140,8 @@ volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annot
 labels <- volc_dat[!volc_dat$sig == "not sig",]
 labels <- labels[!grepl("ENSGAL", labels$gene),]
 
-# Get biomart GO annotations for TFs
-ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
-TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
-                   filters = 'ensembl_gene_id',
-                   values = rownames(labels),
-                   mart = ensembl)
-
-# subset genes based on transcription factor GO terms
-TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
-
-# filter labels by transcription factors
-labels <- labels[rownames(labels) %in% TF_subset,]
-
-# reorder and select top 40 logFC TFs for labeling volcano plot
-labels <- head(labels[order(-abs(labels$log2FoldChange)),], 40)
+# select top 40 padj genes for plotting
+labels <- head(labels, 40)
 
 png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
 ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
