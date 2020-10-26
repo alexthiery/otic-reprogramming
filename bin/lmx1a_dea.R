@@ -119,13 +119,13 @@ DESeq2::plotMA(res, alpha = 0.05)
 graphics.off()
 
 
-# Plot volcano plot with padj < 0.05 and abs(fold change) > 1 (remove annotation column first)
+# Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5 (remove annotation column first)
 volc_dat <- as.data.frame(res[,-6])
 
 volc_dat$sig <- apply(volc_dat, 1, function(x) {
-  if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] > 1){
+  if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] > 1.5){
     "upregulated"
-  } else if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] < -1){
+  } else if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] < -1.5){
     "downregulated"
   } else {"not sig"}
 }
@@ -198,21 +198,21 @@ all_dat <- merge(all_dat, DE_res, by = 'gene_id')
 all_dat <- all_dat[,c(1, ncol(all_dat), 2:{ncol(all_dat)-1})]
 
 # Find which genes are up and downregulated following differential expression analysis
-res_up <- all_dat[which(all_dat$padj < 0.05 & all_dat$log2FoldChange > 1), ]
+res_up <- all_dat[which(all_dat$padj < 0.05 & all_dat$log2FoldChange > 1.5), ]
 res_up <- res_up[order(-res_up$log2FoldChange),]
 
-res_down <- all_dat[which(all_dat$padj < 0.05 & all_dat$log2FoldChange < -1), ]
+res_down <- all_dat[which(all_dat$padj < 0.05 & all_dat$log2FoldChange < -1.5), ]
 res_down <- res_down[order(res_down$log2FoldChange),]
 
 nrow(res_up)
 nrow(res_down)
-# 1176 genes DE with padj 0.05 & abs(logFC) > 1 (424 upregulated, 752 downregulated)
+# 1176 genes DE with padj 0.05 & abs(logFC) > 1.5 (424 upregulated, 752 downregulated)
 
 
 # Write DE data as a csv
 res_de <- rbind(res_up, res_down) %>% arrange(-log2FoldChange)
 
-cat("This table shows the differential expression results for genes with absolute log2FC > 1 and adjusted p-value < 0.05 when comparing Lmx1aE1 and Sox3U3 samples (Lmx1aE1 - Sox3U3)
+cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Lmx1aE1 and Sox3U3 samples (Lmx1aE1 - Sox3U3)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
@@ -269,8 +269,8 @@ plotPCA(rld, intgroup = "Group") +
 graphics.off()
 
 
-# subset genes with padj < 0.05 and abs(LFC) > 1
-res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1), ]
+# subset genes with padj < 0.05 and abs(LFC) > 1.5
+res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1.5), ]
 res_sub <- res_sub[order(-res_sub$log2FoldChange),]
 
 # plot heatmap of DE genes
@@ -304,7 +304,7 @@ res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
 
 all_dat_TF <- all_dat[all_dat$gene_id %in% rownames(res_sub_TF),]
 
-cat("This table shows differentially expressed (absolute FC > 1 and padj (FDR) < 0.05) transcription factors between Lmx1aE1 and Sox3U3 samples (Lmx1aE1 - Sox3U3)
+cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Lmx1aE1 and Sox3U3 samples (Lmx1aE1 - Sox3U3)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
@@ -325,5 +325,5 @@ png(paste0(output_path, "Lmx1aE1_TFs_hm.png"), height = 30, width = 30, units = 
 pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
          annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-         scale = "row", main = "Lmx1aE1 enriched TFs (logFC > 1, padj = 0.05)", border_color = NA)
+         scale = "row", main = "Lmx1aE1 enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA)
 graphics.off()

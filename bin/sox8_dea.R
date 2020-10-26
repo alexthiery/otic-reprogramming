@@ -125,13 +125,13 @@ DESeq2::plotMA(res, alpha = 0.05)
 graphics.off()
 
 
-# Plot volcano plot with padj < 0.05 and abs(fold change) > 1 (remove annotation column first)
+# Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5 (remove annotation column first)
 volc_dat <- as.data.frame(res[,-6])
 
 volc_dat$sig <- apply(volc_dat, 1, function(x) {
-  if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] > 1){
+  if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] > 1.5){
     "upregulated"
-  } else if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] < -1){
+  } else if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] < -1.5){
     "downregulated"
   } else {"not sig"}
 }
@@ -205,21 +205,21 @@ all_dat <- merge(all_dat, DE_res, by = 'gene_id')
 all_dat <- all_dat[,c(1, ncol(all_dat), 2:{ncol(all_dat)-1})]
 
 # Find which genes are up and downregulated following differential expression analysis
-res_up <- all_dat[which(all_dat$padj < 0.05 & all_dat$log2FoldChange > 1), ]
+res_up <- all_dat[which(all_dat$padj < 0.05 & all_dat$log2FoldChange > 1.5), ]
 res_up <- res_up[order(-res_up$log2FoldChange),]
 
-res_down <- all_dat[which(all_dat$padj < 0.05 & all_dat$log2FoldChange < -1), ]
+res_down <- all_dat[which(all_dat$padj < 0.05 & all_dat$log2FoldChange < -1.5), ]
 res_down <- res_down[order(res_down$log2FoldChange),]
 
 nrow(res_up)
 nrow(res_down)
-# 732 genes DE with padj 0.05 & abs(logFC) > 1 (561 upregulated, 171 downregulated)
+# 732 genes DE with padj 0.05 & abs(logFC) > 1.5 (561 upregulated, 171 downregulated)
 
 # Write DE data as a csv
 res_de <- rbind(res_up, res_down) %>% arrange(-log2FoldChange)
 
 # Write all data as a csv
-cat("This table shows the differential expression results for genes with absolute log2FC > 1 and adjusted p-value < 0.05 when comparing Sox8 overexpression and control samples (Sox8 - Control)
+cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Sox8 overexpression and control samples (Sox8 - Control)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
@@ -277,8 +277,8 @@ plotPCA(rld, intgroup = "Group") +
 graphics.off()
 
 
-# subset genes with padj < 0.05 and abs(LFC) > 1
-res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1), ]
+# subset genes with padj < 0.05 and abs(LFC) > 1.5
+res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1.5), ]
 res_sub <- res_sub[order(-res_sub$log2FoldChange),]
 
 # plot heatmap of DE genes
@@ -312,7 +312,7 @@ res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
 
 all_dat_TF <- all_dat[all_dat$gene_id %in% rownames(res_sub_TF),]
 
-cat("This table shows differentially expressed (absolute FC > 1 and padj (FDR) < 0.05) transcription factors between Sox8 overexpression and control samples (Sox8 - Control)
+cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Sox8 overexpression and control samples (Sox8 - Control)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
@@ -333,7 +333,7 @@ png(paste0(output_path, "Sox8OE_TFs_hm.png"), height = 25, width = 25, units = "
 pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
          annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-         scale = "row", main = "Sox8OE enriched TFs (logFC > 1, padj = 0.05)", border_color = NA)
+         scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA)
 graphics.off()
 
 
@@ -364,15 +364,15 @@ TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:
 
 
 
-# Filter transcription factors from NC 5-6ss which are abs(log2FC > 1) & padj < 0.05 in citrine+ cells vs citrine- cells
-de_5to6 <- de_5to6[abs(de_5to6$log2FoldChange) > 1 &
+# Filter transcription factors from NC 5-6ss which are abs(log2FC > 1.5) & padj < 0.05 in citrine+ cells vs citrine- cells
+de_5to6 <- de_5to6[abs(de_5to6$log2FoldChange) > 1.5 &
                      !is.na(de_5to6$log2FoldChange) &
                      de_5to6$padj < 0.05 &
                      !is.na(de_5to6$padj) &
                      de_5to6$EnsemblID %in% TF_subset,]
 
-# Filter transcription factors from NC 8-10ss which are abs(log2FC > 1) & padj < 0.05 in citrine+ cells vs citrine- cells
-de_8to10 <- de_8to10[abs(de_8to10$log2FoldChange) > 1 &
+# Filter transcription factors from NC 8-10ss which are abs(log2FC > 1.5) & padj < 0.05 in citrine+ cells vs citrine- cells
+de_8to10 <- de_8to10[abs(de_8to10$log2FoldChange) > 1.5 &
                        !is.na(de_8to10$log2FoldChange) &
                        de_8to10$padj < 0.05 &
                        !is.na(de_8to10$padj) &
@@ -395,7 +395,7 @@ png(paste0(output_path, "SOX8_NC_shared.heatmap.ens.png"),height = 10, width = 2
 pheatmap(NC_TF_DE_dat, cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=TRUE, treeheight_row = 30, treeheight_col = 30,
          annotation_col=as.data.frame(col_data["Group"]), scale = "row",
-         main = "Shared Sox8OE enriched and NC enriched TFs \n(logFC > 1, padj = 0.05)",
+         main = "Shared Sox8OE enriched and NC enriched TFs \n(logFC > 1.5, padj = 0.05)",
          border_color = NA)
 graphics.off()
 
@@ -410,7 +410,7 @@ png(paste0(output_path, "NC_enriched_TFs.heatmap.png"),height = 25, width = 21, 
 pheatmap(NC_TF_dat, cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
          annotation_col=as.data.frame(col_data["Group"]), scale = "row",
-         main = "NC enriched TFs - not necessarily DE between Sox8 and control \n(logFC > 1, padj = 0.05)",
+         main = "NC enriched TFs - not necessarily DE between Sox8 and control \n(logFC > 1.5, padj = 0.05)",
          border_color = NA)
 
 graphics.off()
@@ -425,7 +425,7 @@ all_dat_NC_TF <- all_dat[all_dat$gene_id %in% NC_enriched_TFs,]
 cat("This table shows genes subset from Williams et al. (2019) Developmental Cell bulk RNAseq data
 Bulk RNAseq was carried out on citrine positive and citrine negative cells following electroporation of the NC specific enhancer NC1
 Sequencing was done at two stages: 5-6ss and 8-10ss
-Genes are filtered for transcription factors differentially expressed between citrine positive and negative samples (absolute FC > 1 and padj < 0.05) at either 5-6ss or 8-10ss
+Genes are filtered for transcription factors differentially expressed between citrine positive and negative samples (absolute FC > 1.5 and padj < 0.05) at either 5-6ss or 8-10ss
 The data presented in this table are from Sox8 overexpression and control samples
 Genes presented in this table are not necessarily differentially expressed between Sox8 overexpression and control samples \n
 Statistics:
