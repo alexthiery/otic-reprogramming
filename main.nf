@@ -40,58 +40,60 @@ nextflow.enable.dsl=2
 
 
 
-// // /*------------------------------------------------------------------------------------*/
-// // /* Workflow to run peaks intersect
-// // --------------------------------------------------------------------------------------*/
-// Channel
-//     .value(file(params.genome, checkIfExists: true))
-//     .set {ch_genome}
+/*------------------------------------------------------------------------------------*/
+/* Workflow to run peaks intersect
+--------------------------------------------------------------------------------------*/
 
-// Channel
-//     .value(file(params.gtf, checkIfExists: true))
-//     .set {ch_gtf}
+Channel
+    .value(file(params.genome, checkIfExists: true))
+    .set {ch_genome}
 
-// include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
-// include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
-// include {r_analysis as enhancer_profile} from "$baseDir/modules/r_analysis/main.nf"
+Channel
+    .value(file(params.gtf, checkIfExists: true))
+    .set {ch_gtf}
 
-// workflow {
+include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
+include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
+include {r_analysis as enhancer_profile; r_analysis as plot_motifs} from "$baseDir/modules/r_analysis/main.nf"
 
-//     // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
-//     parse_metadata (params.peak_intersect_sample_csv)
-//     peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
-//     enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
-// }
+workflow {
+
+    // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
+    parse_metadata (params.peak_intersect_sample_csv)
+    peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
+    enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
+    plot_motifs( params.modules['plot_motifs'], peak_intersect.out.motifs )
+}
         
 
 
-/*------------------------------------------------------------------------------------*/
-/* Workflow to run sox8 DEA
---------------------------------------------------------------------------------------*/
+// /*------------------------------------------------------------------------------------*/
+// /* Workflow to run sox8 DEA
+// --------------------------------------------------------------------------------------*/
 
-include {r_analysis as lmx1a_dea} from "$baseDir/modules/r_analysis/main.nf"
-include {r_analysis as sox8_dea} from "$baseDir/modules/r_analysis/main.nf"
-include {r_analysis as enhancer_profile} from "$baseDir/modules/r_analysis/main.nf"
+// include {r_analysis as lmx1a_dea} from "$baseDir/modules/r_analysis/main.nf"
+// include {r_analysis as sox8_dea} from "$baseDir/modules/r_analysis/main.nf"
+// include {r_analysis as enhancer_profile} from "$baseDir/modules/r_analysis/main.nf"
 
-Channel
-    .fromPath(params.lmx1a_counts)
-    .set { ch_lmx1a_counts }
+// Channel
+//     .fromPath(params.lmx1a_counts)
+//     .set { ch_lmx1a_counts }
 
-Channel
-    .fromPath(params.sox8_counts)
-    .set { ch_sox8_counts }
+// Channel
+//     .fromPath(params.sox8_counts)
+//     .set { ch_sox8_counts }
 
 
-Channel
-    .fromPath(params.chip_bigwig)
-    .set { ch_chip_bigwig }
+// Channel
+//     .fromPath(params.chip_bigwig)
+//     .set { ch_chip_bigwig }
 
-workflow {
-    lmx1a_dea( params.modules['lmx1a_dea'], ch_lmx1a_counts )
-    sox8_dea( params.modules['sox8_dea'], ch_sox8_counts )
-    // enhancer_profile( params.modules['enhancer_profile'], ch_chip_bigwig.combine(peak_intersect.out.putative_enhancers) )
+// workflow {
+//     lmx1a_dea( params.modules['lmx1a_dea'], ch_lmx1a_counts )
+//     sox8_dea( params.modules['sox8_dea'], ch_sox8_counts )
+//     // enhancer_profile( params.modules['enhancer_profile'], ch_chip_bigwig.combine(peak_intersect.out.putative_enhancers) )
 
-}
+// }
 
 
 
