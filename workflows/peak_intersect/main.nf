@@ -38,4 +38,5 @@ workflow peak_intersect {
 
     emit:
         putative_enhancers = awk.out.file_no_meta
+        motifs = homer_find_motifs.out.enrichedMotifs
 }
