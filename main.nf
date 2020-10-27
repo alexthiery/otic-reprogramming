@@ -62,7 +62,7 @@ workflow {
     parse_metadata (params.peak_intersect_sample_csv)
     peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
     enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
-    plot_motifs( params.modules['plot_motifs'], peak_intersect.out.motifs )
+    plot_motifs( params.modules['plot_motifs'], peak_intersect.out.motifs.map{it[1]} )
 }
         
 

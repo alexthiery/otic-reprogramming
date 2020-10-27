@@ -1,9 +1,8 @@
 #!/usr/bin/env Rscript
 
-install.packages("ggseqlogo")
-
 library(ggseqlogo)
 library(gridExtra)
+library(cowplot)
 library(ggplot2)
 
 output_path = "./output/"
