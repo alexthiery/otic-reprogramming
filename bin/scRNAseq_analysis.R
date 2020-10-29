@@ -89,10 +89,6 @@ m$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_
 # see "matprod" in https://stat.ethz.ch/R-manual/R-devel/library/base/html/options.html
 corr.mat = fastCor(t(m$getReadcounts(data_status='Normalized')), method="spearman")
 
-# save correlation matrix
-saveRDS(corr.mat, paste0(rds_path, 'corr.mat.rds'))
-# load cor mat if needed
-# corr.mat = readRDS(paste0(rds_path, 'corr.mat.rds'))
 
 #' ## Gene modules identification
 m$identifyGeneModules(
@@ -108,7 +104,6 @@ m$identifyGeneModules(
 )
 
 names(m$topCorr_DR$genemodules) <- paste0("GM ", seq(length(m$topCorr_DR$genemodules)))
-
 
 # identify cell clusters
 m$identifyCellClusters(method='hclust', used_genes="topCorr_DR.genemodules", data_status='Normalized')
@@ -135,9 +130,6 @@ m$plotGeneModules(
 
 m$writeGeneModules(basename='AllCells_allGms', gms='topCorr_DR.genemodules')
 
-saveRDS(m, paste0(rds_path, 'm.rds'))
-# m = readRDS(paste0(rds_path, 'm.rds'))
-
 ############################################
 #' Remove cells with low summary readcounts
 ############################################
@@ -148,8 +140,7 @@ m2$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
 #' ## Manual feature selection
 
 #' We select gene modules containing at least one gene known to be involved in differentiation process
-
-bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "PAX3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "BLIMP1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO1", "IRX4", "DLX6") #, "CXCR4")
+bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "PAX3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "BLIMP1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO1", "IRX4", "DLX6")
 
 m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$genemodules)
 
@@ -202,9 +193,6 @@ pdf(paste0(plot_path, 'GFP_stat.pdf'), width=4, height=4)
 print(p)
 graphics.off()
 
-saveRDS(m2, paste0(rds_path, 'm2.rds'))
-# m2 = readRDS(paste0(rds_path, 'm2.rds'))
-
 ##################################################################################################################################
 # Plot tsne prior to removing Pax2- cells
 
@@ -224,14 +212,12 @@ tsne_plot(m2, m2$dR$genemodules, "allcells_stage", seed=seed,
 # Plot expression of Pax-2 Pax7 and Sox21 on tsne before filtering
 
 # plot tsne for gradient expression of select genes in gene_list
-
-
 gene_list = c('SOX2', 'SOX10', 'SOX8', 'Pax-7', 'Pax-2', 'LMX1A', 'SOX21', 'Six1')
 for(gn in gene_list){
   path = paste0(tsne_path, gn)
   tsne_plot(m2, m2$dR$genemodules,basename = paste0("allcells.", gn), seed=seed,
                 cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
-                perplexity=perp, pca=pca, eta=eta, plot_folder = tsne_path, main = gn)
+                perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
 }
 
 ########################################################################################################################
@@ -239,13 +225,10 @@ for(gn in gene_list){
 
 #' Blue cell cluster is composed of non-oep derived populations (it is also mostly comprising Pax-2 negative)
 #' We exclude these cells from the analysis (cluster ids, red: 1, blue: 2, green: 3, purple: 4...)
-
-# m2 <- readRDS('./output/antler/rds_files/m2.rds')
 m_oep = m2$copy()
 m_oep$excludeCellFromClusterIds(cluster_ids=c(2), used_clusters='Mansel', data_status='Normalized')
 
 #' Some genes may not be expressed any more in the remaining cells
-
 m_oep$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
 m_oep$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_status='Normalized')
 
@@ -253,11 +236,6 @@ m_oep$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, d
 # "fastCor" uses the tcrossprod function which by default relies on BLAS to speed up computation. This produces inconsistent result in precision depending on the version of BLAS being used.
 # see "matprod" in https://stat.ethz.ch/R-manual/R-devel/library/base/html/options.html
 corr.mat2 = fastCor(t(m_oep$getReadcounts(data_status='Normalized')), method="spearman")
-
-
-#saveRDS(corr.mat2, paste0(rds_path, 'corr.mat2.rds'))
-#Load RDS corr.mat2:
-# corr.mat2 = readRDS(paste0(rds_path, 'corr.mat2.rds'))
 
 m_oep$identifyGeneModules(
   method="TopCorr_DR",
@@ -267,7 +245,7 @@ m_oep$identifyGeneModules(
   topcorr_mod_consistency_thres=0.4, # default
   topcorr_mod_skewness_thres=-Inf, # default
   topcorr_min_cell_level=5,
-  topcorr_num_max_final_gms=100,
+  # topcorr_num_max_final_gms=100,
   data_status='Normalized'
 )
 
@@ -298,8 +276,8 @@ m_oep$plotGeneModules(
 )
 
 #' Manual feature selection
-bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3", "ZNF385C", "NELL1")
-# bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
+# bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3")
+bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
 
 m_oep$topCorr_DR$genemodules.selected = Filter(function(x){any(bait_genes %in% x)}, m_oep$topCorr_DR$genemodules)
 
@@ -331,36 +309,31 @@ m_oep$plotGeneModules(
   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
 )
 
-saveRDS(m_oep, paste0(rds_path, 'm_oep.rds'))
-# m_oep <- readRDS(paste0(rds_path, 'm_oep.rds'))
-
-
 
 ########################################################################################################################
 # Plot tSNE for oep data
-
 tsne_path = paste0(plot_path, 'OEP_subset_tsne/')
 dir.create(tsne_path)
 
 
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_Clusters", seed=seed,
-              cols=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], perplexity=perp, pca=pca, eta=eta)
+              cols=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], perplexity=perp, pca=FALSE, eta=eta)
 
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_samples", seed=1,
-              cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=pca, eta=eta)
+              cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=FALSE, eta=eta)
 
 # Plot gradient expression of Pax-2 on OEP tsne
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.Pax-2", seed=seed,
               cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',])))],
-              perplexity=perp, pca=pca, eta=eta, plot_folder = tsne_path, main = 'Pax-2')
+              perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = 'Pax-2')
 
 
 ########################################################################################################################
 # Plot tSNE co-expression plots
 
 gene_pairs <- list(c("Pax-2", "LMX1A"), c("Pax-2", "SOX8"), c("FOXI3", "LMX1A"))
-lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep, m_oep$topCorr_DR$genemodules.selected,
-              gene1 = x[1], gene2 = x[2], plot_folder = tsne_path, seed=seed, perplexity=perp, pca=pca, eta=eta)})
+lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected,
+              gene1 = x[1], gene2 = x[2], plot_folder = tsne_path, seed=seed, perplexity=perp, pca=FALSE, eta=eta)})
 
 
 ##################################################################
@@ -430,6 +403,13 @@ for(gn in gene_list){
 
 gene_pairs <- list(c("FOXI3", "Pax-2"), c("FOXI3", "SOX8"), c("FOXI3", "LMX1A"), c("TFAP2E", "SOX8"), c("TFAP2E", "LMX1A"))
 lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2], plot_folder = curr.plot.folder)})
+
+
+
+
+
+
+
 
 #####################################################################################
 ######                    Velocity - read and clean loom data                  ######
