@@ -202,10 +202,10 @@ dir.create(tsne_path)
 # here you can assign cluster colours for the tsne >> change this so that colours are directly selected by cluster number
 clust.colors = getClusterColors(v=2)[1:2]
 tsne_plot(m2, m2$dR$genemodules, "allcells_clusters", seed=seed,
-              cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, eta=eta, plot_folder = tsne_path)
+          cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, eta=eta, plot_folder = tsne_path)
 
 tsne_plot(m2, m2$dR$genemodules, "allcells_stage", seed=seed,
-              cols=pData(m2$expressionSet)$stage_colors, perplexity=perp, eta=eta, plot_folder = tsne_path)
+          cols=pData(m2$expressionSet)$stage_colors, perplexity=perp, eta=eta, plot_folder = tsne_path)
 
 
 ########################################################################################################################
@@ -216,8 +216,8 @@ gene_list = c('SOX2', 'SOX10', 'SOX8', 'Pax-7', 'Pax-2', 'LMX1A', 'SOX21', 'Six1
 for(gn in gene_list){
   path = paste0(tsne_path, gn)
   tsne_plot(m2, m2$dR$genemodules,basename = paste0("allcells.", gn), seed=seed,
-                cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
-                perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
+            cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
+            perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
 }
 
 ########################################################################################################################
@@ -281,7 +281,7 @@ bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C',
 
 m_oep$topCorr_DR$genemodules.selected = Filter(function(x){any(bait_genes %in% x)}, m_oep$topCorr_DR$genemodules)
 
-m_oep$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="topCorr_DR.genemodules.selected", data_status='Normalized', numclusters=5)
+m_oep$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="topCorr_DR.genemodules.selected", data_status='Normalized', numclusters=6)
 
 clust.colors = c('#FFA500', '#FF7F50', '#CC99CC', '#E78AC3', '#66C2A5', '#98FB98', '#E5C494', '#B3B3B3', RColorBrewer::brewer.pal(12, "Set3"), RColorBrewer::brewer.pal(9, "Set1"))
 
@@ -317,15 +317,15 @@ dir.create(tsne_path)
 
 
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_Clusters", seed=seed,
-              cols=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], perplexity=perp, pca=FALSE, eta=eta)
+          cols=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], perplexity=perp, pca=FALSE, eta=eta)
 
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_samples", seed=1,
-              cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=FALSE, eta=eta)
+          cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=FALSE, eta=eta)
 
 # Plot gradient expression of Pax-2 on OEP tsne
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.Pax-2", seed=seed,
-              cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',])))],
-              perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = 'Pax-2')
+          cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',])))],
+          perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = 'Pax-2')
 
 
 ########################################################################################################################
@@ -333,7 +333,7 @@ tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.P
 
 gene_pairs <- list(c("Pax-2", "LMX1A"), c("Pax-2", "SOX8"), c("FOXI3", "LMX1A"))
 lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected,
-              gene1 = x[1], gene2 = x[2], plot_folder = tsne_path, seed=seed, perplexity=perp, pca=FALSE, eta=eta)})
+                                                       gene1 = x[1], gene2 = x[2], plot_folder = tsne_path, seed=seed, perplexity=perp, pca=FALSE, eta=eta)})
 
 
 ##################################################################
@@ -474,7 +474,7 @@ tsne.embeddings = tsne_embeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, 
 
 # plot cell velocity on embeddings from tsne for all(m2) cells
 pdf(paste0(velocyto_plot_path, 'allcells.velocity_inc.spanning.pdf'))
-show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(cell.colors, alpha=0.4),
+show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(clust.colors, alpha=0.4),
                                cex=1, arrow.scale=6, arrow.lwd=1)
 dev.off()
 
