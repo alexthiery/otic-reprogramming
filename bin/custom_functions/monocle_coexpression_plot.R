@@ -1,4 +1,4 @@
-Monocle.coexpression.plots <- function(curr_m, gms, gene1, gene2, basename = paste0(gene1, "_", gene2), monocle_obj, plot_folder=output_path, main = NULL){
+monocle_coexpression_plot <- function(curr_m, gms, gene1, gene2, basename = paste0(gene1, "_", gene2), monocle_obj, plot_folder=output_path, main = NULL){
   genes <- c(gene1, gene2)
   a <- as.integer(100*log10(1+curr_m$getReadcounts(data_status='Normalized')[genes[1],]) / max(log10(1+curr_m$getReadcounts(data_status='Normalized')[genes[1],])))
   b <- as.integer(100*log10(1+curr_m$getReadcounts(data_status='Normalized')[genes[2],]) / max(log10(1+curr_m$getReadcounts(data_status='Normalized')[genes[2],])))
