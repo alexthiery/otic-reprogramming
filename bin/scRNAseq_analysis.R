@@ -3,12 +3,16 @@ input_path = "./output/"
 output_path = "./output/antler"
 plot_path = "./output/antler/plots/"
 rds_path = "./output/antler/rds_files/"
+
 dir.create(plot_path, recursive = T)
 dir.create(rds_path, recursive = T)
 
 
 # loadload required packages
 library(Antler)
+library(velocyto.R)
+library(stringr)
+library(monocle)
 
 # load custom functions
 sapply(list.files(custom_functions, full.names = T), source)
@@ -339,8 +343,6 @@ lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$g
 ##################################################################
 #' ## Monocle 2
 
-library(monocle)
-
 monocle.input_dims = unlist(m_oep$topCorr_DR$genemodules.selected)
 
 df_pheno = pData(m_oep$expressionSet)
@@ -415,11 +417,8 @@ lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_D
 ######                    Velocity - read and clean loom data                  ######
 #####################################################################################
 
-library(velocyto.R)
-library(stringr)
-
-velocyto_plot_path = "./output/antler/plots/velocyto"
-dir.create(velocyto_plot_path)
+curr.plot.folder = paste0(plot.path, "velocyto/")
+dir.create(curr.plot.folder)
 
 # read in loom data, with ensembl ID as rownames instead of gene name
 velocyto_dat <- custom_read_loom(list.files(paste0(input_path, 'velocyto'), full.names = T))
@@ -473,7 +472,7 @@ rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, fit.qu
 tsne.embeddings = tsne_embeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, perplexity=perp, pca=FALSE, eta=eta)
 
 # plot cell velocity on embeddings from tsne for all(m2) cells
-pdf(paste0(velocyto_plot_path, 'allcells.velocity_inc.spanning.pdf'))
+pdf(paste0(curr.plot.folder, 'allcells.velocity_inc.spanning.pdf'))
 show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(clust.colors, alpha=0.4),
                                cex=1, arrow.scale=6, arrow.lwd=1)
 dev.off()
@@ -517,7 +516,7 @@ rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, fit.qu
 tsne.embeddings = tsne_embeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, perplexity=perp, pca=FALSE, eta=eta)
 
 # plot cell velocity on embeddings from tsne for m_oep cells
-pdf(paste0(tsne_path, 'OEP.subset.velocity_inc.spanning.pdf'))
+pdf(paste0(curr.plot.folder, 'OEP.subset.velocity_inc.spanning.pdf'))
 show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(cell.colors, alpha=0.4),
                                cex=1, arrow.scale=6, arrow.lwd=1)
 dev.off()
