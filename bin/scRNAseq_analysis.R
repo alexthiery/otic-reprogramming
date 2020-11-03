@@ -13,6 +13,10 @@ library(Antler)
 library(velocyto.R)
 library(stringr)
 library(monocle)
+library(plyr)
+library(dplyr)
+library(ggsignif)
+library(cowplot)
 
 # load custom functions
 sapply(list.files(custom_functions, full.names = T), source)
@@ -594,69 +598,120 @@ graphics.off()
 
 
 
-# extract pseudotimedata
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("FOXI3", "SOX8"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("FOXI3", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "SOX8"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "FOXI3"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("SOX8", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-
-otic = c("SOX8", "LMX1A")
-epi = c("TFAP2E", "FOXI3")
-
-
-combn(c(otic, epi), 2)
 
 
 
-comb <- as.data.frame(expand.grid(c(otic, epi), c(otic, epi),  stringsAsFactors = F))
 
+# list of genes used for coexpression analysis
+otic = c("SOX8", "LMX1A", "HOMER2", "ZBTB16", "PRDM12")
+epi = c("TFAP2E", "FOXI3", "PDLIM1", "NELL1")
+
+# generate gene pairs for coexpression
+comb <- t(combn(c(otic, epi), 2))
+
+# make dataframe with proportion of cells in each branch co-expressing pairs of genes
 state = pData(HSMM)[, "State", drop=F]
-
-
-apply(comb, 1, function(x) {
-  lapply(levels(state$State), function(y) {
-    print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(x[1], x[2]), rownames(state)[state$State == y]] > 0) == 2))
-  })
-})
-
-
+temp = data.frame()
 for(pair in 1:nrow(comb)){
-  
-  if(sum(as.character(comb[pair,]) %in% otic) == 2){
-    comparison = "o-o"
-  }else if(sum(as.character(comb[pair,]) %in% otic) == 1){
-    comparison = "o-e"
-  }else{
-    comparison = "e-e"
-  }
-  
-  print(comparison)
-  lapply(levels(state$State), function(y) {
-    print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(comb[pair,1], comb[pair,2]), rownames(state)[state$State == y]] > 0) == 2))
+  if(sum(as.character(comb[pair,]) %in% otic) == 2){comparison = "o-o"}else if(sum(as.character(comb[pair,]) %in% otic) == 1){comparison = "o-e"}else{comparison = "e-e"}
+  newdat = ldply(levels(state$State), function(y) {
+    c(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(comb[pair,1], comb[pair,2]), rownames(state)[state$State == y]] > 0) == 2)/sum(pData(HSMM)[, "State", drop=F] == y),
+      comparison, y)
   })
+  newdat[,1] <- as.numeric(newdat[,1])
+  temp = rbind(temp, newdat)
 }
 
-comb[pair,]
+# rename dataframe columns
+colnames(temp) = c("value", "branch", "comparison")
+
+# calculate mean value per group and SD for plotting bar plot
+plot_dat <- temp %>%
+  dplyr::group_by(branch, comparison) %>%
+  dplyr::summarise(
+    mean = mean(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE)
+  )
+
+
+# split data by branch
+dat = temp %>% group_split(branch)
+names(dat) <- lapply(dat, function(x) as.character(unique(x[["branch"]])))
+
+# run anova on for each comparison
+multi_anova <- lapply(dat, function(x) {aov(value ~ comparison, data = x)})
+
+# run post hoc tukey test for significance
+lapply(multi_anova, function(x) {TukeyHSD(x)})
+
+# calculate mean and SD for plotting bar plot
+plot_dat <- lapply(dat, function(x){
+  x %>%
+    dplyr::group_by(comparison) %>%
+    dplyr::summarise(
+      "proportion co-expression" = mean(value, na.rm = TRUE),
+      sd = sd(value, na.rm = TRUE),
+    )
+  })
+
+
+# bar plots
+oe_plot <- ggplot(plot_dat$`o-e`, aes(x=comparison,y=`proportion co-expression`, fill = c("black", "orange", "blue"))) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=`proportion co-expression`-sd, ymax=`proportion co-expression`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("3", "1")), annotations = "***",
+              y_position = 0.75, tip_length = 0.02, vjust=0.4) +
+  geom_signif(comparisons=list(c("3", "2")), annotations = "***",
+              y_position = 0.7, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(legend.position="none") +
+  ggtitle("O-E") +
+  theme(plot.title = element_text(hjust = 0.5))
+  
+ee_plot <- ggplot(plot_dat$`e-e`, aes(x=comparison,y=`proportion co-expression`, fill = c("black", "orange", "blue"))) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=`proportion co-expression`-sd, ymax=`proportion co-expression`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("3", "2")), annotations = "***",
+              y_position = 0.6, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(axis.title.y =element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y = element_blank()) +
+  theme(legend.position="none") +
+  ggtitle("E-E") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+oo_plot <- ggplot(plot_dat$`o-o`, aes(x=comparison,y=`proportion co-expression`, fill = c("black", "orange", "blue"))) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=`proportion co-expression`-sd, ymax=`proportion co-expression`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("3", "1")), annotations = "***",
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(axis.title.y =element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y = element_blank()) +
+  theme(legend.position="none") +
+  ggtitle("O-O") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+png("~/Desktop/temp.png", width = 20, height = 12, units = "cm", res = 200)
+plot_grid(oe_plot, NULL, ee_plot, oo_plot, align = "hv", nrow = 1, rel_widths = c(1, 0, 1,1))
+graphics.off()
+
+
+
+
+
 
 
 #' <a href="./suppl_files/Monocle_DDRTree_State_facet.pdf">Download PDF</a>
