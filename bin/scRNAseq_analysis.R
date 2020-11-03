@@ -3,15 +3,24 @@ input_path = "./output/"
 output_path = "./output/antler"
 plot_path = "./output/antler/plots/"
 rds_path = "./output/antler/rds_files/"
+
 dir.create(plot_path, recursive = T)
 dir.create(rds_path, recursive = T)
 
 
 # loadload required packages
 library(Antler)
+library(velocyto.R)
+library(stringr)
+library(monocle)
 
 # load custom functions
 sapply(list.files(custom_functions, full.names = T), source)
+
+# set pipeline params
+seed=1
+perp=5
+eta=200
 
 #' Stage colors
 stage_cols = setNames(c("#BBBDC1", "#6B98E9", "#05080D"), c('8', '11', '15'))
@@ -84,10 +93,6 @@ m$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_
 # see "matprod" in https://stat.ethz.ch/R-manual/R-devel/library/base/html/options.html
 corr.mat = fastCor(t(m$getReadcounts(data_status='Normalized')), method="spearman")
 
-# save correlation matrix
-saveRDS(corr.mat, paste0(rds_path, 'corr.mat.rds'))
-# load cor mat if needed
-# corr.mat = readRDS(paste0(rds_path, 'corr.mat.rds'))
 
 #' ## Gene modules identification
 m$identifyGeneModules(
@@ -103,7 +108,6 @@ m$identifyGeneModules(
 )
 
 names(m$topCorr_DR$genemodules) <- paste0("GM ", seq(length(m$topCorr_DR$genemodules)))
-
 
 # identify cell clusters
 m$identifyCellClusters(method='hclust', used_genes="topCorr_DR.genemodules", data_status='Normalized')
@@ -130,8 +134,6 @@ m$plotGeneModules(
 
 m$writeGeneModules(basename='AllCells_allGms', gms='topCorr_DR.genemodules')
 
-
-
 ############################################
 #' Remove cells with low summary readcounts
 ############################################
@@ -142,8 +144,7 @@ m2$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
 #' ## Manual feature selection
 
 #' We select gene modules containing at least one gene known to be involved in differentiation process
-
-bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "PAX3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "BLIMP1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO1") #, "CXCR4")
+bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "PAX3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "BLIMP1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO1", "IRX4", "DLX6")
 
 m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$genemodules)
 
@@ -196,141 +197,42 @@ pdf(paste0(plot_path, 'GFP_stat.pdf'), width=4, height=4)
 print(p)
 graphics.off()
 
-saveRDS(m2, paste0(rds_path, 'm2.rds'))
-# m2 = readRDS(paste0(rds_path, 'm2.rds'))
-
 ##################################################################################################################################
 # Plot tsne prior to removing Pax2- cells
 
 tsne_path = paste0(plot_path, 'allcells.tsne/') 
 dir.create(tsne_path)
 
-makeTSNEplots <- function(curr_m, gms, basename, cols=clust.colors[curr_m$cellClusters[['hclust']]$cell_ids], seed=1, pca=F, perplexity=12, eta=200, plot_folder=output_path, main = NULL){
-  set.seed(seed)
-  data.logscaled =  t(scale(t(log(curr_m$getReadcounts(data_status='Normalized')[unlist(gms),]+1)), center=TRUE, scale=TRUE))
-  tsne_xy = Rtsne::Rtsne(t(data.logscaled), pca=pca, perplexity=perplexity, eta=eta, max_iter=2000, verbose=T)$Y
-  pdf(paste0(plot_folder, '/', basename, '_TSNE.pdf'))
-  plot(tsne_xy, col=cols, pch=16, main = main)
-  dev.off()
-}
-
-getTSNEembeddings <- function(curr_m, gms, seed=1, pca=F, perplexity=12, eta=200){
-  set.seed(seed)
-  data.logscaled =  t(scale(t(log(curr_m$getReadcounts(data_status='Normalized')[unlist(gms),]+1)), center=TRUE, scale=TRUE))
-  tsne_xy = Rtsne::Rtsne(t(data.logscaled), pca=pca, perplexity=perplexity, eta=eta, max_iter=2000, verbose=T)$Y
-  rownames(tsne_xy) <- colnames(data.logscaled)
-  return(tsne_xy)
-}
-
-perp=5
-eta=200
-pca=FALSE
-pname="temp" # paste0("OEP_4clusters_Perp_", perp, "_eta_", eta, "_PCA_", pca)
-
 # here you can assign cluster colours for the tsne >> change this so that colours are directly selected by cluster number
 clust.colors = getClusterColors(v=2)[1:2]
-makeTSNEplots(m2, m2$dR$genemodules, "allcells_clusters", seed=1,
-              cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, pca=pca, eta=eta, plot_folder = tsne_path)
+tsne_plot(m2, m2$dR$genemodules, "allcells_clusters", seed=seed,
+          cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, eta=eta, plot_folder = tsne_path)
 
-makeTSNEplots(m2, m2$dR$genemodules, "allcells_stage", seed=1,
-              cols=pData(m2$expressionSet)$stage_colors, perplexity=perp, pca=pca, eta=eta, plot_folder = tsne_path)
+tsne_plot(m2, m2$dR$genemodules, "allcells_stage", seed=seed,
+          cols=pData(m2$expressionSet)$stage_colors, perplexity=perp, eta=eta, plot_folder = tsne_path)
 
-tsne.embeddings = getTSNEembeddings(m2, m2$dR$genemodules, seed=1, perplexity=perp, pca=pca, eta=eta)
 
 ########################################################################################################################
 # Plot expression of Pax-2 Pax7 and Sox21 on tsne before filtering
 
 # plot tsne for gradient expression of select genes in gene_list
-
-
 gene_list = c('SOX2', 'SOX10', 'SOX8', 'Pax-7', 'Pax-2', 'LMX1A', 'SOX21', 'Six1')
 for(gn in gene_list){
   path = paste0(tsne_path, gn)
-  makeTSNEplots(m2, m2$dR$genemodules,basename = paste0("allcells.", gn), seed=1,
-                cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
-                perplexity=perp, pca=pca, eta=eta, plot_folder = tsne_path, main = gn)
+  tsne_plot(m2, m2$dR$genemodules,basename = paste0("allcells.", gn), seed=seed,
+            cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
+            perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
 }
-
-
-# #####################################################################################
-# ######                    Velocity - read and clean loom data                  ######
-# #####################################################################################
-# 
-# library(velocyto.R)
-# library(stringr)
-# 
-# # read in loom data, with ensembl ID as rownames instead of gene name
-# velocyto_dat <- custom.read.loom(list.files(paste0(input_path, 'velocyto'), full.names = T))
-# 
-# # change cell names in velocyto dat to match antler cell names
-# velocyto_dat <- lapply(velocyto_dat, function(x) {
-#   colnames(x) <- gsub(".*:", "", colnames(x))
-#   colnames(x) <- gsub("\\..*", "", colnames(x))
-#   colnames(x) <- unname(sapply(colnames(x), function(y) ifelse(
-#     grepl("ss8-TSS", y),
-#     sapply(strsplit(y, split = "_"), function(z){paste0(z[[2]], z[[3]])}),
-#     strsplit(y, split = "_")[[1]][[3]])))
-#   x
-# })
-# 
-# #####################################################################################
-# # run velocity on m2 cells
-# 
-# # get gene annotations from anlter object
-# antler.gene.names <- m2$expressionSet@featureData@data
-# 
-# # get cell names in remaining dataset and associated cluster colours
-# clust.colors = getClusterColors(v=2)[1:2]
-# clust.colors <- clust.colors[m2$cellClusters$Mansel$cell_ids]
-# names(clust.colors) <- names(m2$cellClusters$Mansel$cell_ids)
-# 
-# # keep onluy cells in m2
-# velocyto_dat <- lapply(velocyto_dat,function(x) {
-#   x[,colnames(x) %in% names(clust.colors)]
-# })
-# 
-# # keep only genes in cleaned antler dataset and rename genes based on antler names
-# velocyto_dat <- lapply(velocyto_dat, function(x){
-#   x <- x[rownames(x) %in% fData(m2$expressionSet)$ensembl_gene_id,]
-#   rownames(x) <- fData(m2$expressionSet)$current_gene_names[match(rownames(x), fData(m2$expressionSet)$ensembl_gene_id)]
-#   x
-# })
-# 
-# # exonic read (spliced) expression matrix
-# emat <- velocyto_dat$spliced
-# # intronic read (unspliced) expression matrix
-# nmat <- velocyto_dat$unspliced
-# # spanning read (intron+exon) expression matrix
-# smat <- velocyto_dat$spanning
-# 
-# # calculate cell velocity
-# rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, fit.quantile = 0.05, diagonal.quantiles = TRUE)
-# 
-# # plot cell velocity on embeddings from tsne for all cells
-# pdf(paste0(tsne_path, 'allcells.velocity_inc.spanning.tsne.pdf'))
-# show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(clust.colors, alpha=0.4),
-#                                cex=1, arrow.scale=4, arrow.lwd=1)
-# dev.off()
-# 
-# pdf(paste0(umap_path, 'allcells.velocity_inc.spanning.umap.pdf'))
-# show.velocity.on.embedding.cor(umap.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(clust.colors, alpha=0.4),
-#                                cex=1, arrow.lwd=1)
-# dev.off()
-# 
-# 
 
 ########################################################################################################################
 #' ## OEP derivative isolation
 
 #' Blue cell cluster is composed of non-oep derived populations (it is also mostly comprising Pax-2 negative)
 #' We exclude these cells from the analysis (cluster ids, red: 1, blue: 2, green: 3, purple: 4...)
-
-# m2 <- readRDS('./output/antler/rds_files/m2.rds')
 m_oep = m2$copy()
 m_oep$excludeCellFromClusterIds(cluster_ids=c(2), used_clusters='Mansel', data_status='Normalized')
 
 #' Some genes may not be expressed any more in the remaining cells
-
 m_oep$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
 m_oep$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_status='Normalized')
 
@@ -338,11 +240,6 @@ m_oep$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, d
 # "fastCor" uses the tcrossprod function which by default relies on BLAS to speed up computation. This produces inconsistent result in precision depending on the version of BLAS being used.
 # see "matprod" in https://stat.ethz.ch/R-manual/R-devel/library/base/html/options.html
 corr.mat2 = fastCor(t(m_oep$getReadcounts(data_status='Normalized')), method="spearman")
-
-
-#saveRDS(corr.mat2, paste0(rds_path, 'corr.mat2.rds'))
-#Load RDS corr.mat2:
-# corr.mat2 = readRDS(paste0(rds_path, 'corr.mat2.rds'))
 
 m_oep$identifyGeneModules(
   method="TopCorr_DR",
@@ -352,6 +249,7 @@ m_oep$identifyGeneModules(
   topcorr_mod_consistency_thres=0.4, # default
   topcorr_mod_skewness_thres=-Inf, # default
   topcorr_min_cell_level=5,
+  # topcorr_num_max_final_gms=100,
   data_status='Normalized'
 )
 
@@ -382,12 +280,12 @@ m_oep$plotGeneModules(
 )
 
 #' Manual feature selection
-
+# bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3")
 bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
 
 m_oep$topCorr_DR$genemodules.selected = Filter(function(x){any(bait_genes %in% x)}, m_oep$topCorr_DR$genemodules)
 
-m_oep$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="topCorr_DR.genemodules.selected", data_status='Normalized', numclusters=6)
+m_oep$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="topCorr_DR.genemodules.selected", data_status='Normalized', numclusters=5)
 
 clust.colors = c('#FFA500', '#FF7F50', '#CC99CC', '#E78AC3', '#66C2A5', '#98FB98', '#E5C494', '#B3B3B3', RColorBrewer::brewer.pal(12, "Set3"), RColorBrewer::brewer.pal(9, "Set1"))
 
@@ -415,178 +313,35 @@ m_oep$plotGeneModules(
   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
 )
 
-saveRDS(m_oep, paste0(rds_path, 'm_oep.rds'))
-# m_oep <- readRDS(paste0(rds_path, 'm_oep.rds'))
-
-
 
 ########################################################################################################################
 # Plot tSNE for oep data
-
-perp=5
-eta=200
-pca=FALSE
-
-
 tsne_path = paste0(plot_path, 'OEP_subset_tsne/')
 dir.create(tsne_path)
 
 
-makeTSNEplots(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_Clusters", seed=1,
-              cols=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], perplexity=perp, pca=pca, eta=eta)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_Clusters", seed=seed,
+          cols=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], perplexity=perp, pca=FALSE, eta=eta)
 
-makeTSNEplots(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_samples", seed=1,
-              cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=pca, eta=eta)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_samples", seed=1,
+          cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=FALSE, eta=eta)
 
-tsne.embeddings = getTSNEembeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=1, perplexity=perp, pca=pca, eta=eta)
+# Plot gradient expression of Pax-2 on OEP tsne
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.Pax-2", seed=seed,
+          cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',])))],
+          perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = 'Pax-2')
 
 
 ########################################################################################################################
 # Plot tSNE co-expression plots
 
-perp=5
-eta=200
-pca=FALSE
-
-plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected, gene1 = "Pax-2", gene2 = "LMX1A",
-                       plot_folder = tsne_path, seed=1, perplexity=perp, pca=pca, eta=eta)
-
-plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected, gene1 = "Pax-2", gene2 = "SOX8",
-                       plot_folder = tsne_path, seed=1, perplexity=perp, pca=pca, eta=eta)
-
-plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected, gene1 = "FOXI3", gene2 = "LMX1A",
-                       plot_folder = tsne_path, seed=1, perplexity=perp, pca=pca, eta=eta)
-
-
-########################################################################################################################
-# Plot gradient expression of Pax-2 on OEP tsne
-
-makeTSNEplots(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.Pax-2", seed=1,
-              cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',])))],
-              perplexity=perp, pca=pca, eta=eta, plot_folder = tsne_path, main = 'Pax-2')
-
-
-
-# #####################################################################################
-# # run velocity on m_oep cells
-# 
-# # get gene annotations from anlter object
-# antler.gene.names <- m_oep$expressionSet@featureData@data
-# 
-# # get cell names in remaining dataset and associated cluster colours
-# clust.colors = c('#FFA500', '#FF7F50', '#CC99CC', '#E78AC3', '#66C2A5', '#98FB98', '#E5C494', '#B3B3B3', RColorBrewer::brewer.pal(12, "Set3"), RColorBrewer::brewer.pal(9, "Set1"))
-# cell.colors <- clust.colors[m_oep$cellClusters$Mansel$cell_ids]
-# names(cell.colors) <- names(m_oep$cellClusters$Mansel$cell_ids)
-# 
-# # keep only cells in m_oep
-# velocyto_dat <- lapply(velocyto_dat,function(x) {
-#   x[,colnames(x) %in% names(cell.colors)]
-# })
-# 
-# # keep only genes in cleaned antler dataset and rename genes based on antler names
-# velocyto_dat <- lapply(velocyto_dat, function(x){
-#   x <- x[rownames(x) %in% fData(m_oep$expressionSet)$ensembl_gene_id,]
-#   rownames(x) <- fData(m_oep$expressionSet)$current_gene_names[match(rownames(x), fData(m_oep$expressionSet)$ensembl_gene_id)]
-#   x
-# })
-# 
-# # exonic read (spliced) expression matrix
-# emat <- velocyto_dat$spliced
-# # intronic read (unspliced) expression matrix
-# nmat <- velocyto_dat$unspliced
-# # spanning read (intron+exon) expression matrix
-# smat <- velocyto_dat$spanning
-# 
-# # calculate cell velocity
-# rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, fit.quantile = 0.05, diagonal.quantiles = TRUE)
-# 
-# # plot cell velocity on embeddings from tsne for all cells
-# pdf(paste0(tsne_path, 'OEP.subset.velocity_inc.spanning.pdf'))
-# show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(cell.colors, alpha=0.4),
-#                                cex=1, arrow.scale=6, arrow.lwd=1)
-# dev.off()
-# 
-# pdf(paste0(umap_path, 'OEP.subset.velocity_inc.spanning.pdf'))
-# show.velocity.on.embedding.cor(umap.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(cell.colors, alpha=0.4),
-#                                cex=1, arrow.scale=4, arrow.lwd=1)
-# dev.off()
-# ########################################################################################################################
-# 
-# # get transcription factor subset from gene modules
-# 
-# TF_sub <- modules_to_TFs(Antler_obj = m_oep, gene_modules = m_oep$topCorr_DR$genemodules.selected)
-# 
-# ##################################################################
-# # Plot dotplot for all cells -> to identify identity of unknown clusters
-# 
-# # re-cluster OEP subset into 3 clusters
-# m_oep$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="topCorr_DR.genemodules.selected", data_status='Normalized', numclusters=3)
-# 
-# # set cluster colours
-# clust.colors = c('#FFA500', '#FF7F50', '#CC99CC', '#E78AC3', '#66C2A5', '#98FB98', '#E5C494', '#B3B3B3', RColorBrewer::brewer.pal(12, "Set3"), RColorBrewer::brewer.pal(9, "Set1"))
-# 
-# # plot gene modules for OEPs with new clustering
-# m_oep$plotGeneModules(
-#   basename='OEP_3_clust',
-#   displayed.gms = 'topCorr_DR.genemodules.selected',
-#   displayed.geneset=m_oep$favorite_genes,
-#   use.dendrogram='Mansel',
-#   display.clusters='Mansel',
-#   file_settings=list(list(type='pdf', width=10, height=5)),
-#   data_status='Normalized',
-#   gene_transformations=c('log', 'logscaled'),
-#   #  show_cells_colors=FALSE,
-#   extra_colors=cbind(
-#     pData(m_oep$expressionSet)$stage_colors,
-#     "Pax-2_log"=m_oep$getReadcounts(data_status='Normalized')['Pax-2',] %>%
-#       {log10(1+.)} %>%
-#       {as.integer(1+100*./max(.))} %>%
-#       colorRampPalette(c("white", "black"))(n=100)[.],
-#     "GFP_log"= as.numeric(gfp_counts[m_oep$getCellsNames()]) %>%
-#       {log10(1+.)} %>%
-#       {as.integer(1+100*./max(.))} %>%
-#       colorRampPalette(c("white", "darkgreen"))(n=100)[.]
-#   ),
-#   pretty.params=list("size_factor"=5, "ngenes_per_lines" = 6, "side.height.fraction"=1),
-#   # cluster_colors = clust.colors,
-#   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
-# )
-# 
-# # reload entire Antler dataset for normalisation in Seurat
-# Seur_obj <- readRDS(paste0(rds_path, 'm_raw.rds'))
-# 
-# # initialise seurat object and carry out CPM and log normalisation
-# library(Seurat)
-# Seur_obj <- CreateSeuratObject(Seur_obj$getReadcounts(data_status='Raw'), project = "Ailin", assay = "raw")
-# Seur_obj <- NormalizeData(Seur_obj, normalization.method = 'LogNormalize', scale.factor = 1e6)
-# 
-# # filter seurat object by m_oep (ANTLER object) cells and genes
-# Seur_obj <- Seur_obj[rownames(m_oep$getReadcounts(data_status = 'Raw')),colnames(m_oep$getReadcounts(data_status = 'Raw'))]
-# 
-# # add cluster information (from ANTLER m_oep) to seurat metadata
-# Seur_obj@meta.data$Antler_clusters <- m_oep$cellClusters$Mansel$cell_ids[match(names(m_oep$cellClusters$Mansel$cell_ids), rownames(Seur_obj@meta.data))]
-# 
-# Seur_obj@meta.data$cluster_ident <- apply(Seur_obj@meta.data, 1, function(x)
-#   if(x["Antler_clusters"] == 1){"Epibranchial"} else if(x["Antler_clusters"] == 2){"OEP"}
-#   else if(x["Antler_clusters"] == 3){"Otic"} else {NA})
-# 
-# # select genes and plot dotplot
-# gene_list <- c('TFAP2E', 'FOXI3', 'OTX2', 'Pax-2', "SOX8", 'LMX1A', 'SOHO1', 'VGLL2')
-# 
-# pdf(paste0(plot_path, 'OEP_dotplot.pdf'), height = 8, width = 10)
-# DotPlot(Seur_obj, features = gene_list, group.by = "cluster_ident") +
-#   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-# graphics.off()
-
-##################################################################
-
-
+gene_pairs <- list(c("Pax-2", "LMX1A"), c("Pax-2", "SOX8"), c("FOXI3", "LMX1A"))
+lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected,
+                                                       gene1 = x[1], gene2 = x[2], plot_folder = tsne_path, seed=seed, perplexity=perp, pca=FALSE, eta=eta)})
 
 
 ##################################################################
 #' ## Monocle 2
-
-library(monocle)
 
 monocle.input_dims = unlist(m_oep$topCorr_DR$genemodules.selected)
 
@@ -617,16 +372,10 @@ HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(H
 curr.plot.folder = paste0(plot_path, "monocle_tsne/")
 dir.create(curr.plot.folder)
 
-set.seed(1)
 pdf(paste0(curr.plot.folder, 'Monocle_DDRTree_samples.pdf'))
 z_order = sample(seq(m_oep$getNumberOfCells()))
 plot(t(reducedDimS(HSMM))[z_order,], col=pData(m_oep$expressionSet)$stage_colors[z_order], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1, cex=1.5)
-# plot(t(reducedDimS(HSMM)), col="black", bg=ailin_cols[as.character(pData(m_oep$expressionSet)$timepoint)], pch=21, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1, cex=1.5)
 dev.off()
-
-#' <a href="./suppl_files/Monocle_DDRTree_samples.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_DDRTree_samples.png" width="80%"></p>
-#'  
 
 #' Plot cell clusters over projected coordinates
 #' 
@@ -636,10 +385,6 @@ dev.off()
 pdf(paste0(curr.plot.folder, 'Monocle_DDRTree_Clusters.pdf'))
 plot(t(reducedDimS(HSMM)), col=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
 dev.off()
-
-
-
-
 
 
 ########################################################################
@@ -659,48 +404,91 @@ for(gn in gene_list){
 # plot gradient gene co-expression on monocle embeddings
 
 gene_pairs <- list(c("FOXI3", "Pax-2"), c("FOXI3", "SOX8"), c("FOXI3", "LMX1A"), c("TFAP2E", "SOX8"), c("TFAP2E", "LMX1A"))
-lapply(gene_pairs, function(x) Monocle.coexpression.plots(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2], plot_folder = curr.plot.folder))
+lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2], plot_folder = curr.plot.folder)})
 
 
-# ########################################################################
-# # velocity on monocle plots
-# 
-# # get gene annotations from anlter object
-# antler.gene.names <- m_oep$expressionSet@featureData@data
-# 
-# # get cell names in remaining dataset and associated cluster colours
-# clust.colors = c('#FFD92F', '#FC8D62', '#8DA0CB', '#E78AC3', '#66C2A5', '#A6D854', '#E5C494', '#B3B3B3', RColorBrewer::brewer.pal(12, "Set3"), RColorBrewer::brewer.pal(9, "Set1"))
-# cell.colors <- clust.colors[m_oep$cellClusters$Mansel$cell_ids]
-# names(cell.colors) <- names(m_oep$cellClusters$Mansel$cell_ids)
-# 
-# # keep onluy cells in m_oep
-# velocyto_dat <- lapply(velocyto_dat,function(x) {
-#   x[,colnames(x) %in% names(cell.colors)]
-# })
-# 
-# # keep only genes in cleaned antler dataset and rename genes based on antler names
-# velocyto_dat <- lapply(velocyto_dat, function(x){
-#   x <- x[rownames(x) %in% fData(m_oep$expressionSet)$ensembl_gene_id,]
-#   rownames(x) <- fData(m_oep$expressionSet)$current_gene_names[match(rownames(x), fData(m_oep$expressionSet)$ensembl_gene_id)]
-#   x
-# })
-# 
-# # exonic read (spliced) expression matrix
-# emat <- velocyto_dat$spliced
-# # intronic read (unspliced) expression matrix
-# nmat <- velocyto_dat$unspliced
-# # spanning read (intron+exon) expression matrix
-# smat <- velocyto_dat$spanning
-# 
-# # calculate cell velocity
-# rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, fit.quantile = 0.05, diagonal.quantiles = TRUE)
-# 
-# # plot cell velocity on embeddings from tsne for all cells
-# pdf(paste0(curr.plot.folder, 'Monocle.OEP.subset.velocity_inc.spanning.pdf'), width = 7, height = 7)
-# show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scale='sqrt', cell.colors=ac(cell.colors, alpha=0.4),
-#                                cex=1, arrow.scale=1, arrow.lwd=0.5)
-# dev.off()
-# 
+
+
+
+
+
+
+#####################################################################################
+######                    Velocity - read and clean loom data                  ######
+#####################################################################################
+
+curr.plot.folder = paste0(plot_path, "velocyto/")
+dir.create(curr.plot.folder)
+
+# read in loom data, with ensembl ID as rownames instead of gene name
+velocyto_dat <- custom_read_loom(list.files(paste0(input_path, 'velocyto'), full.names = T))
+
+# change cell names in velocyto dat to match antler cell names
+velocyto_dat <- lapply(velocyto_dat, function(x) {
+  colnames(x) <- gsub(".*:", "", colnames(x))
+  colnames(x) <- gsub("\\..*", "", colnames(x))
+  colnames(x) <- unname(sapply(colnames(x), function(y) ifelse(
+    grepl("ss8-TSS", y),
+    sapply(strsplit(y, split = "_"), function(z){paste0(z[[2]], z[[3]])}),
+    strsplit(y, split = "_")[[1]][[3]])))
+  x
+})
+
+
+#####################################################################################
+# run velocity on m_oep cells
+
+# get gene annotations from anlter object
+antler.gene.names <- m_oep$expressionSet@featureData@data
+
+# get cell names in remaining dataset and associated cluster colours
+clust.colors = c('#FFA500', '#FF7F50', '#CC99CC', '#E78AC3', '#66C2A5', '#98FB98', '#E5C494', '#B3B3B3', RColorBrewer::brewer.pal(12, "Set3"), RColorBrewer::brewer.pal(9, "Set1"))
+cell.colors <- clust.colors[m_oep$cellClusters$Mansel$cell_ids]
+names(cell.colors) <- names(m_oep$cellClusters$Mansel$cell_ids)
+
+# keep only cells in m_oep
+m_oep_velocyto_dat <- lapply(velocyto_dat,function(x) {
+  x[,colnames(x) %in% names(cell.colors)]
+})
+
+# keep only genes in cleaned antler dataset and rename genes based on antler names
+m_oep_velocyto_dat <- lapply(m_oep_velocyto_dat, function(x){
+  x <- x[rownames(x) %in% fData(m_oep$expressionSet)$ensembl_gene_id,]
+  rownames(x) <- fData(m_oep$expressionSet)$current_gene_names[match(rownames(x), fData(m_oep$expressionSet)$ensembl_gene_id)]
+  x
+})
+
+# exonic read (spliced) expression matrix
+emat <- m_oep_velocyto_dat$spliced
+# intronic read (unspliced) expression matrix
+nmat <- m_oep_velocyto_dat$unspliced
+# spanning read (intron+exon) expression matrix
+smat <- m_oep_velocyto_dat$spanning
+
+# calculate cell velocity
+rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, fit.quantile = 0.05, diagonal.quantiles = TRUE)
+
+# get tsne embeddings for m_oep cells
+tsne.embeddings = tsne_embeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, perplexity=perp, pca=FALSE, eta=eta)
+
+# plot cell velocity on embeddings from tsne for m_oep cells
+pdf(paste0(curr.plot.folder, 'OEP.subset.velocity_inc.spanning.pdf'))
+show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(cell.colors, alpha=0.4),
+                               cex=1, arrow.scale=6, arrow.lwd=1)
+dev.off()
+
+########################################################################
+# velocity on monocle plots
+
+# plot cell velocity on monocle embeddings
+pdf(paste0(curr.plot.folder, 'Monocle.OEP.subset.velocity_inc.spanning.pdf'), width = 7, height = 7)
+show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scale='sqrt', cell.colors=ac(cell.colors, alpha=0.4),
+                               cex=1, arrow.scale=1, arrow.lwd=0.5)
+dev.off()
+
+
+
+
 
 ########################################################################
 # plot multiple monocle pseudotime projections in a single plots
@@ -716,13 +504,14 @@ pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "TFAP2E", "SOX8"), sepa
                      basename = "pseudotime.Pax-2_TFAP2E_SOX8")
 
 
+
+
+
+
+
+
+
 ########################################################################
-
-
-#' <a href="./suppl_files/Monocle_DDRTree_Clusters.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_DDRTree_Clusters.png" width="80%"></p>
-#'  
-
 #' Generate a monocle projection plot for each known genes
 
 monocle_plot_folder = paste0(plot_path, 'Monocle_plots/')
@@ -761,7 +550,7 @@ unlink(monocle_plot_folder, recursive=TRUE, force=TRUE)
 
 
 # plot gradient gene expression on monocle embeddings
-mon_path = paste0(plot_path, 'monocle_grad_expression/') 
+mon_path = paste0(plot_path, 'monocle_grad_expression/')
 dir.create(mon_path)
 
 gene_list = c('Pax-2', 'SOX8', 'TFAP2E')
@@ -780,7 +569,7 @@ for(gn in gene_list){
 
 
 #' <a href="./suppl_files/monocle_plots.zip">Download all gene pattern plots</a>
-#'  
+#'
 
 #' Plot annotated trajectories
 
@@ -794,16 +583,85 @@ graphics.off()
 
 #' <a href="./suppl_files/Monocle_DDRTree_trajectories.pdf">Download PDF</a>
 #' <p align="center"><img src="./suppl_files/Monocle_DDRTree_trajectories.png" width="100%"></p>
-#'  
+#'
 
 #' State subplots
 pdf(paste0(plot_path, 'Monocle_DDRTree_State_facet.pdf'), width=7, height=4)
 plot_cell_trajectory(HSMM, color_by = "State") + facet_wrap(~State, nrow = 1)
 graphics.off()
 
+
+
+
+
+# extract pseudotimedata
+for(i in levels(state$State)){
+  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("FOXI3", "SOX8"), rownames(state)[state$State == i]] > 0) == 2))
+}
+
+for(i in levels(state$State)){
+  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("FOXI3", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
+}
+
+for(i in levels(state$State)){
+  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
+}
+
+for(i in levels(state$State)){
+  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "SOX8"), rownames(state)[state$State == i]] > 0) == 2))
+}
+
+for(i in levels(state$State)){
+  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "FOXI3"), rownames(state)[state$State == i]] > 0) == 2))
+}
+
+for(i in levels(state$State)){
+  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("SOX8", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
+}
+
+
+otic = c("SOX8", "LMX1A")
+epi = c("TFAP2E", "FOXI3")
+
+
+combn(c(otic, epi), 2)
+
+
+
+comb <- as.data.frame(expand.grid(c(otic, epi), c(otic, epi),  stringsAsFactors = F))
+
+state = pData(HSMM)[, "State", drop=F]
+
+
+apply(comb, 1, function(x) {
+  lapply(levels(state$State), function(y) {
+    print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(x[1], x[2]), rownames(state)[state$State == y]] > 0) == 2))
+  })
+})
+
+
+for(pair in 1:nrow(comb)){
+  
+  if(sum(as.character(comb[pair,]) %in% otic) == 2){
+    comparison = "o-o"
+  }else if(sum(as.character(comb[pair,]) %in% otic) == 1){
+    comparison = "o-e"
+  }else{
+    comparison = "e-e"
+  }
+  
+  print(comparison)
+  lapply(levels(state$State), function(y) {
+    print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(comb[pair,1], comb[pair,2]), rownames(state)[state$State == y]] > 0) == 2))
+  })
+}
+
+comb[pair,]
+
+
 #' <a href="./suppl_files/Monocle_DDRTree_State_facet.pdf">Download PDF</a>
 #' <p align="center"><img src="./suppl_files/Monocle_DDRTree_State_facet.png" width="100%"></p>
-#'  
+#'
 
 #' Plot some genes along pseudotime
 
@@ -848,7 +706,7 @@ graphics.off()
 
 #' <a href="./suppl_files/Monocle_DDRTree_some_genes_along_PT.pdf">Download PDF</a>
 #' <p align="center"><img src="./suppl_files/Monocle_DDRTree_some_genes_along_PT.png" width="100%"></p>
-#'  
+#'
 
 #' ## BEAM
 
@@ -882,13 +740,13 @@ graphics.off()
 
 #' <a href="./suppl_files/Monocle_Beam.pdf">Download PDF</a>
 #' <p align="center"><img src="./suppl_files/Monocle_Beam.png" width="100%"></p>
-#'  
+#'
 
 # save beam score to file
 write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(plot_path, 'beam_scores.csv'), row.names=F)
 
 #' <a href="./suppl_files/beam_scores.csv">Download BEAM scores</a>
-#'  
+#'
 
 #' BEAM plot of the selected known genes
 
@@ -911,7 +769,7 @@ graphics.off()
 
 #' <a href="./suppl_files/Monocle_Beam_selGenes.pdf">Download PDF</a>
 #' <p align="center"><img src="./suppl_files/Monocle_Beam_selGenes.png" width="100%"></p>
-#'  
+#'
 
 
 #' BEAM plot of the original known genes
@@ -930,7 +788,7 @@ graphics.off()
 
 #' <a href="./suppl_files/Monocle_Beam_knownGenes.pdf">Download PDF</a>
 #' <p align="center"><img src="./suppl_files/Monocle_Beam_knownGenes.png" width="100%"></p>
-#'  
+#'
 
 #' BEAM plot of TFs
 
@@ -949,6 +807,5 @@ beam_hm = plot_genes_branched_heatmap(HSMM[TF_sel,],
                                       branch_labels=c('Otic', "Epibranchial")
 )
 graphics.off()
-
 
 

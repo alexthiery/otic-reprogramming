@@ -1,4 +1,6 @@
-custom.read.loom <- function (file, engine = "hdf5r") 
+# read in loom data, with ensembl ID as rownames instead of gene name
+
+custom_read_loom <- function (file, engine = "hdf5r") 
 {
   if (engine == "h5") {
     cat("reading loom file via h5...\n")

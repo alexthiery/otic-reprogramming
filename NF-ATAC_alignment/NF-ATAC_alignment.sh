@@ -24,6 +24,7 @@ nextflow run nf-core/atacseq \
 --gtf /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf \
 --macs_gsize 1.05e9 \
 --narrow_peak \
+--save_macs_pileup \
 --skip_diff_analysis \
 --outdir results-atac \
 --email alex.thiery@crick.ac.uk \
