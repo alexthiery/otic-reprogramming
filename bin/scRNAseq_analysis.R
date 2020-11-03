@@ -602,6 +602,53 @@ graphics.off()
 
 
 
+###############################################################
+# DOTPLOTS
+
+# gene list for dotplot
+gene_list = c("PANX2", "WFIKKN1", "VGLL2", "TFAP2E")
+
+# get cell cluster information for dotplot
+cluster_df <- cbind.data.frame(
+  cluster = m_oep$cellClusters$Mansel$cell_ids,
+  cellname = names(m_oep$cellClusters$Mansel$cell_ids)
+)
+
+# gather data for dotplot
+dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), check.names=F) %>%
+  tibble::rownames_to_column('cellname') %>% 
+  tidyr::gather(genename, value, -cellname) %>%
+  dplyr::left_join(cluster_df, by="cellname") %>%
+  dplyr::group_by(genename, cluster) %>%
+  # calculate percentage of cells in each cluster expressing gene
+  dplyr::mutate(percent = 100*sum(value > 0)/n()) %>%
+  # scale data
+  dplyr::group_by(genename) %>%
+  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  # calculate mean expression
+  dplyr::group_by(genename, cluster) %>%
+  dplyr::mutate(mean=mean(value)) %>%
+  dplyr::distinct(genename, cluster, .keep_all=TRUE) %>%
+  dplyr::ungroup()
+
+ggplot(dotplot_data) +
+  geom_count(aes(x=genename, y=cluster, size=percent, fill=mean), color='gray80', stroke=0, shape=21) +
+  scale_size_area(max_size=8) +
+  scale_x_discrete(position = "top") + xlab("") + ylab("") +
+  theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
+
+
+
+
+
+
+
+
+
+###############################################################
+# COEXPRESSION ANALYSIS
+
+
 # list of genes used for coexpression analysis
 otic = c("SOX8", "LMX1A", "HOMER2", "ZBTB16", "PRDM12")
 epi = c("TFAP2E", "FOXI3", "PDLIM1", "NELL1")
