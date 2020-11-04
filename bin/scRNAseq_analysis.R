@@ -658,22 +658,21 @@ graphics.off()
 # gene list for dotplot
 gene_list = c("SOHO1", "SOX8", "LMX1A", "Pax-2", "TFAP2E", "OTX2", "FOXI3", "VGLL2")
 
-
-# get cell cluster information for dotplot
-cluster_df <- cbind.data.frame(
-  cluster = m_oep$cellClusters$Mansel$cell_ids,
-  cellname = names(m_oep$cellClusters$Mansel$cell_ids)
-)
-
-# rename clusters based on GM heatmap
-cluster_celltype = c("otic" = 1, "otic" = 2, "OEP" = 3, "epibranchial" = 4, "epibranchial" = 5)
-cluster_df[["celltype"]] <- apply(cluster_df, 1, function(x) names(cluster_celltype)[cluster_celltype %in% x[1]])
+# get cell branch information for dotplot
+cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
+  tibble::rownames_to_column('cellname') %>%
+  dplyr::rename(branch = State) %>%
+  dplyr::mutate(celltype = case_when(
+    branch == "1" ~ "otic",
+    branch == "2" ~ "epibranchial",
+    branch == "3" ~ 'OEP'
+  ))
 
 # gather data for dotplot
 dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), check.names=F) %>%
   tibble::rownames_to_column('cellname') %>% 
   tidyr::gather(genename, value, -cellname) %>%
-  dplyr::left_join(cluster_df, by="cellname") %>%
+  dplyr::left_join(cell_branch_data, by="cellname") %>%
   dplyr::group_by(genename, celltype) %>%
   # calculate percentage of cells in each cluster expressing gene
   dplyr::mutate(percent = 100*sum(value > 0)/n()) %>%
@@ -681,9 +680,9 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
   dplyr::group_by(genename) %>%
   dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
   # calculate mean expression
-  dplyr::group_by(genename, cluster) %>%
+  dplyr::group_by(genename, celltype) %>%
   dplyr::mutate(mean=mean(value)) %>%
-  dplyr::distinct(genename, cluster, .keep_all=TRUE) %>%
+  dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
   dplyr::ungroup() %>%
   # make factor levels to order plot
   dplyr::mutate(genename = factor(genename, levels = gene_list))
@@ -695,6 +694,9 @@ ggplot(dotplot_data) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
   scale_fill_gradient(low = "grey90", high = "blue") +
   theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
+
+
+
 
 
 
