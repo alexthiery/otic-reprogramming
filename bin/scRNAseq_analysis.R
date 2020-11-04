@@ -210,7 +210,7 @@ tsne_path = paste0(plot_path, 'allcells.tsne/')
 dir.create(tsne_path)
 
 # here you can assign cluster colours for the tsne >> change this so that colours are directly selected by cluster number
-clust.colors = getClusterColors(v=2)[1:2]
+clust.colors = getClusterColors(v=2)[1:3]
 tsne_plot(m2, m2$dR$genemodules, "allcells_clusters", seed=seed,
           cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, eta=eta, plot_folder = tsne_path)
 
@@ -238,8 +238,12 @@ for(gn in gene_list){
 # DOTPLOTS
 
 # gene list for dotplot
-gene_list = c("OTX2", "DLX6", "HOMER2", "FOXI3", "TFAP2E", "ZNF385C", "TFAP2A", "Six1", "Pax-2", "DLX5", "DLX3", "SALL4", "PDLIM1", "NELL1",
-              "FGF8", "VGLL2", "EYA1", "LMX1A", "SOX8", "SOHO1", "ZBTB16", "SOX10", "GBX2", "SOX13", "SOX2", "RFX4")
+gene_list = c("OTX2", "DLX6", "HOMER2", "FOXI3", "TFAP2E", "ZNF385C", "Six1", "Pax-2", "DLX3", "NELL1",
+              "FGF8", "VGLL2", "EYA1", "SOHO1", "LMX1A", "SOX8", "ZBTB16", "DLX5", "TFAP2A", "SOX10", "PDLIM1", "SALL4", "WNT1", "MSX2", "BMP5", "Pax-7", "TFAP2B", "LMO4", "ETS1", "MSX1", "DRAXIN", "SOX9",
+              "ZNF423", "Sip1", "HOXA2",
+              "GBX2", "SOX13", "SOX2", "RFX4", "PAX6", 
+              "WNT4", "SOX21",
+              "SIM1", "PITX2", "TWIST1")
 
 # get cell branch information for dotplot
 cell_cluster_data = data.frame(cluster = m2$cellClusters$Mansel$cell_ids) %>%
@@ -296,7 +300,7 @@ ggplot(dotplot_data) +
 
 
 #' Plot final clustering of all cells
-m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=2)
+m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=3)
 
 gfp_counts = read.table(file=paste0(input_path, 'merged_counts/gfpData.csv'), header=TRUE, check.names=FALSE)
 
