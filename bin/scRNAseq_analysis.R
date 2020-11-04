@@ -228,6 +228,56 @@ for(gn in gene_list){
             perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
 }
 
+
+
+###############################################################
+# DOTPLOTS
+
+# gene list for dotplot
+gene_list = c("SOHO1", "SOX8", "LMX1A", "Pax-2", "TFAP2E", "OTX2", "FOXI3", "VGLL2")
+
+
+# get cell cluster information for dotplot
+cluster_df <- cbind.data.frame(
+  cluster = m2$cellClusters$Mansel$cell_ids,
+  cellname = names(m2$cellClusters$Mansel$cell_ids)
+)
+
+# rename clusters based on GM heatmap
+cluster_celltype = c("otic" = 1, "otic" = 2, "OEP" = 3, "epibranchial" = 4, "epibranchial" = 5)
+cluster_df[["celltype"]] <- apply(cluster_df, 1, function(x) names(cluster_celltype)[cluster_celltype %in% x[1]])
+
+# gather data for dotplot
+dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check.names=F) %>%
+  tibble::rownames_to_column('cellname') %>% 
+  tidyr::gather(genename, value, -cellname) %>%
+  dplyr::left_join(cluster_df, by="cellname") %>%
+  dplyr::group_by(genename, celltype) %>%
+  # calculate percentage of cells in each cluster expressing gene
+  dplyr::mutate(percent = 100*sum(value > 0)/n()) %>%
+  # scale data
+  dplyr::group_by(genename) %>%
+  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  # calculate mean expression
+  dplyr::group_by(genename, cluster) %>%
+  dplyr::mutate(mean=mean(value)) %>%
+  dplyr::distinct(genename, cluster, .keep_all=TRUE) %>%
+  dplyr::ungroup() %>%
+  # make factor levels to order plot
+  dplyr::mutate(genename = factor(genename, levels = gene_list))
+
+
+ggplot(dotplot_data) +
+  geom_count(aes(x=genename, y=celltype, size=percent, fill=mean), stroke=0, shape=21) +
+  scale_size_area(max_size=5) +
+  scale_x_discrete(position = "top") + xlab("") + ylab("") +
+  scale_fill_gradient(low = "grey90", high = "blue") +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
+
+
+
+
+
 ########################################################################################################################
 #' ## OEP derivative isolation
 
@@ -606,7 +656,8 @@ graphics.off()
 # DOTPLOTS
 
 # gene list for dotplot
-gene_list = c("PANX2", "WFIKKN1", "VGLL2", "TFAP2E")
+gene_list = c("SOHO1", "SOX8", "LMX1A", "Pax-2", "TFAP2E", "OTX2", "FOXI3", "VGLL2")
+
 
 # get cell cluster information for dotplot
 cluster_df <- cbind.data.frame(
@@ -614,12 +665,16 @@ cluster_df <- cbind.data.frame(
   cellname = names(m_oep$cellClusters$Mansel$cell_ids)
 )
 
+# rename clusters based on GM heatmap
+cluster_celltype = c("otic" = 1, "otic" = 2, "OEP" = 3, "epibranchial" = 4, "epibranchial" = 5)
+cluster_df[["celltype"]] <- apply(cluster_df, 1, function(x) names(cluster_celltype)[cluster_celltype %in% x[1]])
+
 # gather data for dotplot
 dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), check.names=F) %>%
   tibble::rownames_to_column('cellname') %>% 
   tidyr::gather(genename, value, -cellname) %>%
   dplyr::left_join(cluster_df, by="cellname") %>%
-  dplyr::group_by(genename, cluster) %>%
+  dplyr::group_by(genename, celltype) %>%
   # calculate percentage of cells in each cluster expressing gene
   dplyr::mutate(percent = 100*sum(value > 0)/n()) %>%
   # scale data
@@ -629,15 +684,17 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
   dplyr::group_by(genename, cluster) %>%
   dplyr::mutate(mean=mean(value)) %>%
   dplyr::distinct(genename, cluster, .keep_all=TRUE) %>%
-  dplyr::ungroup()
+  dplyr::ungroup() %>%
+  # make factor levels to order plot
+  dplyr::mutate(genename = factor(genename, levels = gene_list))
+
 
 ggplot(dotplot_data) +
-  geom_count(aes(x=genename, y=cluster, size=percent, fill=mean), color='gray80', stroke=0, shape=21) +
-  scale_size_area(max_size=8) +
+  geom_count(aes(x=genename, y=celltype, size=percent, fill=mean), stroke=0, shape=21) +
+  scale_size_area(max_size=5) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
-  theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
-
-
+  scale_fill_gradient(low = "grey90", high = "blue") +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
 
 
 
@@ -699,7 +756,7 @@ plot_dat <- lapply(dat, function(x){
       "proportion co-expression" = mean(value, na.rm = TRUE),
       sd = sd(value, na.rm = TRUE),
     )
-  })
+})
 
 
 # bar plots
@@ -716,7 +773,7 @@ oe_plot <- ggplot(plot_dat$`o-e`, aes(x=comparison,y=`proportion co-expression`,
   theme(legend.position="none") +
   ggtitle("O-E") +
   theme(plot.title = element_text(hjust = 0.5))
-  
+
 ee_plot <- ggplot(plot_dat$`e-e`, aes(x=comparison,y=`proportion co-expression`, fill = c("black", "orange", "blue"))) +
   geom_bar(stat='identity') +
   geom_errorbar(aes(ymin=`proportion co-expression`-sd, ymax=`proportion co-expression`+sd), width=.2,
