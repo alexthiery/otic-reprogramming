@@ -238,12 +238,10 @@ for(gn in gene_list){
 # DOTPLOTS
 
 # gene list for dotplot
-gene_list = c("OTX2", "DLX6", "HOMER2", "FOXI3", "TFAP2E", "ZNF385C", "Six1", "Pax-2", "DLX3", "NELL1",
-              "FGF8", "VGLL2", "EYA1", "SOHO1", "LMX1A", "SOX8", "ZBTB16", "DLX5", "TFAP2A", "SOX10", "PDLIM1", "SALL4", "WNT1", "MSX2", "BMP5", "Pax-7", "TFAP2B", "LMO4", "ETS1", "MSX1", "DRAXIN", "SOX9",
-              "ZNF423", "Sip1", "HOXA2",
-              "GBX2", "SOX13", "SOX2", "RFX4", "PAX6", 
-              "WNT4", "SOX21",
-              "SIM1", "PITX2", "TWIST1")
+gene_list = c("DLX6", "HOMER2", "FOXI3", "TFAP2E", "ZNF385C", "Six1", "Pax-2", "DLX3", "NELL1", "FGF8", "VGLL2", "EYA1", "SOHO1", "LMX1A", "SOX8", "ZBTB16", "DLX5", "TFAP2A", # Placodes
+              "SOX10", "WNT1", "MSX2", "BMP5", "Pax-7", "TFAP2B", "LMO4", "ETS1", "MSX1", "SOX9", # NC
+              "Sip1", "HOXA2", "SOX2", "RFX4", "PAX6", "WNT4", "SOX21", # Neural
+              "SIM1", "PITX2", "TWIST1") # Mesoderm
 
 # get cell branch information for dotplot
 cell_cluster_data = data.frame(cluster = m2$cellClusters$Mansel$cell_ids) %>%
@@ -263,13 +261,13 @@ dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check
   dplyr::left_join(cell_cluster_data, by="cellname") %>%
   dplyr::group_by(genename, celltype) %>%
   # calculate percentage of cells in each cluster expressing gene
-  dplyr::mutate(percent = 100*sum(value > 0)/n()) %>%
+  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
   # scale data
   dplyr::group_by(genename) %>%
   dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
   # calculate mean expression
   dplyr::group_by(genename, celltype) %>%
-  dplyr::mutate(mean=mean(value)) %>%
+  dplyr::mutate('scaled average expression'=mean(value)) %>%
   dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
   dplyr::ungroup() %>%
   # make factor levels to order genes in dotplot
@@ -277,34 +275,14 @@ dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check
   # make factor levels to order cells in dotplott
   dplyr::mutate(celltype = factor(celltype, levels = rev(c("OEP", "late placodal", "neural crest", "neural", "mesodermal"))))
 
-
-
-
-
-
-
-
 png(paste0(plot_path, "all_cells_dotplot.png"), width = 30, height = 12, units = "cm", res = 200)
-ggplot(dotplot_data) +
-  geom_count(aes(x=genename, y=celltype, size=percent, fill=mean), stroke=0, shape=21) +
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+  geom_count() +
   scale_size_area(max_size=5) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
-  scale_fill_gradient(low = "grey90", high = "blue") +
+  scale_color_gradient(low = "grey90", high = "blue") +
   theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
 graphics.off()
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ########################################################################################################################
 #' ## OEP derivative isolation
@@ -562,13 +540,14 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
 
 
 png(paste0(plot_path, "m_oep_dotplot.png"), width = 15, height = 8, units = "cm", res = 200)
-ggplot(dotplot_data) +
-  geom_count(aes(x=genename, y=celltype, size=percent, fill=mean), stroke=0, shape=21) +
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+  geom_count() +
   scale_size_area(max_size=5) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
-  scale_fill_gradient(low = "grey90", high = "blue") +
+  scale_color_gradient(low = "grey90", high = "blue") +
   theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
 graphics.off()
+
 
 
 
@@ -848,12 +827,12 @@ graphics.off()
 # save beam score to file
 write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(plot_path, 'beam_scores.csv'), row.names=F)
 
-#' BEAM plot of the selected known genes
 
-beam_sel = c("FOXI3","HOMER2","Pax-2","LMX1A","ZBTB16","SOHO1","ZNF385C","SOX8","SOX10","PDLIM1","VGLL2","TFAP2E","GBX2","OTX2","DLX5","BLIMP1","PRDM12","PDLIM4","EYA1","EYA2","ETV4") # SIX1
+#' BEAM plot of TFs
 
-pdf(paste0(plot_path, 'Monocle_Beam_selGenes.pdf'), width=7, height=5)
-beam_hm = plot_genes_branched_heatmap(HSMM[beam_sel,],
+TF_sel <- genes_to_TFs(m_oep, genes_sel)
+pdf(paste0(plot_path, 'Monocle_Beam_TFs.pdf'), width=7, height=30)
+beam_hm = plot_genes_branched_heatmap(HSMM[TF_sel,],
                                       branch_point = branch_point_id,
                                       # num_clusters = 4,
                                       cluster_rows=FALSE,
@@ -862,9 +841,10 @@ beam_hm = plot_genes_branched_heatmap(HSMM[beam_sel,],
                                       show_rownames = T,
                                       return_heatmap=T,
                                       branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
-                                      branch_labels=c('Otic', "Epibranchial")
+                                      branch_labels=c('Epibranchial', 'Otic')
 )
 graphics.off()
+
 
 
 #' BEAM plot of the original known genes
@@ -877,20 +857,15 @@ beam_hm = plot_genes_branched_heatmap(HSMM[m_oep$favorite_genes,],
                                       show_rownames = T,
                                       return_heatmap=T,
                                       branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
-                                      branch_labels=c('Otic', "Epibranchial"))
+                                      branch_labels=c('Epibranchial', 'Otic'))
 graphics.off()
 
 
-#' <a href="./suppl_files/Monocle_Beam_knownGenes.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_Beam_knownGenes.png" width="100%"></p>
-#'
+#' BEAM plot of the selected genes
+beam_sel = c("FOXI3","HOMER2","Pax-2","LMX1A","ZBTB16","SOHO1","ZNF385C","SOX8","SOX10","PDLIM1","VGLL2","TFAP2E","GBX2","OTX2","DLX5","BLIMP1","PRDM12","PDLIM4","EYA1","EYA2","ETV4", "NELL1") # SIX1
 
-#' BEAM plot of TFs
-
-TF_sel <- genes_to_TFs(m_oep, genes_sel)
-
-pdf(paste0(plot_path, 'Monocle_Beam_TFs.pdf'), width=7, height=30)
-beam_hm = plot_genes_branched_heatmap(HSMM[TF_sel,],
+pdf(paste0(plot_path, 'Monocle_Beam_selGenes.pdf'), width=7, height=5)
+beam_hm = plot_genes_branched_heatmap(HSMM[beam_sel,],
                                       branch_point = branch_point_id,
                                       # num_clusters = 4,
                                       cluster_rows=FALSE,
@@ -899,13 +874,9 @@ beam_hm = plot_genes_branched_heatmap(HSMM[TF_sel,],
                                       show_rownames = T,
                                       return_heatmap=T,
                                       branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
-                                      branch_labels=c('Otic', "Epibranchial")
+                                      branch_labels=c('Epibranchial', 'Otic')
 )
 graphics.off()
-
-
-
-
 
 
 
