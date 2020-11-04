@@ -152,8 +152,10 @@ bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "PAX3", "SALL1", "ETS1", "TWIST1
 
 m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$genemodules)
 
+
+# cluster into 6 clusters 
 #' Plot final clustering of all cells
-m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=2)
+m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=3)
 
 gfp_counts = read.table(file=paste0(input_path, 'merged_counts/gfpData.csv'), header=TRUE, check.names=FALSE)
 
@@ -230,28 +232,29 @@ for(gn in gene_list){
 
 
 
+
+
 ###############################################################
 # DOTPLOTS
 
 # gene list for dotplot
-gene_list = c("SOHO1", "SOX8", "LMX1A", "Pax-2", "TFAP2E", "OTX2", "FOXI3", "VGLL2")
+gene_list = c("OTX2", "DLX6", "HOMER2", "FOXI3", "TFAP2E", "ZNF385C", "TFAP2A", "Six1", "Pax-2", "DLX5", "DLX3", "SALL4", "PDLIM1", "NELL1",
+              "FGF8", "VGLL2", "EYA1", "LMX1A", "SOX8", "SOHO1", "ZBTB16", "SOX10", "GBX2", "SOX13", "SOX2", "RFX4")
 
-
-# get cell cluster information for dotplot
-cluster_df <- cbind.data.frame(
-  cluster = m2$cellClusters$Mansel$cell_ids,
-  cellname = names(m2$cellClusters$Mansel$cell_ids)
-)
-
-# rename clusters based on GM heatmap
-cluster_celltype = c("otic" = 1, "otic" = 2, "OEP" = 3, "epibranchial" = 4, "epibranchial" = 5)
-cluster_df[["celltype"]] <- apply(cluster_df, 1, function(x) names(cluster_celltype)[cluster_celltype %in% x[1]])
+# get cell branch information for dotplot
+cell_cluster_data = data.frame(cluster = m2$cellClusters$Mansel$cell_ids) %>%
+  tibble::rownames_to_column('cellname') %>%
+  dplyr::mutate(celltype = case_when(
+    cluster == "1" ~ "otic",
+    cluster == "2" ~ "neural",
+    cluster == "3" ~ 'neural crest'
+  ))
 
 # gather data for dotplot
 dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check.names=F) %>%
   tibble::rownames_to_column('cellname') %>% 
   tidyr::gather(genename, value, -cellname) %>%
-  dplyr::left_join(cluster_df, by="cellname") %>%
+  dplyr::left_join(cell_cluster_data, by="cellname") %>%
   dplyr::group_by(genename, celltype) %>%
   # calculate percentage of cells in each cluster expressing gene
   dplyr::mutate(percent = 100*sum(value > 0)/n()) %>%
@@ -259,12 +262,13 @@ dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check
   dplyr::group_by(genename) %>%
   dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
   # calculate mean expression
-  dplyr::group_by(genename, cluster) %>%
+  dplyr::group_by(genename, celltype) %>%
   dplyr::mutate(mean=mean(value)) %>%
-  dplyr::distinct(genename, cluster, .keep_all=TRUE) %>%
+  dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
   dplyr::ungroup() %>%
   # make factor levels to order plot
   dplyr::mutate(genename = factor(genename, levels = gene_list))
+
 
 
 ggplot(dotplot_data) +
@@ -273,6 +277,100 @@ ggplot(dotplot_data) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
   scale_fill_gradient(low = "grey90", high = "blue") +
   theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' Plot final clustering of all cells
+m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=2)
+
+gfp_counts = read.table(file=paste0(input_path, 'merged_counts/gfpData.csv'), header=TRUE, check.names=FALSE)
+
+m2$plotGeneModules(
+  basename='AllCellsManualGMselection',
+  displayed.gms = 'dR.genemodules',
+  displayed.geneset=NA,
+  use.dendrogram='Mansel',
+  display.clusters='Mansel',
+  file_settings=list(list(type='pdf', width=10, height=10)),
+  data_status='Normalized',
+  gene_transformations=c('log', 'logscaled'),
+  extra_colors=cbind(
+    pData(m2$expressionSet)$stage_colors,
+    "Pax-2_log"=m2$getReadcounts(data_status='Normalized')['Pax-2',] %>%
+      {log10(1+.)} %>%
+      {as.integer(1+100*./max(.))} %>%
+      colorRampPalette(c("white", "black"))(n=100)[.],
+    "GFP_log"= as.numeric(gfp_counts[m2$getCellsNames()]) %>%
+      {log10(1+.)} %>%
+      {as.integer(1+100*./max(.))} %>%
+      colorRampPalette(c("white", "darkgreen"))(n=100)[.]
+  ),
+  pretty.params=list("size_factor"=1, "ngenes_per_lines" = 6, "side.height.fraction"=1),
+  extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
+)
+
+
+#' GFP distribution per timepoint X cluster id
+
+gfp_time.df = cbind(
+  "GFP"=unlist(gfp_counts[m2$getCellsNames()]),
+  "clust"=factor(m2$cellClusters[['Mansel']]$cell_ids, levels=c(1,2)),
+  pData(m2$expressionSet)[, c('timepoint','replicate_id')]
+)
+gfp_time.df$timepoint = factor(gfp_time.df$timepoint, levels=sort(unique(gfp_time.df$timepoint)))
+
+p = gfp_time.df %>%
+  ggplot() +
+  geom_violin(aes(x=timepoint, y=log10(1+GFP), fill=clust, colour=clust)) + 
+  scale_fill_manual(values=getClusterColors(v=2)[1:2], aesthetics = "fill") + 
+  scale_colour_manual(values=getClusterColors(v=2)[1:2], aesthetics = "colour")
+
+pdf(paste0(plot_path, 'GFP_stat.pdf'), width=4, height=4)
+print(p)
+graphics.off()
+
+##################################################################################################################################
+# Plot tsne prior to removing Pax2- cells
+
+tsne_path = paste0(plot_path, 'allcells.tsne/') 
+dir.create(tsne_path)
+
+# here you can assign cluster colours for the tsne >> change this so that colours are directly selected by cluster number
+clust.colors = getClusterColors(v=2)[1:2]
+tsne_plot(m2, m2$dR$genemodules, "allcells_clusters", seed=seed,
+          cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, eta=eta, plot_folder = tsne_path)
+
+tsne_plot(m2, m2$dR$genemodules, "allcells_stage", seed=seed,
+          cols=pData(m2$expressionSet)$stage_colors, perplexity=perp, eta=eta, plot_folder = tsne_path)
+
+
+########################################################################################################################
+# Plot expression of Pax-2 Pax7 and Sox21 on tsne before filtering
+
+# plot tsne for gradient expression of select genes in gene_list
+gene_list = c('SOX2', 'SOX10', 'SOX8', 'Pax-7', 'Pax-2', 'LMX1A', 'SOX21', 'Six1')
+for(gn in gene_list){
+  path = paste0(tsne_path, gn)
+  tsne_plot(m2, m2$dR$genemodules,basename = paste0("allcells.", gn), seed=seed,
+            cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
+            perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
+}
+
 
 
 
@@ -694,9 +792,6 @@ ggplot(dotplot_data) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
   scale_fill_gradient(low = "grey90", high = "blue") +
   theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
-
-
-
 
 
 
