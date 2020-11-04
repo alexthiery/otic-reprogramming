@@ -495,7 +495,39 @@ graphics.off()
 
 
 
+########################################################################
+#' Generate a monocle projection plot for each known genes
 
+monocle_plot_folder = paste0(plot_path, 'Monocle_plots/')
+dir.create(monocle_plot_folder, showWarnings = FALSE, recursive = TRUE)
+
+genes_sel = sort(intersect(
+  getDispersedGenes(m_oep$getReadcounts('Normalized'), -1),
+  getHighGenes(m_oep$getReadcounts('Normalized'), mean_threshold=5)
+))
+
+gene_level = m_oep$getReadcounts("Normalized")[genes_sel %>% .[. %in% m_oep$getGeneNames()],]
+gene_level.2 = t(apply(log(.1+gene_level), 1, function(x){
+  pc_95 = quantile(x, .95)
+  if(pc_95==0){
+    pc_95=1
+  }
+  x <- x/pc_95
+  x[x>1] <- 1
+  as.integer(cut(x, breaks=10))
+}))
+
+for(n in rownames(gene_level.2)){
+  print(n)
+  pdf(paste0(monocle_plot_folder, 'Monocle_DDRTree_projection_', n, '.pdf'))
+  plot(t(reducedDimS(HSMM)), pch=16, main=n, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
+       col=colorRampPalette(c("#0464DF", "#FFE800"))(n = 10)[gene_level.2[n,]]
+  )
+  dev.off()
+}
+
+system(paste0("zip -rj ", plot_path, "/monocle_plots.zip ", monocle_plot_folder))
+unlink(monocle_plot_folder, recursive=TRUE, force=TRUE)
 
 
 
@@ -523,19 +555,17 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
   dplyr::left_join(cell_branch_data, by="cellname") %>%
   dplyr::group_by(genename, celltype) %>%
   # calculate percentage of cells in each cluster expressing gene
-  dplyr::mutate(percent = 100*sum(value > 0)/n()) %>%
+  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
   # scale data
   dplyr::group_by(genename) %>%
   dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
   # calculate mean expression
   dplyr::group_by(genename, celltype) %>%
-  dplyr::mutate(mean=mean(value)) %>%
+  dplyr::mutate('scaled average expression' = mean(value)) %>%
   dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
   dplyr::ungroup() %>%
   # make factor levels to order plot
   dplyr::mutate(genename = factor(genename, levels = gene_list))
-
-
 
 
 
@@ -553,24 +583,43 @@ graphics.off()
 
 
 
+
 ###############################################################
 # COEXPRESSION ANALYSIS
 
 
+# plot gradient gene expression on monocle embeddings
+curr.plot.folder = paste0(plot_path, 'coexpression_plots/')
+dir.create(curr.plot.folder)
+
 # list of genes used for coexpression analysis
-otic = c("SOX8", "LMX1A", "HOMER2", "ZBTB16", "PRDM12")
-epi = c("TFAP2E", "FOXI3", "PDLIM1", "NELL1")
+otic = c("SOX10", "SOX8", "HOMER2", 'DACT2', 'LMX1A')
+epi = c("TFAP2E", "FOXI3", "PDLIM1", "NELL1", "UPK1B", 'VGLL2')
+
+
+# plot gradient expression for genes used for coexpression analysis
+for(gn in c(otic, epi)){
+  print(gn)
+  pdf(paste0(curr.plot.folder, gn, '.pdf'))
+  plot(t(reducedDimS(HSMM)), pch=16, main=gn, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
+       col=colorRampPalette(c("grey", "red"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
+  )
+  dev.off()
+}
 
 # generate gene pairs for coexpression
 comb <- t(combn(c(otic, epi), 2))
 
 # make dataframe with proportion of cells in each branch co-expressing pairs of genes
 state = pData(HSMM)[, "State", drop=F]
+
+cell_branch_data
+
 temp = data.frame()
 for(pair in 1:nrow(comb)){
   if(sum(as.character(comb[pair,]) %in% otic) == 2){comparison = "o-o"}else if(sum(as.character(comb[pair,]) %in% otic) == 1){comparison = "o-e"}else{comparison = "e-e"}
-  newdat = ldply(levels(state$State), function(y) {
-    c(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(comb[pair,1], comb[pair,2]), rownames(state)[state$State == y]] > 0) == 2)/sum(pData(HSMM)[, "State", drop=F] == y),
+  newdat = ldply(unique(cell_branch_data$celltype), function(y) {
+    c(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(comb[pair,1], comb[pair,2]), cell_branch_data[cell_branch_data$celltype == y, 'cellname']] > 0) == 2)/sum(cell_branch_data$celltype == y),
       comparison, y)
   })
   newdat[,1] <- as.numeric(newdat[,1])
@@ -578,7 +627,7 @@ for(pair in 1:nrow(comb)){
 }
 
 # rename dataframe columns
-colnames(temp) = c("value", "branch", "comparison")
+colnames(temp) = c("value", "comparison", "branch")
 
 # calculate mean value per group and SD for plotting bar plot
 plot_dat <- temp %>%
@@ -589,12 +638,12 @@ plot_dat <- temp %>%
   )
 
 
-# split data by branch
-dat = temp %>% group_split(branch)
-names(dat) <- lapply(dat, function(x) as.character(unique(x[["branch"]])))
+# split data by comparison
+dat = temp %>% group_split(comparison)
+names(dat) <- lapply(dat, function(x) as.character(unique(x[["comparison"]])))
 
-# run anova on for each comparison
-multi_anova <- lapply(dat, function(x) {aov(value ~ comparison, data = x)})
+# run anova across branches
+multi_anova <- lapply(dat, function(x) {aov(value ~ branch, data = x)})
 
 # run post hoc tukey test for significance
 lapply(multi_anova, function(x) {TukeyHSD(x)})
@@ -602,65 +651,65 @@ lapply(multi_anova, function(x) {TukeyHSD(x)})
 # calculate mean and SD for plotting bar plot
 plot_dat <- lapply(dat, function(x){
   x %>%
-    dplyr::group_by(comparison) %>%
+    dplyr::group_by(branch) %>%
     dplyr::summarise(
-      "proportion co-expression" = mean(value, na.rm = TRUE),
+      "proportion cells co-expressing" = mean(value, na.rm = TRUE),
       sd = sd(value, na.rm = TRUE),
     )
 })
 
 
 # bar plots
-oe_plot <- ggplot(plot_dat$`o-e`, aes(x=comparison,y=`proportion co-expression`, fill = c("black", "orange", "blue"))) +
+oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`proportion cells co-expressing`, fill = c("black", "orange", "blue"))) +
   geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=`proportion co-expression`-sd, ymax=`proportion co-expression`+sd), width=.2,
+  geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
-  geom_signif(comparisons=list(c("3", "1")), annotations = "***",
+  geom_signif(comparisons=list(c("OEP", "otic")), annotations = "***",
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+  geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "***",
               y_position = 0.75, tip_length = 0.02, vjust=0.4) +
-  geom_signif(comparisons=list(c("3", "2")), annotations = "***",
-              y_position = 0.7, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
   theme(legend.position="none") +
   ggtitle("O-E") +
   theme(plot.title = element_text(hjust = 0.5))
 
-ee_plot <- ggplot(plot_dat$`e-e`, aes(x=comparison,y=`proportion co-expression`, fill = c("black", "orange", "blue"))) +
+ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`proportion cells co-expressing`, fill = c("black", "orange", "blue"))) +
   geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=`proportion co-expression`-sd, ymax=`proportion co-expression`+sd), width=.2,
+  geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
-  geom_signif(comparisons=list(c("3", "2")), annotations = "***",
-              y_position = 0.6, tip_length = 0.02, vjust=0.4) +
-  ylim(c(0, 0.85)) +
-  theme_classic() +
-  theme(axis.title.y =element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.line.y = element_blank()) +
-  theme(legend.position="none") +
-  ggtitle("E-E") +
-  theme(plot.title = element_text(hjust = 0.5))
-
-
-oo_plot <- ggplot(plot_dat$`o-o`, aes(x=comparison,y=`proportion co-expression`, fill = c("black", "orange", "blue"))) +
-  geom_bar(stat='identity') +
-  geom_errorbar(aes(ymin=`proportion co-expression`-sd, ymax=`proportion co-expression`+sd), width=.2,
-                position=position_dodge(.9)) +
-  geom_signif(comparisons=list(c("3", "1")), annotations = "***",
+  geom_signif(comparisons=list(c("OEP", "otic")), annotations = "***",
               y_position = 0.8, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
   theme(axis.title.y =element_blank(),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
-        axis.line.y = element_blank()) +
-  theme(legend.position="none") +
+        axis.line.y = element_blank(),
+        legend.position="none") +
+  ggtitle("E-E") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+oo_plot <- ggplot(plot_dat$`o-o`, aes(x=branch,y=`proportion cells co-expressing`, fill = c("black", "orange", "blue"))) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "***",
+              y_position = 0.65, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank(),
+        legend.position="none") +
   ggtitle("O-O") +
   theme(plot.title = element_text(hjust = 0.5))
 
 
-png("~/Desktop/temp.png", width = 20, height = 12, units = "cm", res = 200)
-plot_grid(oe_plot, NULL, ee_plot, oo_plot, align = "hv", nrow = 1, rel_widths = c(1, 0, 1,1))
+png(paste0(curr.plot.folder, "coexpression_test.png"), width = 20, height = 12, units = "cm", res = 200)
+plot_grid(oe_plot, ee_plot, oo_plot, align = "hv", nrow = 1, rel_widths = c(1,1,1))
 graphics.off()
 
 
@@ -704,52 +753,6 @@ for(gn in gene_list){
 
 
 
-########################################################################
-#' Generate a monocle projection plot for each known genes
-
-monocle_plot_folder = paste0(plot_path, 'Monocle_plots/')
-dir.create(monocle_plot_folder, showWarnings = FALSE, recursive = TRUE)
-
-genes_sel = sort(intersect(
-  getDispersedGenes(m_oep$getReadcounts('Normalized'), -1),
-  getHighGenes(m_oep$getReadcounts('Normalized'), mean_threshold=5)
-))
-
-gene_level = m_oep$getReadcounts("Normalized")[genes_sel %>% .[. %in% m_oep$getGeneNames()],]
-gene_level.2 = t(apply(log(.1+gene_level), 1, function(x){
-  pc_95 = quantile(x, .95)
-  if(pc_95==0){
-    pc_95=1
-  }
-  x <- x/pc_95
-  x[x>1] <- 1
-  as.integer(cut(x, breaks=10))
-}))
-
-for(n in rownames(gene_level.2)){
-  print(n)
-  pdf(paste0(monocle_plot_folder, 'Monocle_DDRTree_projection_', n, '.pdf'))
-  plot(t(reducedDimS(HSMM)), pch=16, main=n, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
-       col=colorRampPalette(c("#0464DF", "#FFE800"))(n = 10)[gene_level.2[n,]]
-  )
-  dev.off()
-}
-
-system(paste0("zip -rj ", plot_path, "/monocle_plots.zip ", monocle_plot_folder))
-unlink(monocle_plot_folder, recursive=TRUE, force=TRUE)
-
-
-
-
-
-
-
-
-
-
-#' <a href="./suppl_files/Monocle_DDRTree_State_facet.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_DDRTree_State_facet.png" width="100%"></p>
-#'
 
 #' Plot some genes along pseudotime
 
