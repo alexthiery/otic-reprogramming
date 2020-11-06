@@ -13,6 +13,10 @@ library(Antler)
 library(velocyto.R)
 library(stringr)
 library(monocle)
+library(plyr)
+library(dplyr)
+library(ggsignif)
+library(cowplot)
 
 # load custom functions
 sapply(list.files(custom_functions, full.names = T), source)
@@ -148,8 +152,10 @@ bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "PAX3", "SALL1", "ETS1", "TWIST1
 
 m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$genemodules)
 
+
+# cluster into 6 clusters 
 #' Plot final clustering of all cells
-m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=2)
+m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=5)
 
 gfp_counts = read.table(file=paste0(input_path, 'merged_counts/gfpData.csv'), header=TRUE, check.names=FALSE)
 
@@ -204,7 +210,7 @@ tsne_path = paste0(plot_path, 'allcells.tsne/')
 dir.create(tsne_path)
 
 # here you can assign cluster colours for the tsne >> change this so that colours are directly selected by cluster number
-clust.colors = getClusterColors(v=2)[1:2]
+clust.colors = getClusterColors(v=2)[1:5]
 tsne_plot(m2, m2$dR$genemodules, "allcells_clusters", seed=seed,
           cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, eta=eta, plot_folder = tsne_path)
 
@@ -224,13 +230,67 @@ for(gn in gene_list){
             perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
 }
 
+
+
+
+
+###############################################################
+# DOTPLOTS
+
+# gene list for dotplot
+gene_list = c("DLX6", "HOMER2", "FOXI3", "TFAP2E", "ZNF385C", "Six1", "Pax-2", "DLX3", "NELL1", "FGF8", "VGLL2", "EYA1", "SOHO1", "LMX1A", "SOX8", "ZBTB16", "DLX5", "TFAP2A", # Placodes
+              "SOX10", "WNT1", "MSX2", "BMP5", "Pax-7", "TFAP2B", "LMO4", "ETS1", "MSX1", "SOX9", # NC
+              "Sip1", "HOXA2", "SOX2", "RFX4", "PAX6", "WNT4", "SOX21", # Neural
+              "SIM1", "PITX2", "TWIST1") # Mesoderm
+
+# get cell branch information for dotplot
+cell_cluster_data = data.frame(cluster = m2$cellClusters$Mansel$cell_ids) %>%
+  tibble::rownames_to_column('cellname') %>%
+  dplyr::mutate(celltype = case_when(
+    cluster == "1" ~ "OEP",
+    cluster == "2" ~ "late placodal",
+    cluster == "3" ~ 'neural',
+    cluster == "4" ~ 'mesodermal',
+    cluster == "5" ~ 'neural crest'
+  ))
+
+# gather data for dotplot
+dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check.names=F) %>%
+  tibble::rownames_to_column('cellname') %>% 
+  tidyr::gather(genename, value, -cellname) %>%
+  dplyr::left_join(cell_cluster_data, by="cellname") %>%
+  dplyr::group_by(genename, celltype) %>%
+  # calculate percentage of cells in each cluster expressing gene
+  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
+  # scale data
+  dplyr::group_by(genename) %>%
+  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  # calculate mean expression
+  dplyr::group_by(genename, celltype) %>%
+  dplyr::mutate('scaled average expression'=mean(value)) %>%
+  dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
+  dplyr::ungroup() %>%
+  # make factor levels to order genes in dotplot
+  dplyr::mutate(genename = factor(genename, levels = gene_list)) %>%
+  # make factor levels to order cells in dotplott
+  dplyr::mutate(celltype = factor(celltype, levels = rev(c("OEP", "late placodal", "neural crest", "neural", "mesodermal"))))
+
+png(paste0(plot_path, "all_cells_dotplot.png"), width = 30, height = 12, units = "cm", res = 200)
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+  geom_count() +
+  scale_size_area(max_size=5) +
+  scale_x_discrete(position = "top") + xlab("") + ylab("") +
+  scale_color_gradient(low = "grey90", high = "blue") +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
+graphics.off()
+
 ########################################################################################################################
 #' ## OEP derivative isolation
 
 #' Blue cell cluster is composed of non-oep derived populations (it is also mostly comprising Pax-2 negative)
 #' We exclude these cells from the analysis (cluster ids, red: 1, blue: 2, green: 3, purple: 4...)
 m_oep = m2$copy()
-m_oep$excludeCellFromClusterIds(cluster_ids=c(2), used_clusters='Mansel', data_status='Normalized')
+m_oep$excludeCellFromClusterIds(cluster_ids=c(3:5), used_clusters='Mansel', data_status='Normalized')
 
 #' Some genes may not be expressed any more in the remaining cells
 m_oep$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
@@ -410,6 +470,421 @@ lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_D
 
 
 
+#' <a href="./suppl_files/monocle_plots.zip">Download all gene pattern plots</a>
+#'
+
+#' Plot annotated trajectories
+
+p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples")
+p2 = plot_cell_trajectory(HSMM, color_by = "timepoint")
+p3 = plot_cell_trajectory(HSMM, color_by = "Pseudotime")
+
+pdf(paste0(plot_path, "Monocle_DDRTree_trajectories.pdf"), width=15, height=8)
+gridExtra::grid.arrange(grobs=list(p1, p2, p3), layout_matrix=matrix(seq(3), ncol=3, byrow=T))
+graphics.off()
+
+#' <a href="./suppl_files/Monocle_DDRTree_trajectories.pdf">Download PDF</a>
+#' <p align="center"><img src="./suppl_files/Monocle_DDRTree_trajectories.png" width="100%"></p>
+#'
+
+#' State subplots
+pdf(paste0(plot_path, 'Monocle_DDRTree_State_facet.pdf'), width=7, height=4)
+plot_cell_trajectory(HSMM, color_by = "State") + facet_wrap(~State, nrow = 1)
+graphics.off()
+
+
+
+
+########################################################################
+#' Generate a monocle projection plot for each known genes
+
+monocle_plot_folder = paste0(plot_path, 'Monocle_plots/')
+dir.create(monocle_plot_folder, showWarnings = FALSE, recursive = TRUE)
+
+genes_sel = sort(intersect(
+  getDispersedGenes(m_oep$getReadcounts('Normalized'), -1),
+  getHighGenes(m_oep$getReadcounts('Normalized'), mean_threshold=5)
+))
+
+gene_level = m_oep$getReadcounts("Normalized")[genes_sel %>% .[. %in% m_oep$getGeneNames()],]
+gene_level.2 = t(apply(log(.1+gene_level), 1, function(x){
+  pc_95 = quantile(x, .95)
+  if(pc_95==0){
+    pc_95=1
+  }
+  x <- x/pc_95
+  x[x>1] <- 1
+  as.integer(cut(x, breaks=10))
+}))
+
+for(n in rownames(gene_level.2)){
+  print(n)
+  pdf(paste0(monocle_plot_folder, 'Monocle_DDRTree_projection_', n, '.pdf'))
+  plot(t(reducedDimS(HSMM)), pch=16, main=n, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
+       col=colorRampPalette(c("#0464DF", "#FFE800"))(n = 10)[gene_level.2[n,]]
+  )
+  dev.off()
+}
+
+system(paste0("zip -rj ", plot_path, "/monocle_plots.zip ", monocle_plot_folder))
+unlink(monocle_plot_folder, recursive=TRUE, force=TRUE)
+
+
+
+
+###############################################################
+# DOTPLOTS
+
+# gene list for dotplot
+gene_list = c("SOHO1", "SOX8", "LMX1A", "Pax-2", "TFAP2E", "OTX2", "FOXI3", "VGLL2")
+
+# get cell branch information for dotplot
+cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
+  tibble::rownames_to_column('cellname') %>%
+  dplyr::rename(branch = State) %>%
+  dplyr::mutate(celltype = case_when(
+    branch == "1" ~ "otic",
+    branch == "2" ~ "epibranchial",
+    branch == "3" ~ 'OEP'
+  ))
+
+# gather data for dotplot
+dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), check.names=F) %>%
+  tibble::rownames_to_column('cellname') %>% 
+  tidyr::gather(genename, value, -cellname) %>%
+  dplyr::left_join(cell_branch_data, by="cellname") %>%
+  dplyr::group_by(genename, celltype) %>%
+  # calculate percentage of cells in each cluster expressing gene
+  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
+  # scale data
+  dplyr::group_by(genename) %>%
+  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  # calculate mean expression
+  dplyr::group_by(genename, celltype) %>%
+  dplyr::mutate('scaled average expression' = mean(value)) %>%
+  dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
+  dplyr::ungroup() %>%
+  # make factor levels to order plot
+  dplyr::mutate(genename = factor(genename, levels = gene_list))
+
+
+
+png(paste0(plot_path, "m_oep_dotplot.png"), width = 15, height = 8, units = "cm", res = 200)
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+  geom_count() +
+  scale_size_area(max_size=5) +
+  scale_x_discrete(position = "top") + xlab("") + ylab("") +
+  scale_color_gradient(low = "grey90", high = "blue") +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
+graphics.off()
+
+
+
+
+
+
+
+###############################################################
+# COEXPRESSION ANALYSIS
+
+
+# plot gradient gene expression on monocle embeddings
+curr.plot.folder = paste0(plot_path, 'coexpression_plots/')
+dir.create(curr.plot.folder)
+
+# list of genes used for coexpression analysis
+otic = c("SOX10", "SOX8", "HOMER2", 'DACT2', 'LMX1A')
+epi = c("TFAP2E", "FOXI3", "PDLIM1", "NELL1", "UPK1B", 'VGLL2')
+
+
+# plot gradient expression for genes used for coexpression analysis
+for(gn in c(otic, epi)){
+  print(gn)
+  pdf(paste0(curr.plot.folder, gn, '.pdf'))
+  plot(t(reducedDimS(HSMM)), pch=16, main=gn, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
+       col=colorRampPalette(c("grey", "red"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
+  )
+  dev.off()
+}
+
+# generate gene pairs for coexpression
+comb <- t(combn(c(otic, epi), 2))
+
+# make dataframe with proportion of cells in each branch co-expressing pairs of genes
+state = pData(HSMM)[, "State", drop=F]
+
+cell_branch_data
+
+temp = data.frame()
+for(pair in 1:nrow(comb)){
+  if(sum(as.character(comb[pair,]) %in% otic) == 2){comparison = "o-o"}else if(sum(as.character(comb[pair,]) %in% otic) == 1){comparison = "o-e"}else{comparison = "e-e"}
+  newdat = ldply(unique(cell_branch_data$celltype), function(y) {
+    c(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(comb[pair,1], comb[pair,2]), cell_branch_data[cell_branch_data$celltype == y, 'cellname']] > 0) == 2)/sum(cell_branch_data$celltype == y),
+      comparison, y)
+  })
+  newdat[,1] <- as.numeric(newdat[,1])
+  temp = rbind(temp, newdat)
+}
+
+# rename dataframe columns
+colnames(temp) = c("value", "comparison", "branch")
+
+# calculate mean value per group and SD for plotting bar plot
+plot_dat <- temp %>%
+  dplyr::group_by(branch, comparison) %>%
+  dplyr::summarise(
+    mean = mean(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE)
+  )
+
+
+# split data by comparison
+dat = temp %>% group_split(comparison)
+names(dat) <- lapply(dat, function(x) as.character(unique(x[["comparison"]])))
+
+# run anova across branches
+multi_anova <- lapply(dat, function(x) {aov(value ~ branch, data = x)})
+
+# run post hoc tukey test for significance
+lapply(multi_anova, function(x) {TukeyHSD(x)})
+
+# calculate mean and SD for plotting bar plot
+plot_dat <- lapply(dat, function(x){
+  x %>%
+    dplyr::group_by(branch) %>%
+    dplyr::summarise(
+      "proportion cells co-expressing" = mean(value, na.rm = TRUE),
+      sd = sd(value, na.rm = TRUE),
+    )
+})
+
+
+# bar plots
+oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`proportion cells co-expressing`, fill = c("black", "orange", "blue"))) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("OEP", "otic")), annotations = "***",
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+  geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "***",
+              y_position = 0.75, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(legend.position="none") +
+  ggtitle("O-E") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`proportion cells co-expressing`, fill = c("black", "orange", "blue"))) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("OEP", "otic")), annotations = "***",
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(axis.title.y =element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y = element_blank(),
+        legend.position="none") +
+  ggtitle("E-E") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+oo_plot <- ggplot(plot_dat$`o-o`, aes(x=branch,y=`proportion cells co-expressing`, fill = c("black", "orange", "blue"))) +
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "***",
+              y_position = 0.65, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank(),
+        legend.position="none") +
+  ggtitle("O-O") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+png(paste0(curr.plot.folder, "coexpression_test.png"), width = 20, height = 12, units = "cm", res = 200)
+plot_grid(oe_plot, ee_plot, oo_plot, align = "hv", nrow = 1, rel_widths = c(1,1,1))
+graphics.off()
+
+
+
+
+
+
+########################################################################
+# plot multiple monocle pseudotime projections in a single plots
+# in order to separate the plots change separate plots to T
+
+pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "FOXI3", "SOX8"), separate_plots = F, out_path = curr.plot.folder,
+                     basename = "pseudotime.Pax-2_FOXI3_SOX8")
+
+pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "FOXI3", "LMX1A"), separate_plots = F, out_path = curr.plot.folder,
+                     basename = "pseudotime.Pax-2_FOXI3_LMX1A")
+
+pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "TFAP2E", "SOX8"), separate_plots = F, out_path = curr.plot.folder,
+                     basename = "pseudotime.Pax-2_TFAP2E_SOX8")
+
+
+
+
+# plot gradient gene expression on monocle embeddings
+mon_path = paste0(plot_path, 'monocle_grad_expression/')
+dir.create(mon_path)
+
+gene_list = c('Pax-2', 'SOX8', 'TFAP2E')
+for(gn in gene_list){
+  print(gn)
+  pdf(paste0(mon_path, gn, '.pdf'))
+  plot(t(reducedDimS(HSMM)), pch=16, main=gn, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
+       col=colorRampPalette(c("grey", "red"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
+  )
+  dev.off()
+}
+
+
+
+
+
+
+
+
+#' Plot some genes along pseudotime
+
+some_genes=c("HOMER2", "LMX1A", "SOHO1", "PRDM12", "FOXI3",  "TFAP2E", "VGLL2", "PDLIM1")
+
+# if cells are missing then check pData(HSMM) to see if the correct cells are being excluded in the state column
+branch1 = my_plot_genes_in_pseudotime(HSMM[some_genes, which(pData(HSMM)$State != 2)], color_by = "timepoint", relative_expr=FALSE)
+branch2 = my_plot_genes_in_pseudotime(HSMM[some_genes, which(pData(HSMM)$State != 1)], color_by = "timepoint", relative_expr=FALSE)
+
+
+smooth_curves = rbind.data.frame(
+  cbind(branch1, "branch"="Otic"),
+  cbind(branch2, "branch"="Epibranchial")
+)
+
+smooth_curves$timepoint = factor(smooth_curves$timepoint, levels=sort(unique(smooth_curves$timepoint)))
+
+min_expr= .1
+
+q <- ggplot(aes(Pseudotime, expression), data = smooth_curves)
+q <- q + geom_point(aes_string(color = "timepoint"), size = I(.5),
+                    position = position_jitter(NULL, NULL))
+q <- q + geom_line(aes(x = Pseudotime, y = expectation),
+                   data = smooth_curves, size=1)
+q <- q + scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
+                       labels = scales::trans_format("log10", scales::math_format(10^.x)))
+q <- q + facet_grid(~feature_label~branch)#, nrow = NULL,
+# ncol = 2, scales = "fixed")
+if (min_expr < 1) {
+  q <- q + expand_limits(y = c(min_expr, 1))
+}
+q <- q + ylab("Absolute Expression")
+q <- q + xlab("Pseudotime")
+# q <- q + monocle:::monocle_theme_opts()
+q <- q + scale_colour_manual(values=c("#BBBDC1", "#6B98E9", "#05080D"))# breaks=c(8.5, 11, 15))
+q <- q + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+
+pdf(paste0(plot_path, 'Monocle_DDRTree_some_genes_along_PT.pdf'), width=7, height=7)
+print(q)
+graphics.off()
+
+
+############################################################
+# BEAM
+
+#' Use BEAM to filter the branches (from pre-filter gene list)
+
+genes_sel = intersect(
+  getDispersedGenes(m_oep$getReadcounts('Normalized'), -1),
+  getHighGenes(m_oep$getReadcounts('Normalized'), mean_threshold=5)
+)
+
+# genes_sel = m_oep$getGeneNames()
+
+branch_point_id = 1
+
+BEAM_res <- BEAM(HSMM[genes_sel, ], branch_point = branch_point_id, cores = m_oep$num_cores)
+
+BEAM_res <- BEAM_res[order(BEAM_res$qval),]
+BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
+
+pdf(paste0(plot_path, 'Monocle_Beam.pdf'), width=7, height=30)
+beam_hm = plot_genes_branched_heatmap(HSMM[row.names(subset(BEAM_res, qval < .05)),],
+                                      branch_point = branch_point_id,
+                                      num_clusters = 20,
+                                      cores = 1,
+                                      use_gene_short_name = T,
+                                      show_rownames = T,
+                                      return_heatmap=T,
+                                      branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
+                                      branch_labels=c('Otic', "Epibranchial"))
+graphics.off()
+
+# save beam score to file
+write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(plot_path, 'beam_scores.csv'), row.names=F)
+
+
+#' BEAM plot of TFs
+
+TF_sel <- genes_to_TFs(m_oep, genes_sel)
+pdf(paste0(plot_path, 'Monocle_Beam_TFs.pdf'), width=7, height=30)
+beam_hm = plot_genes_branched_heatmap(HSMM[TF_sel,],
+                                      branch_point = branch_point_id,
+                                      # num_clusters = 4,
+                                      cluster_rows=FALSE,
+                                      cores = 1,
+                                      use_gene_short_name = T,
+                                      show_rownames = T,
+                                      return_heatmap=T,
+                                      branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
+                                      branch_labels=c('Epibranchial', 'Otic')
+)
+graphics.off()
+
+
+
+#' BEAM plot of the original known genes
+pdf(paste0(plot_path, 'Monocle_Beam_knownGenes.pdf'), width=7, height=10)
+beam_hm = plot_genes_branched_heatmap(HSMM[m_oep$favorite_genes,],
+                                      branch_point = branch_point_id,
+                                      num_clusters = 4,
+                                      cores = 1,
+                                      use_gene_short_name = T,
+                                      show_rownames = T,
+                                      return_heatmap=T,
+                                      branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
+                                      branch_labels=c('Epibranchial', 'Otic'))
+graphics.off()
+
+
+#' BEAM plot of the selected genes
+beam_sel = c("FOXI3","HOMER2","Pax-2","LMX1A","ZBTB16","SOHO1","ZNF385C","SOX8","SOX10","PDLIM1","VGLL2","TFAP2E","GBX2","OTX2","DLX5","BLIMP1","PRDM12","PDLIM4","EYA1","EYA2","ETV4", "NELL1") # SIX1
+
+pdf(paste0(plot_path, 'Monocle_Beam_selGenes.pdf'), width=7, height=5)
+beam_hm = plot_genes_branched_heatmap(HSMM[beam_sel,],
+                                      branch_point = branch_point_id,
+                                      # num_clusters = 4,
+                                      cluster_rows=FALSE,
+                                      cores = 1,
+                                      use_gene_short_name = T,
+                                      show_rownames = T,
+                                      return_heatmap=T,
+                                      branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
+                                      branch_labels=c('Epibranchial', 'Otic')
+)
+graphics.off()
+
+
+
+
+
 
 
 
@@ -488,324 +963,5 @@ dev.off()
 
 
 
-
-
-########################################################################
-# plot multiple monocle pseudotime projections in a single plots
-# in order to separate the plots change separate plots to T
-
-pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "FOXI3", "SOX8"), separate_plots = F, out_path = curr.plot.folder,
-                     basename = "pseudotime.Pax-2_FOXI3_SOX8")
-
-pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "FOXI3", "LMX1A"), separate_plots = F, out_path = curr.plot.folder,
-                     basename = "pseudotime.Pax-2_FOXI3_LMX1A")
-
-pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "TFAP2E", "SOX8"), separate_plots = F, out_path = curr.plot.folder,
-                     basename = "pseudotime.Pax-2_TFAP2E_SOX8")
-
-
-
-
-
-
-
-
-
-########################################################################
-#' Generate a monocle projection plot for each known genes
-
-monocle_plot_folder = paste0(plot_path, 'Monocle_plots/')
-dir.create(monocle_plot_folder, showWarnings = FALSE, recursive = TRUE)
-
-genes_sel = sort(intersect(
-  getDispersedGenes(m_oep$getReadcounts('Normalized'), -1),
-  getHighGenes(m_oep$getReadcounts('Normalized'), mean_threshold=5)
-))
-
-gene_level = m_oep$getReadcounts("Normalized")[genes_sel %>% .[. %in% m_oep$getGeneNames()],]
-gene_level.2 = t(apply(log(.1+gene_level), 1, function(x){
-  pc_95 = quantile(x, .95)
-  if(pc_95==0){
-    pc_95=1
-  }
-  x <- x/pc_95
-  x[x>1] <- 1
-  as.integer(cut(x, breaks=10))
-}))
-
-for(n in rownames(gene_level.2)){
-  print(n)
-  pdf(paste0(monocle_plot_folder, 'Monocle_DDRTree_projection_', n, '.pdf'))
-  plot(t(reducedDimS(HSMM)), pch=16, main=n, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
-       col=colorRampPalette(c("#0464DF", "#FFE800"))(n = 10)[gene_level.2[n,]]
-  )
-  dev.off()
-}
-
-system(paste0("zip -rj ", plot_path, "/monocle_plots.zip ", monocle_plot_folder))
-unlink(monocle_plot_folder, recursive=TRUE, force=TRUE)
-
-
-
-
-
-# plot gradient gene expression on monocle embeddings
-mon_path = paste0(plot_path, 'monocle_grad_expression/')
-dir.create(mon_path)
-
-gene_list = c('Pax-2', 'SOX8', 'TFAP2E')
-for(gn in gene_list){
-  print(gn)
-  pdf(paste0(mon_path, gn, '.pdf'))
-  plot(t(reducedDimS(HSMM)), pch=16, main=gn, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
-       col=colorRampPalette(c("grey", "red"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
-  )
-  dev.off()
-}
-
-
-
-
-
-
-#' <a href="./suppl_files/monocle_plots.zip">Download all gene pattern plots</a>
-#'
-
-#' Plot annotated trajectories
-
-p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples")
-p2 = plot_cell_trajectory(HSMM, color_by = "timepoint")
-p3 = plot_cell_trajectory(HSMM, color_by = "Pseudotime")
-
-pdf(paste0(plot_path, "Monocle_DDRTree_trajectories.pdf"), width=15, height=8)
-gridExtra::grid.arrange(grobs=list(p1, p2, p3), layout_matrix=matrix(seq(3), ncol=3, byrow=T))
-graphics.off()
-
-#' <a href="./suppl_files/Monocle_DDRTree_trajectories.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_DDRTree_trajectories.png" width="100%"></p>
-#'
-
-#' State subplots
-pdf(paste0(plot_path, 'Monocle_DDRTree_State_facet.pdf'), width=7, height=4)
-plot_cell_trajectory(HSMM, color_by = "State") + facet_wrap(~State, nrow = 1)
-graphics.off()
-
-
-
-
-
-# extract pseudotimedata
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("FOXI3", "SOX8"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("FOXI3", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "SOX8"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("TFAP2E", "FOXI3"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-for(i in levels(state$State)){
-  print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c("SOX8", "LMX1A"), rownames(state)[state$State == i]] > 0) == 2))
-}
-
-
-otic = c("SOX8", "LMX1A")
-epi = c("TFAP2E", "FOXI3")
-
-
-combn(c(otic, epi), 2)
-
-
-
-comb <- as.data.frame(expand.grid(c(otic, epi), c(otic, epi),  stringsAsFactors = F))
-
-state = pData(HSMM)[, "State", drop=F]
-
-
-apply(comb, 1, function(x) {
-  lapply(levels(state$State), function(y) {
-    print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(x[1], x[2]), rownames(state)[state$State == y]] > 0) == 2))
-  })
-})
-
-
-for(pair in 1:nrow(comb)){
-  
-  if(sum(as.character(comb[pair,]) %in% otic) == 2){
-    comparison = "o-o"
-  }else if(sum(as.character(comb[pair,]) %in% otic) == 1){
-    comparison = "o-e"
-  }else{
-    comparison = "e-e"
-  }
-  
-  print(comparison)
-  lapply(levels(state$State), function(y) {
-    print(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(comb[pair,1], comb[pair,2]), rownames(state)[state$State == y]] > 0) == 2))
-  })
-}
-
-comb[pair,]
-
-
-#' <a href="./suppl_files/Monocle_DDRTree_State_facet.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_DDRTree_State_facet.png" width="100%"></p>
-#'
-
-#' Plot some genes along pseudotime
-
-some_genes=c("HOMER2", "LMX1A", "SOHO1", "PRDM12", "FOXI3",  "TFAP2E", "VGLL2", "PDLIM1")
-
-# if cells are missing then check pData(HSMM) to see if the correct cells are being excluded in the state column
-branch2 = my_plot_genes_in_pseudotime(HSMM[some_genes, which(pData(HSMM)$State != 1)], color_by = "timepoint", relative_expr=FALSE)
-branch3 = my_plot_genes_in_pseudotime(HSMM[some_genes, which(pData(HSMM)$State != 3)], color_by = "timepoint", relative_expr=FALSE)
-
-
-smooth_curves = rbind.data.frame(
-  cbind(branch2, "branch"="Otic"),
-  cbind(branch3, "branch"="Epibranchial")
-)
-
-smooth_curves$timepoint = factor(smooth_curves$timepoint, levels=sort(unique(smooth_curves$timepoint)))
-
-min_expr= .1
-
-q <- ggplot(aes(Pseudotime, expression), data = smooth_curves)
-q <- q + geom_point(aes_string(color = "timepoint"), size = I(.5),
-                    position = position_jitter(NULL, NULL))
-q <- q + geom_line(aes(x = Pseudotime, y = expectation),
-                   data = smooth_curves, size=1)
-q <- q + scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
-                       labels = scales::trans_format("log10", scales::math_format(10^.x)))
-q <- q + facet_grid(~feature_label~branch)#, nrow = NULL,
-# ncol = 2, scales = "fixed")
-if (min_expr < 1) {
-  q <- q + expand_limits(y = c(min_expr, 1))
-}
-q <- q + ylab("Absolute Expression")
-q <- q + xlab("Pseudotime")
-# q <- q + monocle:::monocle_theme_opts()
-q <- q + scale_colour_manual(values=c("#BBBDC1", "#6B98E9", "#05080D"))# breaks=c(8.5, 11, 15))
-q <- q + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-                            panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
-
-pdf(paste0(plot_path, 'Monocle_DDRTree_some_genes_along_PT.pdf'), width=7, height=7)
-print(q)
-graphics.off()
-
-#' <a href="./suppl_files/Monocle_DDRTree_some_genes_along_PT.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_DDRTree_some_genes_along_PT.png" width="100%"></p>
-#'
-
-#' ## BEAM
-
-#' Use BEAM to filter the branches (from pre-filter gene list)
-
-genes_sel = intersect(
-  getDispersedGenes(m_oep$getReadcounts('Normalized'), -1),
-  getHighGenes(m_oep$getReadcounts('Normalized'), mean_threshold=5)
-)
-
-# genes_sel = m_oep$getGeneNames()
-
-branch_point_id = 1
-
-BEAM_res <- BEAM(HSMM[genes_sel, ], branch_point = branch_point_id, cores = m_oep$num_cores)
-
-BEAM_res <- BEAM_res[order(BEAM_res$qval),]
-BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
-
-pdf(paste0(plot_path, 'Monocle_Beam.pdf'), width=7, height=30)
-beam_hm = plot_genes_branched_heatmap(HSMM[row.names(subset(BEAM_res, qval < .05)),],
-                                      branch_point = branch_point_id,
-                                      num_clusters = 20,
-                                      cores = 1,
-                                      use_gene_short_name = T,
-                                      show_rownames = T,
-                                      return_heatmap=T,
-                                      branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
-                                      branch_labels=c('Otic', "Epibranchial"))
-graphics.off()
-
-#' <a href="./suppl_files/Monocle_Beam.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_Beam.png" width="100%"></p>
-#'
-
-# save beam score to file
-write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(plot_path, 'beam_scores.csv'), row.names=F)
-
-#' <a href="./suppl_files/beam_scores.csv">Download BEAM scores</a>
-#'
-
-#' BEAM plot of the selected known genes
-
-beam_sel = c("FOXI3","HOMER2","Pax-2","LMX1A","ZBTB16","SOHO1","ZNF385C","SOX8","SOX10","PDLIM1","VGLL2","TFAP2E","GBX2","OTX2","DLX5","BLIMP1","PRDM12","PDLIM4","EYA1","EYA2","ETV4") # SIX1
-
-pdf(paste0(plot_path, 'Monocle_Beam_selGenes.pdf'), width=7, height=5)
-beam_hm = plot_genes_branched_heatmap(HSMM[beam_sel,],
-                                      branch_point = branch_point_id,
-                                      # num_clusters = 4,
-                                      cluster_rows=FALSE,
-                                      cores = 1,
-                                      use_gene_short_name = T,
-                                      show_rownames = T,
-                                      return_heatmap=T,
-                                      branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
-                                      branch_labels=c('Otic', "Epibranchial")
-)
-graphics.off()
-
-
-#' <a href="./suppl_files/Monocle_Beam_selGenes.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_Beam_selGenes.png" width="100%"></p>
-#'
-
-
-#' BEAM plot of the original known genes
-pdf(paste0(plot_path, 'Monocle_Beam_knownGenes.pdf'), width=7, height=10)
-beam_hm = plot_genes_branched_heatmap(HSMM[m_oep$favorite_genes,],
-                                      branch_point = branch_point_id,
-                                      num_clusters = 4,
-                                      cores = 1,
-                                      use_gene_short_name = T,
-                                      show_rownames = T,
-                                      return_heatmap=T,
-                                      branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
-                                      branch_labels=c('Otic', "Epibranchial"))
-graphics.off()
-
-
-#' <a href="./suppl_files/Monocle_Beam_knownGenes.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_Beam_knownGenes.png" width="100%"></p>
-#'
-
-#' BEAM plot of TFs
-
-TF_sel <- genes_to_TFs(m_oep, genes_sel)
-
-pdf(paste0(plot_path, 'Monocle_Beam_TFs.pdf'), width=7, height=30)
-beam_hm = plot_genes_branched_heatmap(HSMM[TF_sel,],
-                                      branch_point = branch_point_id,
-                                      # num_clusters = 4,
-                                      cluster_rows=FALSE,
-                                      cores = 1,
-                                      use_gene_short_name = T,
-                                      show_rownames = T,
-                                      return_heatmap=T,
-                                      branch_colors=RColorBrewer::brewer.pal(8, "Set2")[c(4,1,6)],
-                                      branch_labels=c('Otic', "Epibranchial")
-)
-graphics.off()
 
 
