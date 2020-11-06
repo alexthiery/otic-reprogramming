@@ -22,3 +22,4 @@ RUN R -e "devtools::install_version('Seurat', version = '3.1.5', dependencies= N
 RUN R -e "devtools::install_version('getopt', version = '1.20.3', dependencies=T)"
 RUN R -e "devtools::install_version('umap', version = '0.2.5.0', dependencies=T)"
 RUN R -e "devtools::install_version('ggsignif', version = '0.6.0', dependencies=T)"
+RUN R -e "devtools::install_version('rstatix', version = '0.6.0', dependencies=T)"
