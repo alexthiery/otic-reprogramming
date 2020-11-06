@@ -11,6 +11,8 @@ process add_genome_gfp {
         saveAs: { filename ->
                       if (opts.publish_results == "none") null
                       else filename }
+    
+    container 'nfcore/base:1.10.2'
 
     input:
         val(opts)
@@ -39,6 +41,8 @@ process add_gtf_gfp {
                       if (opts.publish_results == "none") null
                       else filename }
 
+    container 'nfcore/base:1.10.2'
+
     input:
         val(opts)
         path(gtf)
@@ -58,4 +62,70 @@ process add_gtf_gfp {
         """
 }
 
-//$(cat GFP.fa | grep -v "^>" | tr -d "\n" | wc -c)
+
+
+process extract_gtf_annotations {
+    publishDir "${params.outdir}/${opts.publish_dir}",
+        mode: "copy", 
+        overwrite: true,
+        saveAs: { filename ->
+                      if (opts.publish_results == "none") null
+                      else filename }
+
+    container 'nfcore/base:1.10.2'
+
+    input:
+        val(opts)
+        path(gtf)
+
+    output:
+        path("${gtf.baseName}_gene_annotations.txt")
+
+    script:
+    """
+    #!/opt/conda/bin/python
+    
+    import re
+
+    # create output file to write to
+    outfile = open("${gtf.baseName}_gene_annotations.txt", 'a')
+
+    out_genes = []
+
+    with open("${gtf}", 'rt') as gtf:
+        for line in gtf:
+            # only search lines with gene_id in order to skip header lines
+            if 'gene_id' in line:
+                gene_id = re.sub('.*gene_id "', '', line)
+                gene_id = re.sub('".*', '', gene_id).rstrip()
+
+                if gene_id not in out_genes:
+                    out_genes.append(gene_id)
+                    
+                    if 'gene_name' in line:
+                        gene_name = re.sub('.*gene_name "', '', line)
+                        gene_name = re.sub('".*', '', gene_name).rstrip()
+
+                        outfile.write(" ".join([gene_id, gene_name])+"\\n")
+
+                    else:
+                        outfile.write(" ".join([gene_id, gene_id])+"\\n")
+    """
+}
+
+
+        // head -n 100 ${gtf} | grep -v '#!' | awk 'BEGIN{FS="\t"}{print \$9}' | while IFS= read -r line;
+        // do
+        //     if [[ \$line =~ "gene_name" ]]
+        //     then
+        //         a=\$(echo "\$line" | sed 's#.*gene_id [\"]([^"]*).*#\1#')
+        //         b=\$(echo "\$line" | sed 's#.*gene_name [\"]([^"]*).*#\1#')
+        //         echo "\${a} \${b}"
+        //     else
+        //         a=\$(echo "\$line" | sed 's#.*gene_id [\"]([^"]*).*#\1#')
+        //         echo "\${a} \${a}"
+        //     fi
+
+        // done >  ${gtf.baseName}_extracted_annotations.txt
+
+        // awk '!a[\$0]++' ${gtf.baseName}_extracted_annotations.txt > ${gtf.baseName}_extracted_annotations.txt

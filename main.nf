@@ -40,30 +40,30 @@ nextflow.enable.dsl=2
 
 
 
-/*------------------------------------------------------------------------------------*/
-/* Workflow to run peaks intersect
---------------------------------------------------------------------------------------*/
+// /*------------------------------------------------------------------------------------*/
+// /* Workflow to run peaks intersect
+// --------------------------------------------------------------------------------------*/
 
-Channel
-    .value(file(params.genome, checkIfExists: true))
-    .set {ch_genome}
+// Channel
+//     .value(file(params.genome, checkIfExists: true))
+//     .set {ch_genome}
 
-Channel
-    .value(file(params.gtf, checkIfExists: true))
-    .set {ch_gtf}
+// Channel
+//     .value(file(params.gtf, checkIfExists: true))
+//     .set {ch_gtf}
 
-include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
-include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
-include {r_analysis as enhancer_profile; r_analysis as plot_motifs} from "$baseDir/modules/r_analysis/main.nf"
+// include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
+// include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
+// include {r_analysis as enhancer_profile; r_analysis as plot_motifs} from "$baseDir/modules/r_analysis/main.nf"
 
-workflow {
+// workflow {
 
-    // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
-    parse_metadata (params.peak_intersect_sample_csv)
-    peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
-    enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
-    plot_motifs( params.modules['plot_motifs'], peak_intersect.out.motifs.map{it[1]} )
-}
+//     // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
+//     parse_metadata (params.peak_intersect_sample_csv)
+//     peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
+//     enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
+//     plot_motifs( params.modules['plot_motifs'], peak_intersect.out.motifs.map{it[1]} )
+// }
         
 
 
@@ -128,6 +128,21 @@ workflow {
 // workflow {
 //     process_counts( ch_testData )
 // }
+
+
+
+// Test extracting gene annotations from gtf
+include {extract_gtf_annotations} from "$baseDir/modules/genome-tools/main.nf"
+
+Channel
+    .value(file(params.gtf, checkIfExists: true))
+    .set {ch_gtf}
+
+workflow {
+    extract_gtf_annotations( params.modules['extract_gtf_annotations'], ch_gtf )
+}
+
+
 
 
 
