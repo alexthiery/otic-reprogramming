@@ -593,8 +593,8 @@ curr.plot.folder = paste0(plot_path, 'coexpression_plots/')
 dir.create(curr.plot.folder)
 
 # list of genes used for coexpression analysis
-otic = c("SOX10", "SOX8", "HOMER2", 'DACT2', 'LMX1A')
-epi = c("TFAP2E", "FOXI3", "PDLIM1", "NELL1", "UPK1B", 'VGLL2')
+otic = c("SOX10", "SOX8", "HOMER2", 'LMX1A')
+epi = c("NELL1", "FOXI3", "PDLIM1", "TFAP2E")
 
 
 # plot gradient expression for genes used for coexpression analysis
@@ -610,11 +610,7 @@ for(gn in c(otic, epi)){
 # generate gene pairs for coexpression
 comb <- t(combn(c(otic, epi), 2))
 
-# make dataframe with proportion of cells in each branch co-expressing pairs of genes
-state = pData(HSMM)[, "State", drop=F]
-
-cell_branch_data
-
+# use data cell branch data from dotplots
 temp = data.frame()
 for(pair in 1:nrow(comb)){
   if(sum(as.character(comb[pair,]) %in% otic) == 2){comparison = "o-o"}else if(sum(as.character(comb[pair,]) %in% otic) == 1){comparison = "o-e"}else{comparison = "e-e"}
@@ -641,6 +637,24 @@ plot_dat <- temp %>%
 # split data by comparison
 dat = temp %>% group_split(comparison)
 names(dat) <- lapply(dat, function(x) as.character(unique(x[["comparison"]])))
+
+saveRDS(dat, "/home/rstudio/output/antler/rds_files/dat.rds")
+
+
+library(rstatix)
+
+
+
+dat %>%
+  dplyr::ungroup()
+group_by()
+pairwise_t_test(
+  value ~ branch,
+  ref.group = "OEP",
+  p.adjust.method = "bonferroni"
+)
+
+
 
 # run anova across branches
 multi_anova <- lapply(dat, function(x) {aov(value ~ branch, data = x)})
@@ -680,6 +694,8 @@ ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`proportion cells co-expressing
                 position=position_dodge(.9)) +
   geom_signif(comparisons=list(c("OEP", "otic")), annotations = "***",
               y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+  geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "*",
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
   theme(axis.title.y =element_blank(),
@@ -695,7 +711,7 @@ oo_plot <- ggplot(plot_dat$`o-o`, aes(x=branch,y=`proportion cells co-expressing
   geom_bar(stat='identity') +
   geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
-  geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "***",
+  geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "**",
               y_position = 0.65, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
