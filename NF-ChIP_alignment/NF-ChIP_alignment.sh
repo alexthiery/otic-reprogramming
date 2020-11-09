@@ -23,10 +23,7 @@ nextflow run nf-core/chipseq \
 --fasta /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa \
 --gtf /camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf \
 --macs_gsize 1.05e9 \
---nomodel \
---shift -100 \
---extsize 200 \
 --skip_diff_analysis \
---outdir results-chip \
+--outdir results-chip-no-shift \
 --email alex.thiery@crick.ac.uk \
 -resume
