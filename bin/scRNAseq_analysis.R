@@ -37,6 +37,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     rds_path = "./output/antler/rds_files/"
     merged_counts_path = './output/merged_counts/'
     genome_annotations_path = './output/extract_gtf_annotations'
+    gfp_counts = './output/merged_counts/'
     
     ncores = 8
 
@@ -49,6 +50,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     rds_path = "./output/rds_files/"
     merged_counts_path = './'
     genome_annotations_path = './'
+    gfp_counts = './'
     
     ncores = opt$cores
   }
@@ -88,14 +90,23 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
 
 # set gene names
 # read in annotations file
-gtf_annotations = read.csv(list.files(genome_annotations_path, full.names = T))
+gtf_annotations = read.csv(list.files(genome_annotations_path, full.names = T), stringsAsFactors = F)
 
 # add missing annotations to annotations file
 extra_annotations = c('FOXI3' = 'ENSGALG00000037457', 'ATN1' = 'ENSGALG00000014554', 'TBX10' = 'ENSGALG00000038767',
                       'COL11A1' = 'ENSGALG00000005180', 'GRHL2' = 'ENSGALG00000037687')
 
+MT_genes = c('ND3', 'CYTB', 'COII', 'ATP8', 'ND4', 'ND4L')
+
+
+gtf_annotations[gtf_annotations[,2] %in% MT_genes,2] <- paste0('MT-', gtf_annotations[gtf_annotations[,2] %in% MT_genes,2])
+
+
 # add extra annotations to annotations csv file
 gtf_annotations[,2] <- apply(gtf_annotations, 1, function(x) ifelse(x[1] %in% extra_annotations, names(extra_annotations)[extra_annotations %in% x], x[2]))
+
+# gtf_annotations[grepl('^MT-', gtf_annotations[,2]),2] <- sub('MT-', '', gtf_annotations[grepl('^MT-', gtf_annotations[,2]),2])
+
 write.csv(gtf_annotations, paste0(output_path, 'new_annotations.csv'), row.names = F)
 
 # set gene annotations
@@ -132,7 +143,6 @@ annotations = list(
 m$excludeCellsFromIds(which(m$getCellsNames() %in% unlist(annotations)))
 
 m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", basename="postQC", reads_name="read", cat_colors=unname(stage_cols))
-
 
 #' Remove cells having more than 6% of mitochondrial read counts
 m$removeGenesFromRatio(
@@ -218,7 +228,7 @@ m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$ge
 #' Plot final clustering of all cells
 m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=5)
 
-gfp_counts = read.table(file=paste0(input_path, 'merged_counts/gfpData.csv'), header=TRUE, check.names=FALSE)
+gfp_counts = read.table(file=paste0(gfp_counts, 'gfpData.csv'), header=TRUE, check.names=FALSE)
 
 m2$plotGeneModules(
   basename='AllCellsManualGMselection',
@@ -292,7 +302,10 @@ for(gn in gene_list){
 }
 
 
+all(rownames(m2$expressionSet) %in% rownames(m2_julien$expressionSet))
 
+
+all(colnames(m2$expressionSet) %in% colnames(m2_julien$expressionSet))
 
 
 ###############################################################
