@@ -1,22 +1,59 @@
-custom_functions = "./bin/custom_functions/"
-input_path = "./output/"
-output_path = "./output/antler"
-plot_path = "./output/antler/plots/"
-rds_path = "./output/antler/rds_files/"
+#!/usr/bin/env Rscript
 
-dir.create(plot_path, recursive = T)
-dir.create(rds_path, recursive = T)
+# Define arguments for Rscript
+library(getopt)
+spec = matrix(c(
+  'runtype', 'l', 2, "character",
+  'cores'   , 'c', 2, "integer"
+), byrow=TRUE, ncol=4)
+opt = getopt(spec)
 
+# Set run location
+if(length(commandArgs(trailingOnly = TRUE)) == 0){
+  cat('No command line arguments provided, user defaults paths are set for running interactively in Rstudio on docker\n')
+  opt$runtype = "user"
+} else {
+  if(is.null(opt$runtype)){
+    stop("--runtype must be either 'user' or 'nextflow'")
+  }
+  if(tolower(opt$runtype) != "user" & tolower(opt$runtype) != "nextflow"){
+    stop("--runtype must be either 'user' or 'nextflow'")
+  }
+}
 
-# loadload required packages
-library(Antler)
-library(velocyto.R)
-library(stringr)
-library(monocle)
-library(plyr)
-library(dplyr)
-library(ggsignif)
-library(cowplot)
+# Set paths and load data
+{
+  if (opt$runtype == "user"){
+    custom_functions = "./bin/custom_functions/"
+    input_path = "./output/"
+    output_path = "./output/antler"
+    plot_path = "./output/antler/plots/"
+    rds_path = "./output/antler/rds_files/"
+
+  } else if (opt$runtype == "nextflow"){
+    cat('pipeline running through nextflow\n')
+    
+    input_path = "./"
+    output_path = "./output/"
+    plot_path = "./output/plots/"
+    rds_path = "./output/rds_files/"
+  }
+  
+  dir.create(output_path, recursive = T)
+  dir.create(plot_path, recursive = T)
+  dir.create(rds_path, recursive = T)
+  
+  # loadload required packages
+  library(Antler)
+  library(velocyto.R)
+  library(stringr)
+  library(monocle)
+  library(plyr)
+  library(dplyr)
+  library(ggsignif)
+  library(cowplot)
+}
+
 
 # load custom functions
 sapply(list.files(custom_functions, full.names = T), source)
