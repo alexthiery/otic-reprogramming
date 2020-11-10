@@ -99,7 +99,7 @@ gtf_annotations[,2] <- apply(gtf_annotations, 1, function(x) ifelse(x[1] %in% ex
 write.csv(gtf_annotations, paste0(output_path, 'new_annotations.csv'), row.names = F)
 
 # set gene annotations
-m$setCurrentGeneNames(geneID_mapping_file=paste0(genome_annotations_path, 'new_annotations.csv'))
+m$setCurrentGeneNames(geneID_mapping_file=paste0(output_path, 'new_annotations.csv'))
 
 #' Store known genes 
 apriori_genes = c(
@@ -175,6 +175,8 @@ names(m$topCorr_DR$genemodules) <- paste0("GM ", seq(length(m$topCorr_DR$genemod
 # identify cell clusters
 m$identifyCellClusters(method='hclust', used_genes="topCorr_DR.genemodules", data_status='Normalized')
 
+
+m$getGeneNames()
 m$plotGeneModules(
   basename='AllCells',
   displayed.gms = 'topCorr_DR.genemodules',
