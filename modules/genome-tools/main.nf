@@ -79,7 +79,7 @@ process extract_gtf_annotations {
         path(gtf)
 
     output:
-        path("${gtf.baseName}_gene_annotations.txt")
+        path("${gtf.baseName}_gene_annotations.csv")
 
     script:
     """
@@ -88,7 +88,9 @@ process extract_gtf_annotations {
     import re
 
     # create output file to write to
-    outfile = open("${gtf.baseName}_gene_annotations.txt", 'a')
+    outfile = open("${gtf.baseName}_gene_annotations.csv", 'a')
+
+    outfile.write("Gene stable ID,Gene name"+"\\n")
 
     out_genes = []
 
@@ -106,26 +108,9 @@ process extract_gtf_annotations {
                         gene_name = re.sub('.*gene_name "', '', line)
                         gene_name = re.sub('".*', '', gene_name).rstrip()
 
-                        outfile.write(" ".join([gene_id, gene_name])+"\\n")
+                        outfile.write(",".join([gene_id, gene_name])+"\\n")
 
                     else:
-                        outfile.write(" ".join([gene_id, gene_id])+"\\n")
+                        outfile.write(",".join([gene_id, gene_id])+"\\n")
     """
 }
-
-
-        // head -n 100 ${gtf} | grep -v '#!' | awk 'BEGIN{FS="\t"}{print \$9}' | while IFS= read -r line;
-        // do
-        //     if [[ \$line =~ "gene_name" ]]
-        //     then
-        //         a=\$(echo "\$line" | sed 's#.*gene_id [\"]([^"]*).*#\1#')
-        //         b=\$(echo "\$line" | sed 's#.*gene_name [\"]([^"]*).*#\1#')
-        //         echo "\${a} \${b}"
-        //     else
-        //         a=\$(echo "\$line" | sed 's#.*gene_id [\"]([^"]*).*#\1#')
-        //         echo "\${a} \${a}"
-        //     fi
-
-        // done >  ${gtf.baseName}_extracted_annotations.txt
-
-        // awk '!a[\$0]++' ${gtf.baseName}_extracted_annotations.txt > ${gtf.baseName}_extracted_annotations.txt
