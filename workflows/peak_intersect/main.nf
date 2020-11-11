@@ -3,7 +3,7 @@
 // Define DSL2
 nextflow.enable.dsl=2
 
-include {awk} from "$baseDir/luslab-nf-modules/tools/luslab_linux_tools/main.nf"
+include {awk; cut} from "$baseDir/luslab-nf-modules/tools/luslab_linux_tools/main.nf"
 include {bedtools_intersect} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
 include {bedtools_subtract} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
 include {homer_annotate_peaks; homer_find_motifs} from "$baseDir/luslab-nf-modules/tools/homer/main.nf"
@@ -30,8 +30,12 @@ workflow peak_intersect {
         // Annotate remaining peaks
         homer_annotate_peaks(params.modules['homer_annotate_peaks'], bedtools_subtract.out, genome, gtf)
 
-        // Remove peaks in promoter regions (±2kb TSS) or exons
+        // Remove peaks in promoter regions (<2kb upstream of TSS) or exons
         awk(params.modules['awk'], homer_annotate_peaks.out)
+
+        // Convert awk output to bed file
+        cut(params.modules['cut'], awk.out.file)
+
 
         // Run motif enrichment analysis on remaining peaks
         homer_find_motifs(params.modules['homer_find_motifs'], awk.out.file, genome)
