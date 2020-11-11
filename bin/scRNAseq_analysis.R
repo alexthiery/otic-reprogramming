@@ -1,25 +1,74 @@
-custom_functions = "./bin/custom_functions/"
-input_path = "./output/"
-output_path = "./output/antler"
-plot_path = "./output/antler/plots/"
-rds_path = "./output/antler/rds_files/"
+#!/usr/bin/env Rscript
 
-dir.create(plot_path, recursive = T)
-dir.create(rds_path, recursive = T)
+# Define arguments for Rscript
+library(getopt)
+spec = matrix(c(
+  'runtype', 'l', 2, "character",
+  'cores'   , 'c', 2, "integer",
+  'custom_functions', 'm', 2, "character"
+), byrow=TRUE, ncol=4)
+opt = getopt(spec)
 
+# Set run location
+if(length(commandArgs(trailingOnly = TRUE)) == 0){
+  cat('No command line arguments provided, user defaults paths are set for running interactively in Rstudio on docker\n')
+  opt$runtype = "user"
+} else {
+  if(is.null(opt$runtype)){
+    stop("--runtype must be either 'user' or 'nextflow'")
+  }
+  if(tolower(opt$runtype) != "user" & tolower(opt$runtype) != "nextflow"){
+    stop("--runtype must be either 'user' or 'nextflow'")
+  }
+  if(tolower(opt$runtype) == "nextflow"){
+    if(is.null(opt$custom_functions) | opt$custom_functions == "null"){
+      stop("--custom_functions path must be specified in process params config")
+    }
+  }
+}
 
-# loadload required packages
-library(Antler)
-library(velocyto.R)
-library(stringr)
-library(monocle)
-library(plyr)
-library(dplyr)
-library(ggsignif)
-library(cowplot)
-
-# load custom functions
-sapply(list.files(custom_functions, full.names = T), source)
+# Set paths and load data
+{
+  if (opt$runtype == "user"){
+    sapply(list.files('./bin/custom_functions/', full.names = T), source)
+    
+    output_path = "./output/antler"
+    plot_path = "./output/antler/plots/"
+    rds_path = "./output/antler/rds_files/"
+    merged_counts_path = './output/merged_counts/'
+    genome_annotations_path = './output/extract_gtf_annotations'
+    gfp_counts = './output/merged_counts/'
+    
+    ncores = 8
+    
+  } else if (opt$runtype == "nextflow"){
+    cat('pipeline running through nextflow\n')
+    
+    sapply(list.files(opt$custom_functions, full.names = T), source)
+    output_path = "./output/"
+    plot_path = "./output/plots/"
+    rds_path = "./output/rds_files/"
+    merged_counts_path = './'
+    genome_annotations_path = './'
+    gfp_counts = './'
+    
+    ncores = opt$cores
+  }
+  
+  dir.create(output_path, recursive = T)
+  dir.create(plot_path, recursive = T)
+  dir.create(rds_path, recursive = T)
+  
+  # loadload required packages
+  library(Antler)
+  library(velocyto.R)
+  library(stringr)
+  library(monocle)
+  library(plyr)
+  library(dplyr)
+  library(ggsignif)
+  library(cowplot)
+}
 
 # set pipeline params
 seed=1
@@ -30,30 +79,49 @@ eta=200
 stage_cols = setNames(c("#BBBDC1", "#6B98E9", "#05080D"), c('8', '11', '15'))
 
 #' # Load and hygienize dataset
-m = Antler$new(plot_folder=plot_path, num_cores=6)
+m = Antler$new(plot_folder=plot_path, num_cores=ncores)
 
 # load in phenoData and assayData from ../dataset -> assayData is count matrix; phenoData is metaData (i.e. replicated, conditions, samples etc)
-m$loadDataset(folderpath= paste0(input_path, "merged_counts/"))
+m$loadDataset(folderpath=merged_counts_path)
 
 pData(m$expressionSet)$stage_colors = stage_cols[as.character(pData(m$expressionSet)$timepoint)]
 
 m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", basename="preQC", reads_name="read", cat_colors=unname(stage_cols))
 
-# assigning ensembl names
-m$setCurrentGeneNames(geneID_mapping_file=system.file("extdata", "Annotations/biomart_ensemblid_genename_ggallus.csv", package="Antler"))
+# set gene names
+# read in annotations file
+gtf_annotations = read.csv(list.files(genome_annotations_path, full.names = T), stringsAsFactors = F)
+
+# add missing annotations to annotations file
+extra_annotations = c('FOXI3' = 'ENSGALG00000037457', 'ATN1' = 'ENSGALG00000014554', 'TBX10' = 'ENSGALG00000038767',
+                      'COL11A1' = 'ENSGALG00000005180', 'GRHL2' = 'ENSGALG00000037687')
+
+# add extra annotations to annotations csv file
+gtf_annotations[,2] <- apply(gtf_annotations, 1, function(x) ifelse(x[1] %in% extra_annotations, names(extra_annotations)[extra_annotations %in% x], x[2]))
+
+# label extra MT genes
+MT_genes = c('ND3', 'CYTB', 'COII', 'ATP8', 'ND4', 'ND4L')
+gtf_annotations[gtf_annotations[,2] %in% MT_genes,2] <- paste0('MT-', gtf_annotations[gtf_annotations[,2] %in% MT_genes,2])
+
+write.csv(gtf_annotations, paste0(output_path, 'new_annotations.csv'), row.names = F)
+
+# set gene annotations
+m$setCurrentGeneNames(geneID_mapping_file=paste0(output_path, 'new_annotations.csv'))
+
+
 
 #' Store known genes 
 apriori_genes = c(
-  'DACH1', 'DLX3', 'DLX5', 'DLX6', 'EYA1', 'EYA2', 'FOXG1', 'FOXI3', 'GATA3', 'GBX2', 'HESX1', 'IRX1', 'IRX2', 'IRX3', 'LMX1A', 'LMX1B', 'Pax-2', 'SALL4', 'SIX4', 'SOHO1', 'SOX10', 'SOX2', 'SOX8', 'SOX9', 'Six1', 'TBX2', # Known_otic_genes
-  'ATN1', 'BACH2', 'CNOT4', 'CXCL14', 'DACH2', 'ETS1', 'FEZ1', 'FOXP1', 'HIPK1', 'HOMER2', 'IRX4', 'IRX5', 'KLF7', 'KREMEN1', 'LDB1', 'MSI1', 'PDLIM4', 'PLAG1', 'PNOC', 'PREP2', 'RERE', 'SMOC1', 'SOX13', 'TCF7L2', 'TEAD3', 'ZBTB16', 'ZFHX3', 'ZNF384', 'ZNF385C', # New_otic_TFs
-  'BLIMP1', 'FOXI1', 'NKX2-6', 'NR2F2', 'PDLIM1', 'PHOX2B', 'SALL1', 'TBX10', 'TFAP2E', 'TLX1', 'VGLL2', # Epibranchial_genes
-  'ZNF423', 'CXCR4', 'MAFB', 'MYC', 'Sip1', # Neural_Genes
-  'CD151', 'ETS2', 'FGFR4', 'OTX2', 'PAX3', 'PAX6', 'Pax-7', 'SIX3', # Non_otic_placode_genes
+  'DACH1', 'DLX3', 'DLX5', 'DLX6', 'EYA1', 'EYA2', 'FOXG1', 'FOXI3', 'GATA3', 'GBX2', 'HESX1', 'IRX1', 'IRX2', 'IRX3', 'LMX1A', 'LMX1B', 'PAX2', 'SALL4', 'SIX4', 'SOHO-1', 'SOX10', 'SOX2', 'SOX8', 'SOX9', 'SIX1', 'TBX2', # Known_otic_genes
+  'ATN1', 'BACH2', 'CNOT4', 'CXCL14', 'DACH2', 'ETS1', 'FEZ1', 'FOXP3', 'HIPK1', 'HOMER2', 'IRX4', 'IRX5', 'KLF7', 'KREMEN1', 'LDB1', 'MSI1', 'PDLIM4', 'PLAG1', 'PNOC', 'PKNOX2', 'RERE', 'SMOC1', 'SOX13', 'TCF7L2', 'TEAD3', 'ZBTB16', 'ZFHX3', 'ZNF384', 'ZNF385C', # New_otic_TFs
+  'PRDM1', 'FOXI1', 'NKX2-6', 'NR2F2', 'PDLIM1', 'PHOX2B', 'SALL1', 'TBX10', 'TFAP2E', 'TLX1', 'VGLL2', # Epibranchial_genes
+  'ZNF423', 'CXCR4', 'MAFB', 'MYC', 'ZEB2', # Neural_Genes
+  'CD151', 'ETS2', 'FGFR4', 'OTX2', 'Pax3', 'PAX6', 'PAX7', 'SIX3', # Non_otic_placode_genes
   'FOXD3', 'ID2', 'ID4', 'MSX1', 'TFAP2A', 'TFAP2B', 'TFAP2C', # Neural_Crest_Genes
   'GATA2', # Epidermis_genes
-  'COL11A1', 'DTX4', 'GRHL2', 'NELL1', 'OTOG', 'OTOL1', # Disease_associated_genes
+  'COL11A1', 'DTX4', 'GRHL2', 'NELL1', 'OTOL1', # Disease_associated_genes
   'ARID3A', 'BMP4', 'CREBBP', 'ETV4', 'ETV5', 'EYA4', 'FOXP4', 'FSTL4', 'HOXA2', 'JAG1', 'LFNG', 'LZTS1', 'MAFA', 'MEIS1', 'MYB', 'MYCN', 'NFKB1', 'NOTCH1', 'SPRY1', 'SPRY2', 'SSTR5', # chen et al. 2017
-  'TWIST1', 'ENSGALG00000001876', 'ASL1', 'ENSGALG00000002558', 'ENSGALG00000011695', 'ENSGALG00000012644', 'ENSGALG00000015112', 'MAF' # other_genes
+  'TWIST1', 'ASL1', 'MAF' # other_genes
 )
 
 m$favorite_genes <- unique(sort(apriori_genes))
@@ -73,7 +141,6 @@ annotations = list(
 m$excludeCellsFromIds(which(m$getCellsNames() %in% unlist(annotations)))
 
 m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", basename="postQC", reads_name="read", cat_colors=unname(stage_cols))
-
 
 #' Remove cells having more than 6% of mitochondrial read counts
 m$removeGenesFromRatio(
@@ -116,6 +183,7 @@ names(m$topCorr_DR$genemodules) <- paste0("GM ", seq(length(m$topCorr_DR$genemod
 # identify cell clusters
 m$identifyCellClusters(method='hclust', used_genes="topCorr_DR.genemodules", data_status='Normalized')
 
+
 m$plotGeneModules(
   basename='AllCells',
   displayed.gms = 'topCorr_DR.genemodules',
@@ -127,10 +195,10 @@ m$plotGeneModules(
   gene_transformations='logscaled',
   extra_colors=cbind(
     pData(m$expressionSet)$stage_colors,
-    m$getReadcounts(data_status='Normalized')['Pax-2',] %>%
+    m$getReadcounts(data_status='Normalized')['PAX2',] %>%
       ifelse(.==0, NA, .) %>% {cut(log10(1+.), breaks=100)} %>%
       colorRampPalette(c("white", "black"))(n=100)[.] %>% ifelse(is.na(.), 'red', .) %>%
-      {matrix(rep(., 2), ncol=2, dimnames=list(list(), list('Pax-2', 'Red: Null')))},
+      {matrix(rep(., 2), ncol=2, dimnames=list(list(), list('PAX2', 'Red: Null')))},
     "Poorly characterized"=m$getReadcounts('Normalized')[unlist(m$topCorr_DR$genemodules),] %>% colSums %>% {as.numeric(scale(log(.), center=TRUE, scale=T))} %>% {ifelse(. < -1.5, "black", "white")}
   ),
   pretty.params=list("size_factor"=0.5, "ngenes_per_lines" = 8, "side.height.fraction"=.3)
@@ -148,7 +216,7 @@ m2$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
 #' ## Manual feature selection
 
 #' We select gene modules containing at least one gene known to be involved in differentiation process
-bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "PAX3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "BLIMP1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO1", "IRX4", "DLX6")
+bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "Pax3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "PRDM1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO-1", "IRX4", "DLX6")
 
 m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$genemodules)
 
@@ -157,7 +225,7 @@ m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$ge
 #' Plot final clustering of all cells
 m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=5)
 
-gfp_counts = read.table(file=paste0(input_path, 'merged_counts/gfpData.csv'), header=TRUE, check.names=FALSE)
+gfp_counts = read.table(file=paste0(gfp_counts, 'gfpData.csv'), header=TRUE, check.names=FALSE)
 
 m2$plotGeneModules(
   basename='AllCellsManualGMselection',
@@ -170,7 +238,7 @@ m2$plotGeneModules(
   gene_transformations=c('log', 'logscaled'),
   extra_colors=cbind(
     pData(m2$expressionSet)$stage_colors,
-    "Pax-2_log"=m2$getReadcounts(data_status='Normalized')['Pax-2',] %>%
+    "PAX2_log"=m2$getReadcounts(data_status='Normalized')['PAX2',] %>%
       {log10(1+.)} %>%
       {as.integer(1+100*./max(.))} %>%
       colorRampPalette(c("white", "black"))(n=100)[.],
@@ -219,10 +287,10 @@ tsne_plot(m2, m2$dR$genemodules, "allcells_stage", seed=seed,
 
 
 ########################################################################################################################
-# Plot expression of Pax-2 Pax7 and Sox21 on tsne before filtering
+# Plot expression of PAX2 Pax7 and Sox21 on tsne before filtering
 
 # plot tsne for gradient expression of select genes in gene_list
-gene_list = c('SOX2', 'SOX10', 'SOX8', 'Pax-7', 'Pax-2', 'LMX1A', 'SOX21', 'Six1')
+gene_list = c('SOX2', 'SOX10', 'SOX8', 'PAX7', 'PAX2', 'LMX1A', 'SOX21', 'SIX1')
 for(gn in gene_list){
   path = paste0(tsne_path, gn)
   tsne_plot(m2, m2$dR$genemodules,basename = paste0("allcells.", gn), seed=seed,
@@ -230,17 +298,13 @@ for(gn in gene_list){
             perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
 }
 
-
-
-
-
 ###############################################################
 # DOTPLOTS
 
 # gene list for dotplot
-gene_list = c("DLX6", "HOMER2", "FOXI3", "TFAP2E", "ZNF385C", "Six1", "Pax-2", "DLX3", "NELL1", "FGF8", "VGLL2", "EYA1", "SOHO1", "LMX1A", "SOX8", "ZBTB16", "DLX5", "TFAP2A", # Placodes
-              "SOX10", "WNT1", "MSX2", "BMP5", "Pax-7", "TFAP2B", "LMO4", "ETS1", "MSX1", "SOX9", # NC
-              "Sip1", "HOXA2", "SOX2", "RFX4", "PAX6", "WNT4", "SOX21", # Neural
+gene_list = c("DLX6", "HOMER2", "FOXI3", "TFAP2E", "ZNF385C", "SIX1", "PAX2", "DLX3", "NELL1", "FGF8", "VGLL2", "EYA1", "SOHO-1", "LMX1A", "SOX8", "ZBTB16", "DLX5", "TFAP2A", # Placodes
+              "SOX10", "WNT1", "MSX2", "BMP5", "PAX7", "TFAP2B", "LMO4", "ETS1", "MSX1", "SOX9", # NC
+              "ZEB2", "HOXA2", "SOX2", "RFX4", "PAX6", "WNT4", "SOX21", # Neural
               "SIM1", "PITX2", "TWIST1") # Mesoderm
 
 # get cell branch information for dotplot
@@ -284,10 +348,14 @@ ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expre
   theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
 graphics.off()
 
+
+# save rds file of all cells
+saveRDS(m2, paste0(rds_path, 'm2.rds'))
+
 ########################################################################################################################
 #' ## OEP derivative isolation
 
-#' Blue cell cluster is composed of non-oep derived populations (it is also mostly comprising Pax-2 negative)
+#' Blue cell cluster is composed of non-oep derived populations (it is also mostly comprising PAX2 negative)
 #' We exclude these cells from the analysis (cluster ids, red: 1, blue: 2, green: 3, purple: 4...)
 m_oep = m2$copy()
 m_oep$excludeCellFromClusterIds(cluster_ids=c(3:5), used_clusters='Mansel', data_status='Normalized')
@@ -330,18 +398,17 @@ m_oep$plotGeneModules(
   gene_transformations='logscaled',
   extra_colors=cbind(
     pData(m_oep$expressionSet)$stage_colors,
-    m_oep$getReadcounts(data_status='Normalized')['Pax-2',] %>%
+    m_oep$getReadcounts(data_status='Normalized')['PAX2',] %>%
       ifelse(.==0, NA, .) %>% {cut(log10(1+.), breaks=100)} %>%
       colorRampPalette(c("white", "black"))(n=100)[.] %>% ifelse(is.na(.), 'red', .) %>%
-      {matrix(rep(., 2), ncol=2, dimnames=list(list(), list('Pax-2', 'Red: Null')))},
+      {matrix(rep(., 2), ncol=2, dimnames=list(list(), list('PAX2', 'Red: Null')))},
     "Poorly characterized"=m_oep$getReadcounts('Normalized')[unlist(m_oep$topCorr_DR$genemodules),] %>% colSums %>% {as.numeric(scale(log(.), center=TRUE, scale=T))} %>% {ifelse(. < -1.5, "black", "white")}
   ),
   pretty.params=list("size_factor"=1, "ngenes_per_lines" = 8, "side.height.fraction"=.3)
 )
 
 #' Manual feature selection
-# bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3")
-bait_genes = c("HOMER2", "LMX1A", "SOHO1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
+bait_genes = c("HOMER2", "LMX1A", "SOHO-1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
 
 m_oep$topCorr_DR$genemodules.selected = Filter(function(x){any(bait_genes %in% x)}, m_oep$topCorr_DR$genemodules)
 
@@ -360,7 +427,7 @@ m_oep$plotGeneModules(
   gene_transformations=c('log', 'logscaled'),
   extra_colors=cbind(
     pData(m_oep$expressionSet)$stage_colors,
-    "Pax-2_log"=m_oep$getReadcounts(data_status='Normalized')['Pax-2',] %>%
+    "PAX2_log"=m_oep$getReadcounts(data_status='Normalized')['PAX2',] %>%
       {log10(1+.)} %>%
       {as.integer(1+100*./max(.))} %>%
       colorRampPalette(c("white", "black"))(n=100)[.],
@@ -374,6 +441,10 @@ m_oep$plotGeneModules(
 )
 
 
+
+# save rds file of oep cells
+saveRDS(m_oep, paste0(rds_path, 'm_oep.rds'))
+
 ########################################################################################################################
 # Plot tSNE for oep data
 tsne_path = paste0(plot_path, 'OEP_subset_tsne/')
@@ -386,16 +457,16 @@ tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path,
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_samples", seed=1,
           cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=FALSE, eta=eta)
 
-# Plot gradient expression of Pax-2 on OEP tsne
-tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.Pax-2", seed=seed,
-          cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['Pax-2',])))],
-          perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = 'Pax-2')
+# Plot gradient expression of PAX2 on OEP tsne
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.PAX2", seed=seed,
+          cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['PAX2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['PAX2',])))],
+          perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = 'PAX2')
 
 
 ########################################################################################################################
 # Plot tSNE co-expression plots
 
-gene_pairs <- list(c("Pax-2", "LMX1A"), c("Pax-2", "SOX8"), c("FOXI3", "LMX1A"))
+gene_pairs <- list(c("PAX2", "LMX1A"), c("PAX2", "SOX8"), c("FOXI3", "LMX1A"))
 lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected,
                                                        gene1 = x[1], gene2 = x[2], plot_folder = tsne_path, seed=seed, perplexity=perp, pca=FALSE, eta=eta)})
 
@@ -450,7 +521,7 @@ dev.off()
 ########################################################################
 # plot gradient gene expression on monocle embeddings
 
-gene_list = c('Pax-2', 'SOX8', 'TFAP2E', 'LMX1A', 'FOXI3')
+gene_list = c('PAX2', 'SOX8', 'TFAP2E', 'LMX1A', 'FOXI3')
 for(gn in gene_list){
   print(gn)
   pdf(paste0(curr.plot.folder, "monocle.gradient.", gn, '.pdf'))
@@ -463,7 +534,7 @@ for(gn in gene_list){
 ########################################################################
 # plot gradient gene co-expression on monocle embeddings
 
-gene_pairs <- list(c("FOXI3", "Pax-2"), c("FOXI3", "SOX8"), c("FOXI3", "LMX1A"), c("TFAP2E", "SOX8"), c("TFAP2E", "LMX1A"))
+gene_pairs <- list(c("FOXI3", "PAX2"), c("FOXI3", "SOX8"), c("FOXI3", "LMX1A"), c("TFAP2E", "SOX8"), c("TFAP2E", "LMX1A"))
 lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2], plot_folder = curr.plot.folder)})
 
 
@@ -536,7 +607,7 @@ unlink(monocle_plot_folder, recursive=TRUE, force=TRUE)
 # DOTPLOTS
 
 # gene list for dotplot
-gene_list = c("SOHO1", "SOX8", "LMX1A", "Pax-2", "TFAP2E", "OTX2", "FOXI3", "VGLL2")
+gene_list = c("SOHO-1", "SOX8", "LMX1A", "PAX2", "TFAP2E", "OTX2", "FOXI3", "VGLL2")
 
 # get cell branch information for dotplot
 cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
@@ -737,14 +808,14 @@ graphics.off()
 # plot multiple monocle pseudotime projections in a single plots
 # in order to separate the plots change separate plots to T
 
-pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "FOXI3", "SOX8"), separate_plots = F, out_path = curr.plot.folder,
-                     basename = "pseudotime.Pax-2_FOXI3_SOX8")
+pseudotime_multiplot(data = HSMM, gene_list = c("PAX2", "FOXI3", "SOX8"), separate_plots = F, out_path = curr.plot.folder,
+                     basename = "pseudotime.PAX2_FOXI3_SOX8")
 
-pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "FOXI3", "LMX1A"), separate_plots = F, out_path = curr.plot.folder,
-                     basename = "pseudotime.Pax-2_FOXI3_LMX1A")
+pseudotime_multiplot(data = HSMM, gene_list = c("PAX2", "FOXI3", "LMX1A"), separate_plots = F, out_path = curr.plot.folder,
+                     basename = "pseudotime.PAX2_FOXI3_LMX1A")
 
-pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "TFAP2E", "SOX8"), separate_plots = F, out_path = curr.plot.folder,
-                     basename = "pseudotime.Pax-2_TFAP2E_SOX8")
+pseudotime_multiplot(data = HSMM, gene_list = c("PAX2", "TFAP2E", "SOX8"), separate_plots = F, out_path = curr.plot.folder,
+                     basename = "pseudotime.PAX2_TFAP2E_SOX8")
 
 
 
@@ -753,7 +824,7 @@ pseudotime_multiplot(data = HSMM, gene_list = c("Pax-2", "TFAP2E", "SOX8"), sepa
 mon_path = paste0(plot_path, 'monocle_grad_expression/')
 dir.create(mon_path)
 
-gene_list = c('Pax-2', 'SOX8', 'TFAP2E')
+gene_list = c('PAX2', 'SOX8', 'TFAP2E')
 for(gn in gene_list){
   print(gn)
   pdf(paste0(mon_path, gn, '.pdf'))
@@ -772,7 +843,7 @@ for(gn in gene_list){
 
 #' Plot some genes along pseudotime
 
-some_genes=c("HOMER2", "LMX1A", "SOHO1", "PRDM12", "FOXI3",  "TFAP2E", "VGLL2", "PDLIM1")
+some_genes=c("HOMER2", "LMX1A", "SOHO-1", "PRDM12", "FOXI3",  "TFAP2E", "VGLL2", "PDLIM1")
 
 # if cells are missing then check pData(HSMM) to see if the correct cells are being excluded in the state column
 branch1 = my_plot_genes_in_pseudotime(HSMM[some_genes, which(pData(HSMM)$State != 2)], color_by = "timepoint", relative_expr=FALSE)
@@ -881,7 +952,8 @@ graphics.off()
 
 
 #' BEAM plot of the selected genes
-beam_sel = c("FOXI3","HOMER2","Pax-2","LMX1A","ZBTB16","SOHO1","ZNF385C","SOX8","SOX10","PDLIM1","VGLL2","TFAP2E","GBX2","OTX2","DLX5","BLIMP1","PRDM12","PDLIM4","EYA1","EYA2","ETV4", "NELL1") # SIX1
+
+beam_sel = c("FOXI3","HOMER2","PAX2","LMX1A","ZBTB16","SOHO-1","ZNF385C","SOX8","SOX10","PDLIM1","VGLL2","TFAP2E","GBX2","OTX2","DLX5","PRDM1","PRDM12","PDLIM4","EYA1","EYA2","ETV4", "NELL1") # SIX1
 
 pdf(paste0(plot_path, 'Monocle_Beam_selGenes.pdf'), width=7, height=5)
 beam_hm = plot_genes_branched_heatmap(HSMM[beam_sel,],
@@ -978,6 +1050,114 @@ show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scal
 dev.off()
 
 
+
+
+
+
+
+# ###########
+
+# Dotplot for Williams et al. 2019 neural crest genes
+
+# Load data from Williams et al. 2019 Developmental Cell
+williams_data <- tempfile()
+download.file("https://ndownloader.figshare.com/files/12750314", williams_data)
+load(williams_data)
+
+
+#########
+# Get biomart GO annotations for TFs
+#########
+
+ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
+TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
+                   filters = 'ensembl_gene_id',
+                   values = de_5to6$EnsemblID,
+                   mart = ensembl,
+                   useCache = FALSE)
+
+# subset genes based on transcription factor GO terms
+TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
+
+# Filter transcription factors from NC 5-6ss which are abs(log2FC > 1.5) & padj < 0.05 in citrine+ cells vs citrine- cells
+de_5to6 <- de_5to6[abs(de_5to6$log2FoldChange) > 1.5 &
+                     !is.na(de_5to6$log2FoldChange) &
+                     de_5to6$padj < 0.05 &
+                     !is.na(de_5to6$padj) &
+                     de_5to6$EnsemblID %in% TF_subset,]
+
+# Filter transcription factors from NC 8-10ss which are abs(log2FC > 1.5) & padj < 0.05 in citrine+ cells vs citrine- cells
+de_8to10 <- de_8to10[abs(de_8to10$log2FoldChange) > 1.5 &
+                       !is.na(de_8to10$log2FoldChange) &
+                       de_8to10$padj < 0.05 &
+                       !is.na(de_8to10$padj) &
+                       de_8to10$EnsemblID %in% TF_subset,]
+
+# List of TFs at 5-6ss OR 8-10ss
+NC_enriched_TFs <- unique(c(de_5to6$EnsemblID, de_8to10$EnsemblID))
+
+# make dotplot
+# gene list for dotplot
+gene_list = fData(m2$expressionSet) %>% filter(ensembl_gene_id %in% NC_enriched_TFs) %>% dplyr::pull(external_gene_name)
+
+# get cell cluster information for dotplot
+NC_cells = data.frame(cluster = m2$cellClusters$Mansel$cell_ids) %>%
+  tibble::rownames_to_column('cellname') %>%
+  filter(cluster == '5') %>%
+  dplyr::mutate(celltype = 'neural crest') %>%
+  dplyr::select(-cluster)
+
+# get cell branch information for dotplot
+otic_NC_cells = pData(HSMM)[, "State", drop=F] %>%
+  tibble::rownames_to_column('cellname') %>%
+  filter(State == '1') %>%
+  dplyr::mutate(celltype = 'otic') %>%
+  dplyr::select(-State) %>%
+  dplyr::bind_rows(NC_cells)
+
+
+
+# gather data for dotplot
+dotplot_data <- data.frame(t(m$getReadcounts('Normalized')[gene_list, otic_NC_cells[['cellname']]]), check.names=F) %>%
+  tibble::rownames_to_column('cellname') %>% 
+  tidyr::gather(genename, value, -cellname) %>%
+  dplyr::left_join(otic_NC_cells, by="cellname") %>%
+  dplyr::group_by(genename, celltype) %>%
+  # calculate percentage of cells in each cluster expressing gene
+  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
+  # scale data
+  dplyr::group_by(genename) %>%
+  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  # calculate mean expression
+  dplyr::group_by(genename, celltype) %>%
+  dplyr::mutate('scaled average expression'=mean(value)) %>%
+  dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
+  dplyr::ungroup() %>%
+  # make factor levels to order cells in dotplott
+  dplyr::mutate(celltype = factor(celltype, levels = c("neural crest", "otic")))
+
+# order genes for dotplot based on average expression levels in placodal population
+gene_order <- dotplot_data %>%
+  filter(celltype == 'otic') %>%
+  dplyr::arrange(-`scaled average expression`) %>%
+  dplyr::pull(genename)
+
+# add gene order to dotplot_data
+dotplot_data <- dotplot_data %>%
+  dplyr::mutate(genename = factor(genename, levels = gene_order))
+
+
+png(paste0(plot_path, "Williams_NC_dotplot.png"), width = 30, height = 8, units = "cm", res = 200)
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+  geom_count() +
+  scale_size_area(max_size=5) +
+  scale_x_discrete(position = "top") + xlab("") + ylab("") +
+  scale_color_gradient(low = "grey90", high = "blue") +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7)) +
+  theme(legend.title = element_text(size = 8),
+        legend.text  = element_text(size = 8),
+        legend.key.size = unit(0.4, "lines"))
+graphics.off()
 
 
 

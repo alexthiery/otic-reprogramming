@@ -7,7 +7,7 @@ output_path = "./output/"
 dir.create(output_path, recursive = T)
 
 # import putative enhancer peaks (ATAC peaks with K27ac - K27me3)
-shared.peaks <- read.delim("./awk_ATAC.annotated.txt", sep = "\t")
+shared.peaks <- read.delim(list.files(pattern="*.txt", full.names = TRUE), sep = "\t")
 
 peaks <- GRanges(seqnames=shared.peaks[,2],
                  ranges=IRanges(start=shared.peaks[,3], 
@@ -23,10 +23,11 @@ end(peaks.recentered) <- end(peaks.center) + 2000
 
 
 # import bigwig files and select regions corresponding to ATAC (putative enhancer) peaks
-ATAC.bw <- import("./ss8_R1.mLb.clN.bigWig", format="BigWig", which=peaks.recentered, as="RleList")
-H3K27Ac.bw <- import("./ss8-K27Ac_R1.bigWig", format="BigWig", which=peaks.recentered, as="RleList")
-H3K27me3.bw <- import("./ss8-K27me3_R1.bigWig", format="BigWig", which=peaks.recentered, as="RleList")
-input.bw <- import("./ss8-input_R1.bigWig", format="BigWig", which=peaks.recentered, as="RleList")
+bigwig_files <- list.files('./', pattern = 'bigWig', full.names = T)
+ATAC.bw <- import(bigwig_files[grepl("ATAC", bigwig_files)], format="BigWig", which=peaks.recentered, as="RleList")
+H3K27Ac.bw <- import(bigwig_files[grepl("H3K27Ac", bigwig_files)], format="BigWig", which=peaks.recentered, as="RleList")
+H3K27me3.bw <- import(bigwig_files[grepl("H3K27me3", bigwig_files)], format="BigWig", which=peaks.recentered, as="RleList")
+input.bw <- import(bigwig_files[grepl("input", bigwig_files)], format="BigWig", which=peaks.recentered, as="RleList")
 
 # make list of bigwig files
 bw <- list(ATAC = ATAC.bw, H3K27Ac = H3K27Ac.bw, H3K27me3 = H3K27me3.bw, Input = input.bw)
