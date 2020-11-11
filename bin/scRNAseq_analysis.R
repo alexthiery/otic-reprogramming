@@ -6,7 +6,7 @@ spec = matrix(c(
   'runtype', 'l', 2, "character",
   'cores'   , 'c', 2, "integer",
   'custom_functions', 'm', 2, "character"
-  ), byrow=TRUE, ncol=4)
+), byrow=TRUE, ncol=4)
 opt = getopt(spec)
 
 # Set run location
@@ -40,7 +40,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     gfp_counts = './output/merged_counts/'
     
     ncores = 8
-
+    
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
     
@@ -96,21 +96,19 @@ gtf_annotations = read.csv(list.files(genome_annotations_path, full.names = T), 
 extra_annotations = c('FOXI3' = 'ENSGALG00000037457', 'ATN1' = 'ENSGALG00000014554', 'TBX10' = 'ENSGALG00000038767',
                       'COL11A1' = 'ENSGALG00000005180', 'GRHL2' = 'ENSGALG00000037687')
 
-MT_genes = c('ND3', 'CYTB', 'COII', 'ATP8', 'ND4', 'ND4L')
-
-
-gtf_annotations[gtf_annotations[,2] %in% MT_genes,2] <- paste0('MT-', gtf_annotations[gtf_annotations[,2] %in% MT_genes,2])
-
-
 # add extra annotations to annotations csv file
 gtf_annotations[,2] <- apply(gtf_annotations, 1, function(x) ifelse(x[1] %in% extra_annotations, names(extra_annotations)[extra_annotations %in% x], x[2]))
 
-# gtf_annotations[grepl('^MT-', gtf_annotations[,2]),2] <- sub('MT-', '', gtf_annotations[grepl('^MT-', gtf_annotations[,2]),2])
+# label extra MT genes
+MT_genes = c('ND3', 'CYTB', 'COII', 'ATP8', 'ND4', 'ND4L')
+gtf_annotations[gtf_annotations[,2] %in% MT_genes,2] <- paste0('MT-', gtf_annotations[gtf_annotations[,2] %in% MT_genes,2])
 
 write.csv(gtf_annotations, paste0(output_path, 'new_annotations.csv'), row.names = F)
 
 # set gene annotations
 m$setCurrentGeneNames(geneID_mapping_file=paste0(output_path, 'new_annotations.csv'))
+
+
 
 #' Store known genes 
 apriori_genes = c(
@@ -186,7 +184,6 @@ names(m$topCorr_DR$genemodules) <- paste0("GM ", seq(length(m$topCorr_DR$genemod
 m$identifyCellClusters(method='hclust', used_genes="topCorr_DR.genemodules", data_status='Normalized')
 
 
-m$getGeneNames()
 m$plotGeneModules(
   basename='AllCells',
   displayed.gms = 'topCorr_DR.genemodules',
@@ -301,13 +298,6 @@ for(gn in gene_list){
             perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
 }
 
-
-all(rownames(m2$expressionSet) %in% rownames(m2_julien$expressionSet))
-
-
-all(colnames(m2$expressionSet) %in% colnames(m2_julien$expressionSet))
-
-
 ###############################################################
 # DOTPLOTS
 
@@ -357,6 +347,10 @@ ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expre
   scale_color_gradient(low = "grey90", high = "blue") +
   theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
 graphics.off()
+
+
+# save rds file of all cells
+saveRDS(m2, paste0(rds_path, 'm2.rds'))
 
 ########################################################################################################################
 #' ## OEP derivative isolation
@@ -446,6 +440,10 @@ m_oep$plotGeneModules(
   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
 )
 
+
+
+# save rds file of oep cells
+saveRDS(m_oep, paste0(rds_path, 'm_oep.rds'))
 
 ########################################################################################################################
 # Plot tSNE for oep data
@@ -1052,6 +1050,114 @@ show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scal
 dev.off()
 
 
+
+
+
+
+
+# ###########
+
+# Dotplot for Williams et al. 2019 neural crest genes
+
+# Load data from Williams et al. 2019 Developmental Cell
+williams_data <- tempfile()
+download.file("https://ndownloader.figshare.com/files/12750314", williams_data)
+load(williams_data)
+
+
+#########
+# Get biomart GO annotations for TFs
+#########
+
+ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
+TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
+                   filters = 'ensembl_gene_id',
+                   values = de_5to6$EnsemblID,
+                   mart = ensembl,
+                   useCache = FALSE)
+
+# subset genes based on transcription factor GO terms
+TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
+
+# Filter transcription factors from NC 5-6ss which are abs(log2FC > 1.5) & padj < 0.05 in citrine+ cells vs citrine- cells
+de_5to6 <- de_5to6[abs(de_5to6$log2FoldChange) > 1.5 &
+                     !is.na(de_5to6$log2FoldChange) &
+                     de_5to6$padj < 0.05 &
+                     !is.na(de_5to6$padj) &
+                     de_5to6$EnsemblID %in% TF_subset,]
+
+# Filter transcription factors from NC 8-10ss which are abs(log2FC > 1.5) & padj < 0.05 in citrine+ cells vs citrine- cells
+de_8to10 <- de_8to10[abs(de_8to10$log2FoldChange) > 1.5 &
+                       !is.na(de_8to10$log2FoldChange) &
+                       de_8to10$padj < 0.05 &
+                       !is.na(de_8to10$padj) &
+                       de_8to10$EnsemblID %in% TF_subset,]
+
+# List of TFs at 5-6ss OR 8-10ss
+NC_enriched_TFs <- unique(c(de_5to6$EnsemblID, de_8to10$EnsemblID))
+
+# make dotplot
+# gene list for dotplot
+gene_list = fData(m2$expressionSet) %>% filter(ensembl_gene_id %in% NC_enriched_TFs) %>% dplyr::pull(external_gene_name)
+
+# get cell cluster information for dotplot
+NC_cells = data.frame(cluster = m2$cellClusters$Mansel$cell_ids) %>%
+  tibble::rownames_to_column('cellname') %>%
+  filter(cluster == '5') %>%
+  dplyr::mutate(celltype = 'neural crest') %>%
+  dplyr::select(-cluster)
+
+# get cell branch information for dotplot
+otic_NC_cells = pData(HSMM)[, "State", drop=F] %>%
+  tibble::rownames_to_column('cellname') %>%
+  filter(State == '1') %>%
+  dplyr::mutate(celltype = 'otic') %>%
+  dplyr::select(-State) %>%
+  dplyr::bind_rows(NC_cells)
+
+
+
+# gather data for dotplot
+dotplot_data <- data.frame(t(m$getReadcounts('Normalized')[gene_list, otic_NC_cells[['cellname']]]), check.names=F) %>%
+  tibble::rownames_to_column('cellname') %>% 
+  tidyr::gather(genename, value, -cellname) %>%
+  dplyr::left_join(otic_NC_cells, by="cellname") %>%
+  dplyr::group_by(genename, celltype) %>%
+  # calculate percentage of cells in each cluster expressing gene
+  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
+  # scale data
+  dplyr::group_by(genename) %>%
+  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  # calculate mean expression
+  dplyr::group_by(genename, celltype) %>%
+  dplyr::mutate('scaled average expression'=mean(value)) %>%
+  dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
+  dplyr::ungroup() %>%
+  # make factor levels to order cells in dotplott
+  dplyr::mutate(celltype = factor(celltype, levels = c("neural crest", "otic")))
+
+# order genes for dotplot based on average expression levels in placodal population
+gene_order <- dotplot_data %>%
+  filter(celltype == 'otic') %>%
+  dplyr::arrange(-`scaled average expression`) %>%
+  dplyr::pull(genename)
+
+# add gene order to dotplot_data
+dotplot_data <- dotplot_data %>%
+  dplyr::mutate(genename = factor(genename, levels = gene_order))
+
+
+png(paste0(plot_path, "Williams_NC_dotplot.png"), width = 30, height = 8, units = "cm", res = 200)
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+  geom_count() +
+  scale_size_area(max_size=5) +
+  scale_x_discrete(position = "top") + xlab("") + ylab("") +
+  scale_color_gradient(low = "grey90", high = "blue") +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7)) +
+  theme(legend.title = element_text(size = 8),
+        legend.text  = element_text(size = 8),
+        legend.key.size = unit(0.4, "lines"))
+graphics.off()
 
 
 
