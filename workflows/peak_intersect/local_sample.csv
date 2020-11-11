@@ -1,6 +1,6 @@
 sample_id,data1
-ATAC,/Users/alex/dev/repos/otic-reprogramming/testData/ATAC/ss8_R1.mLb.clN_peaks.narrowPeak
-H3K27Ac,/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K27Ac_R1_peaks.broadPeak
-H3K27me3,/Users/alex/dev/repos/otic-reprogramming/testData/ChIP/ss8-K27me3_R1_peaks.broadPeak
-ATAC_bigwig,/Users/alex/dev/repos/otic-reprogramming/output/results-atac/bwa/mergedLibrary/bigwig/*.bigWig
-ChIP_bigwig,/Users/alex/dev/repos/otic-reprogramming/output/results-chip/bwa/mergedLibrary/bigwig/*.bigWig
+ATAC,/Users/alex/dev/repos/otic-reprogramming/output/results-atac/bwa/mergedLibrary/macs/narrowPeak/ATAC_R1.mLb.clN_peaks.narrowPeak
+H3K27Ac,/Users/alex/dev/repos/otic-reprogramming/output/results-chip-no-shift/bwa/mergedLibrary/macs/broadPeak/H3K27Ac_R1_peaks.broadPeak
+H3K27me3,/Users/alex/dev/repos/otic-reprogramming/output/results-chip-no-shift/bwa/mergedLibrary/macs/broadPeak/H3K27me3_R1_peaks.broadPeak
+ATAC_bigwig,/Users/alex/dev/repos/otic-reprogramming/output/results-atac/bwa/mergedLibrary/bigwig/ATAC_R1.mLb.clN.bigWig
+ChIP_bigwig,/Users/alex/dev/repos/otic-reprogramming/output/results-chip-no-shift/bwa/mergedLibrary/bigwig/*.bigWig
