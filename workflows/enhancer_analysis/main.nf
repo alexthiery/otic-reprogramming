@@ -7,21 +7,19 @@ include {awk; cut} from "$baseDir/luslab-nf-modules/tools/luslab_linux_tools/mai
 include {bedtools_intersect} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
 include {bedtools_subtract} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
 include {homer_annotate_peaks; homer_find_motifs} from "$baseDir/luslab-nf-modules/tools/homer/main.nf"
-include {r_analysis as functional_enrichment_analysis} from "$baseDir/modules/r_analysis/main.nf"
+include {r_analysis as enhancer_profile; r_analysis as plot_motifs; r_analysis as functional_enrichment_analysis} from "$baseDir/modules/r_analysis/main.nf"
 
 /*------------------------------------------------------------------------------------*/
 /* Define sub workflow
 --------------------------------------------------------------------------------------*/
 
-workflow peak_intersect {
+workflow enhancer_analysis {
     take:
         peaks
         genome
         gtf
 
     main:
-
-
         // Intersect ATAC peaks with H3K27Ac peaks
         bedtools_intersect(params.modules['bedtools_intersect'], peaks.filter{ it[0].sample_id == 'ATAC' }, peaks.filter{ it[0].sample_id == 'H3K27Ac' }.map{ it[1] } )
 
@@ -35,7 +33,10 @@ workflow peak_intersect {
         awk(params.modules['awk'], homer_annotate_peaks.out)
 
         // Run functional enrichment analysis on annotated putative enhancers
-        functional_enrichment_analysis(params.modules['functional_enrichment_analysis'], awk.out.file)
+        functional_enrichment_analysis(params.modules['functional_enrichment_analysis'], awk.out.file_no_meta)
+
+        // Plot ChIP and ATAC profile across enhancers
+        enhancer_profile( params.modules['enhancer_profile'], peaks.map{ [it[1]]}.flatten().collect().combine(awk.out.file_no_meta))
 
         // Convert awk output to bed file
         cut(params.modules['cut'], awk.out.file)
@@ -43,7 +44,6 @@ workflow peak_intersect {
         // Run motif enrichment analysis on remaining peaks
         homer_find_motifs(params.modules['homer_find_motifs'], awk.out.file, genome)
 
-    emit:
-        putative_enhancers = awk.out.file_no_meta
-        motifs = homer_find_motifs.out.enrichedMotifs
+        // Generate motif plot
+        plot_motifs( params.modules['plot_motifs'], homer_find_motifs.out.enrichedMotifs.map{it[1]} )
 }
