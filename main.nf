@@ -52,17 +52,16 @@ Channel
     .value(file(params.gtf, checkIfExists: true))
     .set {ch_gtf}
 
-include {peak_intersect} from "$baseDir/workflows/peak_intersect/main.nf"
+include {enhancer_analysis} from "$baseDir/workflows/enhancer_analysis/main.nf"
 include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
-include {r_analysis as enhancer_profile; r_analysis as plot_motifs} from "$baseDir/modules/r_analysis/main.nf"
+
 
 workflow {
 
     // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
-    parse_metadata (params.peak_intersect_sample_csv)
-    peak_intersect (parse_metadata.out, ch_genome, ch_gtf)
-    enhancer_profile( params.modules['enhancer_profile'], parse_metadata.out.map{ [it[1]]}.flatten().collect().combine(peak_intersect.out.putative_enhancers))
-    plot_motifs( params.modules['plot_motifs'], peak_intersect.out.motifs.map{it[1]} )
+    parse_metadata (params.enhancer_analysis_sample_csv)
+    enhancer_analysis (parse_metadata.out, ch_genome, ch_gtf)
+
 }
 
 
