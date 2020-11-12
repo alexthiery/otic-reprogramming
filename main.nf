@@ -58,7 +58,7 @@ include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tool
 
 workflow {
 
-    // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
+    // identify putative enhancers (overlap ATAC + ChIP) and run peak profiles, motif enrichment and functional enrichment analysis
     parse_metadata (params.enhancer_analysis_sample_csv)
     enhancer_analysis (parse_metadata.out, ch_genome, ch_gtf)
 
