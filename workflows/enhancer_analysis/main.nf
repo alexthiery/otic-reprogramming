@@ -7,7 +7,7 @@ include {awk; cut} from "$baseDir/luslab-nf-modules/tools/luslab_linux_tools/mai
 include {bedtools_intersect} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
 include {bedtools_subtract} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
 include {homer_annotate_peaks; homer_find_motifs} from "$baseDir/luslab-nf-modules/tools/homer/main.nf"
-include {r_analysis as enhancer_profile; r_analysis as plot_motifs; r_analysis as functional_enrichment_analysis} from "$baseDir/modules/r_analysis/main.nf"
+include {r_analysis as enhancer_profile; r_analysis as plot_motifs; r_analysis as functional_enrichment_analysis; r_analysis as peak_annotations_frequency} from "$baseDir/modules/r_analysis/main.nf"
 
 /*------------------------------------------------------------------------------------*/
 /* Define sub workflow
@@ -28,6 +28,9 @@ workflow enhancer_analysis {
 
         // Annotate remaining peaks
         homer_annotate_peaks(params.modules['homer_annotate_peaks'], bedtools_subtract.out, genome, gtf)
+
+        // Plot distribution of intersected peak annotations
+        peak_annotations_frequency(params.modules['peak_annotations_frequency'], homer_annotate_peaks.out.map{it[1]})
 
         // Remove peaks in promoter regions (<2kb upstream of TSS) or exons
         awk(params.modules['awk'], homer_annotate_peaks.out)
