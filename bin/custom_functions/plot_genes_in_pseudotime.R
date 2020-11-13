@@ -1,4 +1,4 @@
-pseudotime_multiplot <- function(data, otic_branch = 2, epi_branch = 1, basename = 'relative_monocle_exp', gene_list,
+pseudotime_multiplot <- function(data, otic_branch = 1, epi_branch = 2, basename = 'relative_monocle_exp', gene_list,
          out_path = output_path, width = 10, height = 7, separate_plots = FALSE){
     
     otic = my_plot_genes_in_pseudotime(data[gene_list, which(pData(data)$State != epi_branch)], color_by = "timepoint", relative_expr=FALSE)
