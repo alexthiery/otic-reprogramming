@@ -49,8 +49,10 @@ Channel
     .set {ch_genome}
 
 Channel
-    .value(file(params.gtf, checkIfExists: true))
+    .fromPath(params.gtf)
+    .map { [[:], [file(it, checkIfExists: true)]]}
     .set {ch_gtf}
+
 
 include {enhancer_analysis} from "$baseDir/workflows/enhancer_analysis/main.nf"
 include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
