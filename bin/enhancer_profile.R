@@ -6,7 +6,7 @@ library(rtracklayer)
 output_path = "./output/"
 dir.create(output_path, recursive = T)
 
-# import putative enhancer peaks (ATAC peaks with K27ac - K27me3)
+# import putative enhancer peaks (ATAC peaks; + K27ac; - K27me3; - <2kb upstream TSS; - exons)
 shared.peaks <- read.delim(list.files(pattern="*.txt", full.names = TRUE), sep = "\t")
 
 peaks <- GRanges(seqnames=shared.peaks[,2],

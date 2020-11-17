@@ -68,6 +68,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(dplyr)
   library(ggsignif)
   library(cowplot)
+  library(rstatix)
 }
 
 # set pipeline params
@@ -607,7 +608,8 @@ unlink(monocle_plot_folder, recursive=TRUE, force=TRUE)
 # DOTPLOTS
 
 # gene list for dotplot
-gene_list = c("SOHO-1", "SOX8", "LMX1A", "PAX2", "TFAP2E", "OTX2", "FOXI3", "VGLL2")
+
+gene_list = c("SOX10", "SOHO-1", "SOX8", "LMX1A", "PAX2", "HOMER2", "TFAP2E", "OTX2", "FOXI3", "NELL1", "PDLIM1", "VGLL2")
 
 # get cell branch information for dotplot
 cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
@@ -682,7 +684,7 @@ for(gn in c(otic, epi)){
 comb <- t(combn(c(otic, epi), 2))
 
 # use data cell branch data from dotplots
-temp = data.frame()
+coexpression_data = data.frame()
 for(pair in 1:nrow(comb)){
   if(sum(as.character(comb[pair,]) %in% otic) == 2){comparison = "o-o"}else if(sum(as.character(comb[pair,]) %in% otic) == 1){comparison = "o-e"}else{comparison = "e-e"}
   newdat = ldply(unique(cell_branch_data$celltype), function(y) {
@@ -690,59 +692,33 @@ for(pair in 1:nrow(comb)){
       comparison, y)
   })
   newdat[,1] <- as.numeric(newdat[,1])
-  temp = rbind(temp, newdat)
+  coexpression_data = rbind(coexpression_data, newdat)
 }
 
 # rename dataframe columns
-colnames(temp) = c("value", "comparison", "branch")
+colnames(coexpression_data) = c("value", "comparison", "branch")
 
-# calculate mean value per group and SD for plotting bar plot
-plot_dat <- temp %>%
-  dplyr::group_by(branch, comparison) %>%
-  dplyr::summarise(
-    mean = mean(value, na.rm = TRUE),
-    sd = sd(value, na.rm = TRUE)
+# t-test between co-expression in OEP lineage and epibranchial/otic branches
+coexpression_data %>%
+  group_by(comparison) %>%
+  pairwise_t_test(
+    value ~ branch,
+    ref.group = "OEP",
+    p.adjust.method = "bonferroni"
   )
 
+# calculate mean value per group and SD for plotting bar plot
+plot_dat <- coexpression_data %>%
+  dplyr::group_by(branch, comparison) %>%
+  dplyr::summarise(
+    "proportion cells co-expressing" = mean(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE)
+  ) %>%
+  dplyr::ungroup() %>%
+  group_split(comparison)
 
-# split data by comparison
-dat = temp %>% group_split(comparison)
-names(dat) <- lapply(dat, function(x) as.character(unique(x[["comparison"]])))
-
-saveRDS(dat, "/home/rstudio/output/antler/rds_files/dat.rds")
-
-
-library(rstatix)
-
-
-
-dat %>%
-  dplyr::ungroup()
-group_by()
-pairwise_t_test(
-  value ~ branch,
-  ref.group = "OEP",
-  p.adjust.method = "bonferroni"
-)
-
-
-
-# run anova across branches
-multi_anova <- lapply(dat, function(x) {aov(value ~ branch, data = x)})
-
-# run post hoc tukey test for significance
-lapply(multi_anova, function(x) {TukeyHSD(x)})
-
-# calculate mean and SD for plotting bar plot
-plot_dat <- lapply(dat, function(x){
-  x %>%
-    dplyr::group_by(branch) %>%
-    dplyr::summarise(
-      "proportion cells co-expressing" = mean(value, na.rm = TRUE),
-      sd = sd(value, na.rm = TRUE),
-    )
-})
-
+# rename dataframes split by comparison
+names(plot_dat) <- lapply(plot_dat, function(x) as.character(unique(x[["comparison"]])))
 
 # bar plots
 oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`proportion cells co-expressing`, fill = c("black", "orange", "blue"))) +
@@ -750,9 +726,9 @@ oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`proportion cells co-expressing
   geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
   geom_signif(comparisons=list(c("OEP", "otic")), annotations = "***",
-              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+              y_position = 0.83, tip_length = 0.02, vjust=0.4) +
   geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "***",
-              y_position = 0.75, tip_length = 0.02, vjust=0.4) +
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
   theme(legend.position="none") +
@@ -764,7 +740,7 @@ ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`proportion cells co-expressing
   geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
   geom_signif(comparisons=list(c("OEP", "otic")), annotations = "***",
-              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+              y_position = 0.83, tip_length = 0.02, vjust=0.4) +
   geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "*",
               y_position = 0.8, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
@@ -782,8 +758,10 @@ oo_plot <- ggplot(plot_dat$`o-o`, aes(x=branch,y=`proportion cells co-expressing
   geom_bar(stat='identity') +
   geom_errorbar(aes(ymin=`proportion cells co-expressing`-sd, ymax=`proportion cells co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("OEP", "otic")), annotations = "ns",
+              y_position = 0.83, tip_length = 0.02, vjust=0.4) +
   geom_signif(comparisons=list(c("OEP", "epibranchial")), annotations = "**",
-              y_position = 0.65, tip_length = 0.02, vjust=0.4) +
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
   theme(axis.title.y=element_blank(),
@@ -833,9 +811,6 @@ for(gn in gene_list){
   )
   dev.off()
 }
-
-
-
 
 
 
@@ -902,7 +877,7 @@ BEAM_res <- BEAM(HSMM[genes_sel, ], branch_point = branch_point_id, cores = m_oe
 BEAM_res <- BEAM_res[order(BEAM_res$qval),]
 BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
 
-pdf(paste0(plot_path, 'Monocle_Beam.pdf'), width=7, height=30)
+pdf(paste0(plot_path, 'Monocle_Beam.pdf'), width=7, height=40)
 beam_hm = plot_genes_branched_heatmap(HSMM[row.names(subset(BEAM_res, qval < .05)),],
                                       branch_point = branch_point_id,
                                       num_clusters = 20,
@@ -1116,9 +1091,8 @@ otic_NC_cells = pData(HSMM)[, "State", drop=F] %>%
   dplyr::bind_rows(NC_cells)
 
 
-
 # gather data for dotplot
-dotplot_data <- data.frame(t(m$getReadcounts('Normalized')[gene_list, otic_NC_cells[['cellname']]]), check.names=F) %>%
+dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, otic_NC_cells[['cellname']]]), check.names=F) %>%
   tibble::rownames_to_column('cellname') %>% 
   tidyr::gather(genename, value, -cellname) %>%
   dplyr::left_join(otic_NC_cells, by="cellname") %>%
@@ -1161,3 +1135,59 @@ graphics.off()
 
 
 
+# ###########
+
+# Dotplot for SOX8 differentially expressed TFs across NC and otic cells
+sox8_TFs <- scan('./output/antler/sox8_DE_TFs.txt', character(), quote = "")
+
+# remove genes not expressed in m2 object
+sox8_TFs <- sox8_TFs[sox8_TFs %in% rownames(m2$getReadcounts('Normalized'))]
+
+# get cell cluster information for dotplot
+NC_cells = data.frame(cluster = m2$cellClusters$Mansel$cell_ids) %>%
+  tibble::rownames_to_column('cellname') %>%
+  filter(cluster == '5') %>%
+  dplyr::mutate(celltype = 'neural crest') %>%
+  dplyr::select(-cluster)
+
+# get cell branch information for dotplot
+otic_NC_cells = pData(HSMM)[, "State", drop=F] %>%
+  tibble::rownames_to_column('cellname') %>%
+  filter(State == '1') %>%
+  dplyr::mutate(celltype = 'otic') %>%
+  dplyr::select(-State) %>%
+  dplyr::bind_rows(NC_cells)
+
+
+# gather data for dotplot
+dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[sox8_TFs, otic_NC_cells[['cellname']]]), check.names=F) %>%
+  tibble::rownames_to_column('cellname') %>% 
+  tidyr::gather(genename, value, -cellname) %>%
+  dplyr::left_join(otic_NC_cells, by="cellname") %>%
+  dplyr::group_by(genename, celltype) %>%
+  # calculate percentage of cells in each cluster expressing gene
+  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
+  # scale data
+  dplyr::group_by(genename) %>%
+  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  # calculate mean expression
+  dplyr::group_by(genename, celltype) %>%
+  dplyr::mutate('scaled average expression'=mean(value)) %>%
+  dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
+  dplyr::ungroup() %>%
+  # make factor levels to order cells in dotplot
+  dplyr::mutate(celltype = factor(celltype, levels = c("neural crest", "otic"))) %>%
+  # make factor levels to order genes in dotplot
+  dplyr::mutate(genename = factor(genename, levels = sox8_TFs))
+
+png(paste0(plot_path, "sox8_TFs_dotplot.png"), width = 30, height = 8, units = "cm", res = 200)
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+  geom_count() +
+  scale_size_area(max_size=5) +
+  scale_x_discrete(position = "top") + xlab("") + ylab("") +
+  scale_color_gradient(low = "grey90", high = "blue") +
+  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7)) +
+  theme(legend.title = element_text(size = 8),
+        legend.text  = element_text(size = 8),
+        legend.key.size = unit(0.4, "lines"))
+graphics.off()

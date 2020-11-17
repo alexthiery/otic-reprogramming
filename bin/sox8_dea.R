@@ -315,12 +315,17 @@ write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE,
 rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
+
+plot <- pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
+                 show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
+                 annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
+                 scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA)
+
+cat(rownames(rld.plot[res_sub_TF$gene_name,][plot$tree_row[["order"]],]), file=paste0(output_path, "sox8_DE_TFs.txt"))
+
 # plot DE TFs
 png(paste0(output_path, "Sox8OE_TFs_hm.png"), height = 25, width = 25, units = "cm", res = 200)
-pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
-         show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
-         annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-         scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA)
+plot
 graphics.off()
 
 
@@ -377,6 +382,11 @@ SOX8_NC_shared <- rownames(res_sub)[rownames(res_sub) %in% NC_enriched_TFs]
 NC_TF_DE_dat <- assay(rld)
 NC_TF_DE_dat <- NC_TF_DE_dat[rownames(NC_TF_DE_dat) %in% SOX8_NC_shared,]
 rownames(NC_TF_DE_dat) <- gene_annotations$gene_name[match(rownames(NC_TF_DE_dat), gene_annotations$gene_id)]
+
+
+
+
+# plot all transcription factors DE in Williams et al. 2019 using our data - keep genes which are DE in the Sox8OE
 
 png(paste0(output_path, "SOX8_NC_shared.heatmap.ens.png"),height = 10, width = 21, units = "cm", res = 200)
 pheatmap(NC_TF_DE_dat, cluster_rows=T, show_rownames=T,

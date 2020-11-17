@@ -49,8 +49,10 @@ Channel
     .set {ch_genome}
 
 Channel
-    .value(file(params.gtf, checkIfExists: true))
+    .fromPath(params.gtf)
+    .map { [[:], [file(it, checkIfExists: true)]]}
     .set {ch_gtf}
+
 
 include {enhancer_analysis} from "$baseDir/workflows/enhancer_analysis/main.nf"
 include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
@@ -58,7 +60,7 @@ include {fastq_metadata as parse_metadata} from "$baseDir/luslab-nf-modules/tool
 
 workflow {
 
-    // identify putative enhancers (overlap ATAC + ChIP) and plot peak profiles across enhancers
+    // identify putative enhancers (overlap ATAC + ChIP) and run peak profiles, motif enrichment and functional enrichment analysis
     parse_metadata (params.enhancer_analysis_sample_csv)
     enhancer_analysis (parse_metadata.out, ch_genome, ch_gtf)
 
