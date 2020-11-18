@@ -1,2 +1,0 @@
-alexthiery/modules-antler:latest
-alexthiery/modules-r_analysis:latest
