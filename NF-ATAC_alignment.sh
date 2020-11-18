@@ -26,4 +26,5 @@ nextflow run nf-core/atacseq \
     --narrow_peak \
     --skip_diff_analysis \
     --outdir output/NF-ATAC_alignment \
-    --email alex.thiery@crick.ac.uk
+    --email alex.thiery@crick.ac.uk \
+    -resume

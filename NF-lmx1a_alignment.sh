@@ -23,4 +23,5 @@ nextflow run nf-core/rnaseq \
   -c ./configs/crick.config \
   --input ./NF-lmx1a_alignment/crick_samplesheet.csv \
   --outdir output/NF-lmx1a_alignment \
-  --email alex.thiery@crick.ac.uk
+  --email alex.thiery@crick.ac.uk \
+  -resume

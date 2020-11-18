@@ -25,4 +25,5 @@ nextflow run nf-core/chipseq \
     --macs_gsize 1.05e9 \
     --skip_diff_analysis \
     --outdir output/NF-ChIP_alignment \
-    --email alex.thiery@crick.ac.uk
+    --email alex.thiery@crick.ac.uk \
+    -resume

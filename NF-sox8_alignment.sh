@@ -23,4 +23,5 @@ nextflow run nf-core/rnaseq \
   -c ./configs/crick.config \
   --input ./NF-sox8_alignment/crick_samplesheet.csv \
   --outdir output/NF-sox8_alignment \
-  --email alex.thiery@crick.ac.uk
+  --email alex.thiery@crick.ac.uk \
+  -resume
