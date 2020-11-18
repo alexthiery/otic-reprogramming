@@ -22,5 +22,5 @@ nextflow run nf-core/rnaseq \
   --input crick_samplesheet.csv \
   --fasta "/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa" \
   --gtf "/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf" \
-  --outdir results-sox8_oe \
+  --outdir output/NF-sox8_alignment \
   --email alex.thiery@crick.ac.uk
