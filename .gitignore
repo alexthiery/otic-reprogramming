@@ -11,7 +11,3 @@ output/**/*
 .local
 .conda
 enhancers
-
-# allow
-!output/merged_counts/assayData.csv
-.Rproj.user
