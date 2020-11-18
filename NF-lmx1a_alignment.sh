@@ -23,7 +23,7 @@ nextflow run nf-core/rnaseq \
   -r 1.4.2 \
   -c "./configs/crick.config" \
   --reads "/camp/home/thierya/working/raw_data/rnaoe/*_{1,2}.fastq.gz" \
-  --fasta "/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa" \
-  --gtf "/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf" \
+  # --fasta "/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa" \
+  # --gtf "/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf" \
   --outdir output/results-lmx1a \
   --email alex.thiery@crick.ac.uk
