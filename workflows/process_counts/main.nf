@@ -6,7 +6,7 @@ nextflow.enable.dsl=2
 /*------------------------------------------------------------------------------------*/
 /* Module inclusions
 --------------------------------------------------------------------------------------*/
-include {r_analysis as merge_counts} from "$baseDir/modules/r_analysis/main.nf"
+include {r_analysis as merge_counts} from "$baseDir/../modules/r_analysis/main.nf"
 
 
 /*------------------------------------------------------------------------------------*/
