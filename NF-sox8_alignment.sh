@@ -20,9 +20,7 @@ nextflow pull nf-core/rnaseq
 ## RUN alignment
 nextflow run nf-core/rnaseq \
   -r 2.0 \
-  -profile crick \
-  --input './NF-sox8_alignment/crick_samplesheet.csv' \
-  --fasta '/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa' \
-  --gtf '/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf' \
+  -c ./configs/crick.config \
+  --input ./NF-sox8_alignment/crick_samplesheet.csv \
   --outdir output/NF-sox8_alignment \
   --email alex.thiery@crick.ac.uk
