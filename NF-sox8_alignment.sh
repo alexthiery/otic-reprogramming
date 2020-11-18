@@ -5,6 +5,8 @@
 #SBATCH --mail-user=alex.thiery@crick.ac.uk
 
 export TERM=xterm
+export NXF_VER=20.07.1
+export NXF_SINGULARITY_CACHEDIR=/camp/home/thierya/working/NF_singularity
 
 ## LOAD REQUIRED MODULES
 ml purge
