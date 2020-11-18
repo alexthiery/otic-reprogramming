@@ -1,5 +1,0 @@
-group,replicate,fastq_1,fastq_2,antibody,control
-input,1,/camp/home/thierya/working/raw_data/ChIP/Input_GATCAG_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/Input_GATCAG_L002_R2_001.fastq.gz,,
-H3K27Ac,1,/camp/home/thierya/working/raw_data/ChIP/K27Ac_CAGATC_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K27Ac_CAGATC_L002_R2_001.fastq.gz,K27Ac,input
-H3K27me3,1,/camp/home/thierya/working/raw_data/ChIP/K27me3_ACTTGA_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K27me3_ACTTGA_L002_R2_001.fastq.gz,K27me3,input
-H3K4me3,1,/camp/home/thierya/working/raw_data/ChIP/K4me3_GCCAAT_L002_R1_001.fastq.gz,/camp/home/thierya/working/raw_data/ChIP/K4me3_GCCAAT_L002_R2_001.fastq.gz,K27me3,input

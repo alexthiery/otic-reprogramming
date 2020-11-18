@@ -6,11 +6,11 @@ nextflow.enable.dsl=2
 /*------------------------------------------------------------------------------------*/
 /* Module inclusions
 --------------------------------------------------------------------------------------*/
-include {smartseq2_fastq_metadata} from "$baseDir/luslab-nf-modules/tools/metadata/main.nf"
-include {cutadapt} from "$baseDir/luslab-nf-modules/tools/cutadapt/main.nf"
-include {hisat2_build; hisat2_splice_sites; hisat2_splice_align} from "$baseDir/luslab-nf-modules/tools/hisat2/main.nf"
-include {samtools_view as samtools_view_a;samtools_view as samtools_view_b; samtools_sort} from "$baseDir/luslab-nf-modules/tools/samtools/main.nf"
-include {htseq_count} from "$baseDir/luslab-nf-modules/tools/htseq/main.nf"
+include {smartseq2_fastq_metadata} from "$baseDir/../luslab-nf-modules/tools/metadata/main.nf"
+include {cutadapt} from "$baseDir/../luslab-nf-modules/tools/cutadapt/main.nf"
+include {hisat2_build; hisat2_splice_sites; hisat2_splice_align} from "$baseDir/../luslab-nf-modules/tools/hisat2/main.nf"
+include {samtools_view as samtools_view_a;samtools_view as samtools_view_b; samtools_sort} from "$baseDir/../luslab-nf-modules/tools/samtools/main.nf"
+include {htseq_count} from "$baseDir/../luslab-nf-modules/tools/htseq/main.nf"
 
 /*------------------------------------------------------------------------------------*/
 /* Define sub workflow

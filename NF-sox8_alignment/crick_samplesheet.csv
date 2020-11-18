@@ -1,0 +1,7 @@
+group,replicate,fastq_1,fastq_2,strandedness
+control,1,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_205156_1.fastq.gz,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_205156_2.fastq.gz,unstranded
+control,2,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_207180_1.fastq.gz,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_207180_2.fastq.gz,unstranded
+control,3,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_208192_1.fastq.gz,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_208192_2.fastq.gz,unstranded
+sox8_oe,1,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_201108_1.fastq.gz,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_201108_2.fastq.gz,unstranded
+sox8_oe,2,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_202120_1.fastq.gz,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_202120_2.fastq.gz,unstranded
+sox8_oe,3,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_203132_1.fastq.gz,/camp/home/thierya/working/raw_data/sox8_oe/190815_K00181_0165_AHCK3WBBXY/WTCHG_706842_203132_2.fastq.gz,unstranded

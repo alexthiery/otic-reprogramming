@@ -1,0 +1,3 @@
+group,replicate,fastq_1,fastq_2
+ATAC,1,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200008_701501_1.fastq.gz,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200008_701501_2.fastq.gz
+ATAC,1,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200009_701501_1.fastq.gz,/camp/home/thierya/working/raw_data/ATAC/WTCHG_200009_701501_2.fastq.gz

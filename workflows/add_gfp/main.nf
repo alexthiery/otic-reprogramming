@@ -6,7 +6,7 @@ nextflow.enable.dsl=2
 /*------------------------------------------------------------------------------------*/
 /* Module inclusions
 --------------------------------------------------------------------------------------*/
-include {add_genome_gfp; add_gtf_gfp} from "$baseDir/modules/genome-tools/main.nf"
+include {add_genome_gfp; add_gtf_gfp} from "$baseDir/../modules/genome-tools/main.nf"
 
 /*------------------------------------------------------------------------------------*/
 /* Define sub workflow

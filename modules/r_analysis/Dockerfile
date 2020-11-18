@@ -20,7 +20,15 @@ RUN R -e 'BiocManager::install("ChIPpeakAnno")'
 RUN R -e 'BiocManager::install("biomaRt")'
 RUN R -e 'BiocManager::install("DESeq2")'
 RUN R -e 'BiocManager::install("apeglm")'
+RUN R -e "BiocManager::install('pcaMethods')"
+RUN R -e "BiocManager::install('monocle')"
 
+RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
+RUN R -e "devtools::install_github('juliendelile/Antler', ref = 'Development2019')"
+RUN R -e "devtools::install_github('hadley/multidplyr')"
+
+RUN R -e 'install.packages("getopt")'
+RUN R -e 'install.packages("ggsignif")'
 RUN R -e 'install.packages("getopt")'
 RUN R -e 'install.packages("plyr")'
 RUN R -e 'install.packages("readr")'
@@ -34,3 +42,4 @@ RUN R -e 'install.packages("ggseqlogo")'
 RUN R -e 'install.packages("cowplot")'
 RUN R -e 'install.packages("gridGraphics")'
 RUN R -e 'install.packages("gprofiler2")'
+RUN R -e "install.packages('rstatix')"

@@ -6,7 +6,7 @@ nextflow.enable.dsl=2
 /*------------------------------------------------------------------------------------*/
 /* Module inclusions
 --------------------------------------------------------------------------------------*/
-include {velocyto_run_smartseq2} from "$baseDir/luslab-nf-modules/tools/velocyto/main.nf"
+include {velocyto_run_smartseq2} from "$baseDir/../luslab-nf-modules/tools/velocyto/main.nf"
 
 /*------------------------------------------------------------------------------------*/
 /* Define sub workflow

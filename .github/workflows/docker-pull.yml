@@ -13,15 +13,23 @@ jobs:
         run: |
           lastrepo=""
           lastseen=""
-          for image in $(cat repos.txt); do
-             # Parse repository name, we will remove the previous image if different
-             readarray -d : -t repository <<< "$image"
-             if [ "${lastseen}" != "" ] && [ "${repository[0]}" != "${lastseen}" ]; then
-                 printf "Removing image ${lastseen} to make room."
-                 docker rmi "${lastrepo}" || docker rmi "${lastseen}"
-             fi
-             lastrepo="${repository[0]}"
-             lastseen="${image}"
-             printf "Pulling $image\n";
-             docker pull "${image}"
+          images=()
+
+          for module in modules/*; do
+              if [ -f "$module"/Dockerfile ]; then
+                  images+=($(echo "alexthiery/otic-reprogramming-${module##*/}:latest"))
+              fi
+          done
+
+          for image in "${images[@]}"; do
+              # Parse repository name, we will remove the previous image if different
+              readarray -d : -t repository <<< "$image"
+              if [ "${lastseen}" != "" ] && [ "${repository[0]}" != "${lastseen}" ]; then
+                  printf "Removing image ${lastseen} to make room."
+                  docker rmi "${lastrepo}" || docker rmi "${lastseen}"
+              fi
+              lastrepo="${repository[0]}"
+              lastseen="${image}"
+              printf "Pulling $image\n";
+              docker pull "${image}"
           done

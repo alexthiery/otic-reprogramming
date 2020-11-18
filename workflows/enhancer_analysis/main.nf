@@ -3,11 +3,11 @@
 // Define DSL2
 nextflow.enable.dsl=2
 
-include {awk as awk_enhancer_filter; awk as awk_gtf_filter; cut} from "$baseDir/luslab-nf-modules/tools/luslab_linux_tools/main.nf"
-include {bedtools_intersect} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
-include {bedtools_subtract} from "$baseDir/luslab-nf-modules/tools/bedtools/main.nf"
-include {homer_annotate_peaks; homer_find_motifs} from "$baseDir/luslab-nf-modules/tools/homer/main.nf"
-include {r_analysis as enhancer_profile; r_analysis as plot_motifs; r_analysis as functional_enrichment_analysis; r_analysis as peak_annotations_frequency} from "$baseDir/modules/r_analysis/main.nf"
+include {awk as awk_enhancer_filter; awk as awk_gtf_filter; cut} from "$baseDir/../luslab-nf-modules/tools/luslab_linux_tools/main.nf"
+include {bedtools_intersect} from "$baseDir/../luslab-nf-modules/tools/bedtools/main.nf"
+include {bedtools_subtract} from "$baseDir/../luslab-nf-modules/tools/bedtools/main.nf"
+include {homer_annotate_peaks; homer_find_motifs} from "$baseDir/../luslab-nf-modules/tools/homer/main.nf"
+include {r_analysis as enhancer_profile; r_analysis as plot_motifs; r_analysis as functional_enrichment_analysis; r_analysis as peak_annotations_frequency} from "$baseDir/../modules/r_analysis/main.nf"
 
 /*------------------------------------------------------------------------------------*/
 /* Define sub workflow

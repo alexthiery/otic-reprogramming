@@ -1,0 +1,9 @@
+group,replicate,fastq_1,fastq_2,strandedness
+Sox3U3,1,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_05_1.fastq.gz,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_05_2.fastq.gz,unstranded
+Sox3U3,2,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_06_1.fastq.gz,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_06_2.fastq.gz,unstranded
+Sox3U3,3,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_07_1.fastq.gz,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_07_2.fastq.gz,unstranded
+Sox3U3,4,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_08_1.fastq.gz,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_08_2.fastq.gz,unstranded
+Lmx1a_E1,1,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_01_1.fastq.gz,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_01_2.fastq.gz,unstranded
+Lmx1a_E1,2,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_02_1.fastq.gz,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_02_2.fastq.gz,unstranded
+Lmx1a_E1,3,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_03_1.fastq.gz,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_03_2.fastq.gz,unstranded
+Lmx1a_E1,4,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_04_1.fastq.gz,/camp/home/thierya/working/raw_data/lmx1a/WTCHG_399990_04_2.fastq.gz,unstranded
