@@ -195,12 +195,7 @@ m$plotGeneModules(
   data_status='Normalized',
   gene_transformations='logscaled',
   extra_colors=cbind(
-    pData(m$expressionSet)$stage_colors,
-    m$getReadcounts(data_status='Normalized')['PAX2',] %>%
-      ifelse(.==0, NA, .) %>% {cut(log10(1+.), breaks=100)} %>%
-      colorRampPalette(c("white", "black"))(n=100)[.] %>% ifelse(is.na(.), 'red', .) %>%
-      {matrix(rep(., 2), ncol=2, dimnames=list(list(), list('PAX2', 'Red: Null')))},
-    "Poorly characterized"=m$getReadcounts('Normalized')[unlist(m$topCorr_DR$genemodules),] %>% colSums %>% {as.numeric(scale(log(.), center=TRUE, scale=T))} %>% {ifelse(. < -1.5, "black", "white")}
+    pData(m$expressionSet)$stage_colors
   ),
   pretty.params=list("size_factor"=0.5, "ngenes_per_lines" = 8, "side.height.fraction"=.3)
 )
@@ -222,7 +217,8 @@ bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "Pax3", "SALL1", "ETS1", "TWIST1
 m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$genemodules)
 
 
-# cluster into 6 clusters 
+# cluster into 5 clusters 
+clust.colors <- c('#da70d6', '#c71585', '#b0c4de', '#afeeee', '#5f9ea0')
 #' Plot final clustering of all cells
 m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=5)
 
@@ -233,12 +229,12 @@ m2$plotGeneModules(
   displayed.gms = 'dR.genemodules',
   displayed.geneset=NA,
   use.dendrogram='Mansel',
-  display.clusters='Mansel',
   file_settings=list(list(type='pdf', width=10, height=10)),
   data_status='Normalized',
   gene_transformations=c('log', 'logscaled'),
   extra_colors=cbind(
     pData(m2$expressionSet)$stage_colors,
+    m2$cellClusters$Mansel$cell_ids %>% clust.colors[.],
     "PAX2_log"=m2$getReadcounts(data_status='Normalized')['PAX2',] %>%
       {log10(1+.)} %>%
       {as.integer(1+100*./max(.))} %>%
@@ -252,26 +248,6 @@ m2$plotGeneModules(
   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
 )
 
-
-#' GFP distribution per timepoint X cluster id
-
-gfp_time.df = cbind(
-  "GFP"=unlist(gfp_counts[m2$getCellsNames()]),
-  "clust"=factor(m2$cellClusters[['Mansel']]$cell_ids, levels=c(1,2)),
-  pData(m2$expressionSet)[, c('timepoint','replicate_id')]
-)
-gfp_time.df$timepoint = factor(gfp_time.df$timepoint, levels=sort(unique(gfp_time.df$timepoint)))
-
-p = gfp_time.df %>%
-  ggplot() +
-  geom_violin(aes(x=timepoint, y=log10(1+GFP), fill=clust, colour=clust)) + 
-  scale_fill_manual(values=getClusterColors(v=2)[1:2], aesthetics = "fill") + 
-  scale_colour_manual(values=getClusterColors(v=2)[1:2], aesthetics = "colour")
-
-pdf(paste0(plot_path, 'GFP_stat.pdf'), width=4, height=4)
-print(p)
-graphics.off()
-
 ##################################################################################################################################
 # Plot tsne prior to removing Pax2- cells
 
@@ -279,7 +255,6 @@ tsne_path = paste0(plot_path, 'allcells.tsne/')
 dir.create(tsne_path)
 
 # here you can assign cluster colours for the tsne >> change this so that colours are directly selected by cluster number
-clust.colors = getClusterColors(v=2)[1:5]
 tsne_plot(m2, m2$dR$genemodules, "allcells_clusters", seed=seed,
           cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, eta=eta, plot_folder = tsne_path)
 
