@@ -80,7 +80,7 @@ deseq$Group <- droplevels(deseq$Group)
 deseq$Group <- relevel(deseq$Group, ref = "Sox3U3")
 
 # set plot colours
-plot_colours <- list(Group = c(Sox3U3 = "#a1d76a", Lmx1a_E1 = "#f55f20"))
+plot_colours <- list(Group = c(Sox3U3 = "#48d1cc", Lmx1a_E1 = "#f55f20"))
 
 ### Filter genes which have fewer than 10 readcounts
 deseq <- deseq[rowSums(counts(deseq)) >= 10, ]
