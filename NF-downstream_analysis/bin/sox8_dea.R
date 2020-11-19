@@ -71,16 +71,17 @@ rownames(read_counts) <- read_counts$gene_id
 read_counts[,1:2] <- NULL
 
 ### Add sample group to metadata
-col_data <- as.data.frame(sapply(colnames(read_counts), function(x){ifelse(grepl("sox8_oe", x), "sox8_oe", "control")}))
+col_data <- as.data.frame(sapply(colnames(read_counts), function(x){ifelse(grepl("sox8_oe", x), "Sox8_OE", "Control")}))
 colnames(col_data) <- "Group"
 
 ### Make deseq object and make Control group the reference level
 deseq <- DESeqDataSetFromMatrix(read_counts, design = ~ Group, colData = col_data)
 deseq$Group <- droplevels(deseq$Group)
-deseq$Group <- relevel(deseq$Group, ref = "control")
+deseq$Group <- relevel(deseq$Group, ref = "Control")
 
 # set plot colours
-plot_colours <- list(Group = c(sox8_oe = "#a1d76a", control = "#e9a3c9"))
+plot_colours <- list(Group = c(Sox8_OE = "#f55f20", Control = "#957dad"))
+
 
 ### Filter genes which have fewer than 10 readcounts
 deseq <- deseq[rowSums(counts(deseq)) >= 10, ]
@@ -96,7 +97,7 @@ graphics.off()
 # LFC shrinkage uses information from all genes to generate more accurate estimates. Specifically, the distribution of
 # LFC estimates for all genes is used (as a prior) to shrink the LFC estimates of genes with little information or high
 # dispersion toward more likely (lower) LFC estimates.
-res <- lfcShrink(deseq, coef="Group_sox8_oe_vs_control", type="apeglm")
+res <- lfcShrink(deseq, coef="Group_Sox8_OE_vs_Control", type="apeglm")
 
 res$gene_name <- gene_annotations$gene_name[match(rownames(res), gene_annotations$gene_id)]
 
@@ -125,28 +126,33 @@ volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
 volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annotations$gene_id)]
 
 # select genes to add as labels on volcano plot
-labels <- volc_dat[!volc_dat$sig == "not sig",]
-labels <- labels[!grepl("ENSGAL", labels$gene),]
+otic_genes <- c("SOHO-1", "LMX1A", "SOX8", "HOMER2", "DLX3", "ZNF385C", "GATA6", "Six2", "JUN", "PROX1", "HMX1")
 
-# select top 40 padj genes for plotting
-labels <- head(labels, 40)
+downreg <- volc_dat %>%
+  dplyr::filter(log2FoldChange < 1.5) %>%
+  dplyr::arrange(padj) %>%
+  dplyr::mutate(gene = as.character(gene)) %>%
+  dplyr::filter(!stringr::str_detect(gene, "ENS"))
+
+downreg <- downreg[1:10,"gene"]
+
+labels <- volc_dat[volc_dat$gene %in% c(otic_genes, downreg, "SNAI1"),]
 
 png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
 ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
   geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
   scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
-                    values = alpha(c("gray40", "#e9a3c9", "#a1d76a"), 0.3)) +
+                    values = alpha(c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1]), 0.3)) +
   scale_color_manual(breaks = c("not sig", "downregulated", "upregulated"),
-                     values= c("gray40", "#e9a3c9", "#a1d76a")) +
+                     values= c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) +
   theme(legend.position = "top", legend.title = element_blank()) +
   guides(colour = guide_legend(override.aes = list(size=2))) +
-  geom_text_repel(data=labels, size = 3.5, aes(label=gene), segment.color = "gray80") +
+  geom_text_repel(data=labels, size = 3.5, aes(label=gene), segment.color = "black") +
+  xlab('log2FC (Sox8_OE - Control)') +
   theme(legend.position = "none")
 graphics.off()
-
-
 
 ################################################################################
 # make ordered dataframe for raw counts, normalised counts, and differential expression output
@@ -254,7 +260,7 @@ res_sub <- res_sub[order(-res_sub$log2FoldChange),]
 png(paste0(output_path, "sox8_oe_hm.png"), height = 30, width = 21, units = "cm", res = 200)
 pheatmap(assay(rld)[rownames(res_sub),], cluster_rows=T, show_rownames=FALSE,
          show_colnames = F, cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
-         annotation_colors = plot_colours, scale = "row", treeheight_row = 20, treeheight_col = 25)
+         annotation_colors = plot_colours, scale = "row", treeheight_row = 0, treeheight_col = 25, cellheight = 1.5, cellwidth = 75)
 graphics.off()
 
 #########
@@ -301,11 +307,13 @@ rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_
 plot <- pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
                  show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
                  annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-                 scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA)
+                 scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA,
+                 cellheight = 10, cellwidth = 75)
 
 cat(rownames(rld.plot[res_sub_TF$gene_name,][plot$tree_row[["order"]],]), file=paste0(output_path, "sox8_DE_TFs.txt"))
 
 # plot DE TFs
-png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 25, width = 25, units = "cm", res = 200)
+png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 20, width = 25, units = "cm", res = 200)
 plot
 graphics.off()
+

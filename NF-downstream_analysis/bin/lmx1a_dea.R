@@ -24,14 +24,14 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 # Set paths and load data
 {
   if (opt$runtype == "user"){
-    output_path = "./output/lmx1a/output/"
-    input_files <- list.files("./output/results-lmx1a/featureCounts", pattern = "*.txt$", full.names = T)
+    output_path = "./output/NF-downstream_analysis/lmx1a_dea/output/"
+    input_file <- "./output/NF-lmx1a_alignment/featurecounts.merged.counts.tsv"
     
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
     
     output_path = "output/"
-    input_files <- list.files("featureCounts/", pattern = "*.txt$", full.names = T)
+    input_file <- "./featurecounts.merged.counts.tsv"
   }
   
   dir.create(output_path, recursive = T)
@@ -50,20 +50,8 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(openxlsx)
 }
 
-
-
-# samples WTCHG_706842_265195 and WTCHG_706842_266183 were not imported for downstream analysis due to low number of reads (see multiqc output)
-
-# make dictionary of sample names and readcount files
-# samples are renamed from original sample sheet for downstream analysis. Original sample IDs can be found under Sample_ReadMe.txt
-samples_IDs <- data.frame(Sample = c("Lmx1aE1_1", "Lmx1aE1_2", "Lmx1aE1_3", "Lmx1aE1_4", "Sox3U3_1", "Sox3U3_2", "Sox3U3_3", "Sox3U3_4"),
-                          ID = c("WTCHG_399990_01", "WTCHG_399990_02", "WTCHG_399990_03", "WTCHG_399990_04",
-                                 "WTCHG_399990_05", "WTCHG_399990_06", "WTCHG_399990_07", "WTCHG_399990_08"),
-                          stringsAsFactors = F)
-
 # read in count data and rename columns
-read_counts <- as.data.frame(read.table(input_files, header = T, stringsAsFactors = F))
-colnames(read_counts) <- unlist(lapply(colnames(read_counts), function(x) ifelse(grepl("WTCHG", x), samples_IDs$Sample[grepl(gsub("_1Aligned.*", "", x ), samples_IDs$ID)], x)))
+read_counts <- read.delim(input_file, stringsAsFactors = FALSE)
 colnames(read_counts)[1] <- "gene_id"
 
 # if gene name exists then take gene name, else take ensembl ID and make new name column
@@ -83,7 +71,7 @@ rownames(read_counts) <- read_counts$gene_id
 read_counts[,1:2] <- NULL
 
 ### Add sample group to metadata
-col_data <- as.data.frame(sapply(colnames(read_counts), function(x){ifelse(grepl("Lmx1aE1", x), "Lmx1aE1", "Sox3U3")}))
+col_data <- as.data.frame(sapply(colnames(read_counts), function(x){ifelse(grepl("Lmx1a_E1", x), "Lmx1a_E1", "Sox3U3")}))
 colnames(col_data) <- "Group"
 
 ### Make deseq object and make Sox3U3 group the reference level
@@ -92,7 +80,7 @@ deseq$Group <- droplevels(deseq$Group)
 deseq$Group <- relevel(deseq$Group, ref = "Sox3U3")
 
 # set plot colours
-plot_colours <- list(Group = c(Sox3U3 = "#e9a3c9", Lmx1aE1 = "#a1d76a"))
+plot_colours <- list(Group = c(Sox3U3 = "#a1d76a", Lmx1a_E1 = "#f55f20"))
 
 ### Filter genes which have fewer than 10 readcounts
 deseq <- deseq[rowSums(counts(deseq)) >= 10, ]
@@ -108,7 +96,7 @@ graphics.off()
 # LFC shrinkage uses information from all genes to generate more accurate estimates. Specifically, the distribution of
 # LFC estimates for all genes is used (as a prior) to shrink the LFC estimates of genes with little information or high
 # dispersion toward more likely (lower) LFC estimates.
-res <- lfcShrink(deseq, coef="Group_Lmx1aE1_vs_Sox3U3", type="apeglm")
+res <- lfcShrink(deseq, coef="Group_Lmx1a_E1_vs_Sox3U3", type="apeglm")
 
 res$gene_name <- gene_annotations$gene_name[match(rownames(res), gene_annotations$gene_id)]
 
@@ -137,27 +125,25 @@ volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
 volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annotations$gene_id)]
 
 # select genes to add as labels on volcano plot
-labels <- volc_dat[!volc_dat$sig == "not sig",]
-labels <- labels[!grepl("ENSGAL", labels$gene),]
-
-# select top 40 padj genes for plotting
-labels <- head(labels, 40)
+otic_genes <- c('MEF2C', 'SOX10', 'SOX8', 'ZIC1', 'ZIC2', 'COL9A3', 'DACT2', 'LEF1', 'ZCCHC24', 'RNF122')
+epibranchial_genes <- c('PRDM1', 'VGLL2', 'PDLIM1', 'KRT18', 'ISL1', 'UPK1B', 'TFAP2E', 'NELL1')
+labels <- volc_dat[volc_dat$gene %in% c(otic_genes, epibranchial_genes),]
 
 png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
 ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
   geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
   scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
-                    values = alpha(c("gray40", "#e9a3c9", "#a1d76a"), 0.3)) +
+                    values = alpha(c(plot_colours$Group[1], "#c1c1c1", plot_colours$Group[2]), 0.3)) +
   scale_color_manual(breaks = c("not sig", "downregulated", "upregulated"),
-                     values= c("gray40", "#e9a3c9", "#a1d76a")) +
+                     values= c(plot_colours$Group[1], "#c1c1c1", plot_colours$Group[2])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) +
   theme(legend.position = "top", legend.title = element_blank()) +
   guides(colour = guide_legend(override.aes = list(size=2))) +
   geom_text_repel(data=labels, size = 3.5, aes(label=gene), segment.color = "gray80") +
+  xlab('log2FC (Lmx1a_E1 - Sox3U3)') +
   theme(legend.position = "none")
 graphics.off()
-
 
 ################################################################################
 # make ordered dataframe for raw counts, normalised counts, and differential expression output
@@ -193,18 +179,18 @@ res_down <- res_down[order(res_down$log2FoldChange),]
 
 nrow(res_up)
 nrow(res_down)
-# 1176 genes DE with padj 0.05 & abs(logFC) > 1.5 (424 upregulated, 752 downregulated)
+# 422 genes DE with padj 0.05 & abs(logFC) > 1.5 (103 upregulated, 319 downregulated)
 
 
 # Write DE data as a csv
 res_de <- rbind(res_up, res_down) %>% arrange(-log2FoldChange)
 
-cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Lmx1aE1 and Sox3U3 samples (Lmx1aE1 - Sox3U3)
+cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Lmx1a_E1 and Sox3U3 samples (Lmx1a_E1 - Sox3U3)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
-pvalue: unadjusted pvalue for differential expression test between Lmx1aE1 and Sox3U3 samples
-padj: pvalue for differential expression test between Lmx1aE1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
+padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
     file = paste0(output_path, "Supplementary_1.csv"))
 write.table(res_de, paste0(output_path, "Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
@@ -217,12 +203,12 @@ res_remain <- res_remain[order(-res_remain$log2FoldChange),]
 all_dat <- rbind(res_up, res_down, res_remain)
 
 # Write all data as a csv
-cat("This table shows the differential expression results for all genes when comparing Lmx1aE1 and Sox3U3 samples (Lmx1aE1 - Sox3U3)
+cat("This table shows the differential expression results for all genes when comparing Lmx1a_E1 and Sox3U3 samples (Lmx1a_E1 - Sox3U3)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
-pvalue: unadjusted pvalue for differential expression test between Lmx1aE1 and Sox3U3 samples
-padj: pvalue for differential expression test between Lmx1aE1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
+padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
     file = paste0(output_path, "Supplementary_2.csv"))
 write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
@@ -261,10 +247,12 @@ res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1.5), ]
 res_sub <- res_sub[order(-res_sub$log2FoldChange),]
 
 # plot heatmap of DE genes
-png(paste0(output_path, "Lmx1aE1_hm.png"), height = 30, width = 21, units = "cm", res = 200)
+
+png(paste0(output_path, "Lmx1a_E1_hm.png"), height = 29, width = 21, units = "cm", res = 200)
 pheatmap(assay(rld)[rownames(res_sub),], cluster_rows=T, show_rownames=FALSE,
          show_colnames = F, cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
-         annotation_colors = plot_colours, scale = "row", treeheight_row = 20, treeheight_col = 25)
+         annotation_colors = plot_colours, scale = "row", treeheight_row = 0, treeheight_col = 25,
+         main = "Lmx1a_E1 and Sox3U3 enriched genes (logFC > 1.5, padj = 0.05)", border_color = NA, cellheight = 1.6, cellwidth = 55)
 graphics.off()
 
 #########
@@ -291,12 +279,12 @@ res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
 
 all_dat_TF <- all_dat[all_dat$gene_id %in% rownames(res_sub_TF),]
 
-cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Lmx1aE1 and Sox3U3 samples (Lmx1aE1 - Sox3U3)
+cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Lmx1a_E1 and Sox3U3 samples (Lmx1a_E1 - Sox3U3)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
-pvalue: unadjusted pvalue for differential expression test between Lmx1aE1 and Sox3U3 samples
-padj: pvalue for differential expression test between Lmx1aE1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
+padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
     file = paste0(output_path, "Supplementary_3.csv"))
 write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
@@ -308,9 +296,10 @@ rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
 # plot DE TFs
-png(paste0(output_path, "Lmx1aE1_TFs_hm.png"), height = 30, width = 30, units = "cm", res = 200)
+png(paste0(output_path, "Lmx1a_E1_TFs_hm.png"), height = 17, width = 25, units = "cm", res = 200)
 pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
          annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-         scale = "row", main = "Lmx1aE1 enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA)
+         scale = "row", main = "Lmx1a_E1 and Sox3U3 enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA, cellheight = 10, cellwidth = 50)
 graphics.off()
+
