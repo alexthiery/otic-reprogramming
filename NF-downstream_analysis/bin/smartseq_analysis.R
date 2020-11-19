@@ -263,7 +263,7 @@ tsne_plot(m2, m2$dR$genemodules, "allcells_stage", seed=seed,
 
 
 ########################################################################################################################
-# Plot expression of PAX2 Pax7 and Sox21 on tsne before filtering
+# Plot expression of genes of interest on tsne before filtering
 
 # plot tsne for gradient expression of select genes in gene_list
 gene_list = c('SOX2', 'SOX10', 'SOX8', 'PAX7', 'PAX2', 'LMX1A', 'SOX21', 'SIX1')
@@ -372,44 +372,35 @@ m_oep$plotGeneModules(
   data_status='Normalized',
   gene_transformations='logscaled',
   extra_colors=cbind(
-    pData(m_oep$expressionSet)$stage_colors,
-    m_oep$getReadcounts(data_status='Normalized')['PAX2',] %>%
-      ifelse(.==0, NA, .) %>% {cut(log10(1+.), breaks=100)} %>%
-      colorRampPalette(c("white", "black"))(n=100)[.] %>% ifelse(is.na(.), 'red', .) %>%
-      {matrix(rep(., 2), ncol=2, dimnames=list(list(), list('PAX2', 'Red: Null')))},
-    "Poorly characterized"=m_oep$getReadcounts('Normalized')[unlist(m_oep$topCorr_DR$genemodules),] %>% colSums %>% {as.numeric(scale(log(.), center=TRUE, scale=T))} %>% {ifelse(. < -1.5, "black", "white")}
+    pData(m_oep$expressionSet)$stage_colors
   ),
   pretty.params=list("size_factor"=1, "ngenes_per_lines" = 8, "side.height.fraction"=.3)
 )
+
+# add gene modules txt
+
 
 #' Manual feature selection
 bait_genes = c("HOMER2", "LMX1A", "SOHO-1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
 
 m_oep$topCorr_DR$genemodules.selected = Filter(function(x){any(bait_genes %in% x)}, m_oep$topCorr_DR$genemodules)
 
+# cluster into 5 clusters 
 m_oep$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="topCorr_DR.genemodules.selected", data_status='Normalized', numclusters=5)
 
-clust.colors = c('#FFA500', '#FF7F50', '#CC99CC', '#E78AC3', '#66C2A5', '#98FB98', '#E5C494', '#B3B3B3', RColorBrewer::brewer.pal(12, "Set3"), RColorBrewer::brewer.pal(9, "Set1"))
+clust.colors <- c('#ffa07a', '#f55f20', '#dda0dd', '#48d1cc', '#b2ffe5')
 
 m_oep$plotGeneModules(
   basename='OEP_GMselection',
   displayed.gms = 'topCorr_DR.genemodules.selected',
   displayed.geneset=NA,
   use.dendrogram='Mansel',
-  display.clusters='Mansel',
   file_settings=list(list(type='pdf', width=10, height=5)),
   data_status='Normalized',
   gene_transformations=c('log', 'logscaled'),
   extra_colors=cbind(
     pData(m_oep$expressionSet)$stage_colors,
-    "PAX2_log"=m_oep$getReadcounts(data_status='Normalized')['PAX2',] %>%
-      {log10(1+.)} %>%
-      {as.integer(1+100*./max(.))} %>%
-      colorRampPalette(c("white", "black"))(n=100)[.],
-    "GFP_log"= as.numeric(gfp_counts[m_oep$getCellsNames()]) %>%
-      {log10(1+.)} %>%
-      {as.integer(1+100*./max(.))} %>%
-      colorRampPalette(c("white", "darkgreen"))(n=100)[.]
+    m_oep$cellClusters$Mansel$cell_ids %>% clust.colors[.]
   ),
   pretty.params=list("size_factor"=1, "ngenes_per_lines" = 6, "side.height.fraction"=1),
   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
@@ -432,10 +423,16 @@ tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path,
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = tsne_path, basename = "OEP_samples", seed=1,
           cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=FALSE, eta=eta)
 
-# Plot gradient expression of PAX2 on OEP tsne
-tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = "OEP.subset.PAX2", seed=seed,
-          cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')['PAX2',]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')['PAX2',])))],
-          perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = 'PAX2')
+# Plot expression of genes of interest on OEP tsne
+gene_list = c('PAX2', 'LMX1A', 'SOX8', 'TFAP2A', 'FOXI3', 'SIX1', 'ZBTB16', 'SOHO-1', 'FOXG1', 'NELL1', 'PDLIM1', 'VGLL2')
+
+for(gn in gene_list){
+  path = paste0(tsne_path, gn)
+  tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = paste0("OEP.subset.", gn), seed=seed,
+            cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
+            perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
+}
+
 
 
 ########################################################################################################################
