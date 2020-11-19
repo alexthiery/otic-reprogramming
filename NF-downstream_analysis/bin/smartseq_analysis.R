@@ -412,6 +412,8 @@ m_oep$plotGeneModules(
 saveRDS(m_oep, paste0(rds_path, 'm_oep.rds'))
 
 ########################################################################################################################
+# OEP tSNE plots
+
 # Plot tSNE for oep data
 tsne_path = paste0(plot_path, 'OEP_subset_tsne/')
 dir.create(tsne_path)
@@ -433,19 +435,15 @@ for(gn in gene_list){
             perplexity=perp, pca=FALSE, eta=eta, plot_folder = tsne_path, main = gn)
 }
 
-
-
-########################################################################################################################
 # Plot tSNE co-expression plots
 
-gene_pairs <- list(c("PAX2", "LMX1A"), c("PAX2", "SOX8"), c("FOXI3", "LMX1A"))
+gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
 lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected,
                                                        gene1 = x[1], gene2 = x[2], plot_folder = tsne_path, seed=seed, perplexity=perp, pca=FALSE, eta=eta)})
 
 
 ##################################################################
 #' ## Monocle 2
-
 monocle.input_dims = unlist(m_oep$topCorr_DR$genemodules.selected)
 
 df_pheno = pData(m_oep$expressionSet)
@@ -461,11 +459,8 @@ HSMM <- monocle::newCellDataSet(
 )
 
 HSMM <- estimateSizeFactors(HSMM)
-
 HSMM <- setOrderingFilter(HSMM, monocle.input_dims)
-
 HSMM <- reduceDimension(HSMM, max_components = 2, method = 'DDRTree')
-
 HSMM <- orderCells(HSMM)
 
 #' Order cells from earliest "State" (ie DDRTree branch)
@@ -477,14 +472,10 @@ dir.create(curr.plot.folder)
 
 pdf(paste0(curr.plot.folder, 'Monocle_DDRTree_samples.pdf'))
 z_order = sample(seq(m_oep$getNumberOfCells()))
-plot(t(reducedDimS(HSMM))[z_order,], col=pData(m_oep$expressionSet)$stage_colors[z_order], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1, cex=1.5)
+plot(t(reducedDimS(HSMM))[z_order,], col=pData(m_oep$expressionSet)$stage_colors[z_order], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
 dev.off()
 
 #' Plot cell clusters over projected coordinates
-#' 
-#' problem here! it's not respecting the new colors
-#' col=pData(m_oep$expressionSet)$stage_colors[z_order]
-#' clust.colors = c('#FFA500', '#FF7F50', '#CC99CC', '#E78AC3', '#66C2A5', '#98FB98', '#E5C494', '#B3B3B3', RColorBrewer::brewer.pal(12, "Set3"), RColorBrewer::brewer.pal(9, "Set1"))
 pdf(paste0(curr.plot.folder, 'Monocle_DDRTree_Clusters.pdf'))
 plot(t(reducedDimS(HSMM)), col=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
 dev.off()
@@ -492,49 +483,39 @@ dev.off()
 
 ########################################################################
 # plot gradient gene expression on monocle embeddings
-
-gene_list = c('PAX2', 'SOX8', 'TFAP2E', 'LMX1A', 'FOXI3')
+gene_list = c('FOXI3', 'LMX1A', 'TFAP2E', 'SOX8', 'PAX2')
 for(gn in gene_list){
   print(gn)
   pdf(paste0(curr.plot.folder, "monocle.gradient.", gn, '.pdf'))
   plot(t(reducedDimS(HSMM)), pch=16, main=gn, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
-       col=colorRampPalette(c("grey", "red"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
+       col=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
   )
   dev.off()
 }
 
-########################################################################
 # plot gradient gene co-expression on monocle embeddings
 
-gene_pairs <- list(c("FOXI3", "PAX2"), c("FOXI3", "SOX8"), c("FOXI3", "LMX1A"), c("TFAP2E", "SOX8"), c("TFAP2E", "LMX1A"))
+gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
 lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2], plot_folder = curr.plot.folder)})
 
-
-
-
-
-#' <a href="./suppl_files/monocle_plots.zip">Download all gene pattern plots</a>
-#'
+########################################################################
 
 #' Plot annotated trajectories
+p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples") +
+  scale_color_manual(values = c('#BBBDC1', '#6B98E9', '#05080D'), name = "cluster")
+p2 = plot_cell_trajectory(HSMM, color_by = "Pseudotime") +
+  scale_color_gradient(low = "#008ABF", high = "#E53F00")
 
-p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples")
-p2 = plot_cell_trajectory(HSMM, color_by = "timepoint")
-p3 = plot_cell_trajectory(HSMM, color_by = "Pseudotime")
-
-pdf(paste0(plot_path, "Monocle_DDRTree_trajectories.pdf"), width=15, height=8)
-gridExtra::grid.arrange(grobs=list(p1, p2, p3), layout_matrix=matrix(seq(3), ncol=3, byrow=T))
+pdf(paste0(plot_path, "Monocle_DDRTree_trajectories.pdf"), width=10, height=8)
+gridExtra::grid.arrange(grobs=list(p1, p2), layout_matrix=matrix(seq(2), ncol=2, byrow=T))
 graphics.off()
 
-#' <a href="./suppl_files/Monocle_DDRTree_trajectories.pdf">Download PDF</a>
-#' <p align="center"><img src="./suppl_files/Monocle_DDRTree_trajectories.png" width="100%"></p>
-#'
 
 #' State subplots
-pdf(paste0(plot_path, 'Monocle_DDRTree_State_facet.pdf'), width=7, height=4)
-plot_cell_trajectory(HSMM, color_by = "State") + facet_wrap(~State, nrow = 1)
+pdf(paste0(plot_path, 'Monocle_DDRTree_State_facet.pdf'), width=7, height=7)
+plot_cell_trajectory(HSMM, color_by = "State") +
+  scale_color_manual(values = c('#f55f20', '#48d1cc', '#dda0dd'), name = "State")
 graphics.off()
-
 
 
 
@@ -580,15 +561,15 @@ unlink(monocle_plot_folder, recursive=TRUE, force=TRUE)
 
 # gene list for dotplot
 
-gene_list = c("SOX10", "SOHO-1", "SOX8", "LMX1A", "PAX2", "HOMER2", "TFAP2E", "OTX2", "FOXI3", "NELL1", "PDLIM1", "VGLL2")
+gene_list = c("SOX10", "SOHO-1", "SOX8", "LMX1A", "PAX2", "HOMER2", "TFAP2E", "FOXI3", "NELL1", "PDLIM1", 'PRDM1', "VGLL2")
 
 # get cell branch information for dotplot
 cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
   tibble::rownames_to_column('cellname') %>%
   dplyr::rename(branch = State) %>%
   dplyr::mutate(celltype = case_when(
-    branch == "1" ~ "otic",
-    branch == "2" ~ "epibranchial",
+    branch == "1" ~ "Otic",
+    branch == "2" ~ "Epibranchial",
     branch == "3" ~ 'OEP'
   ))
 
@@ -599,13 +580,13 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
   dplyr::left_join(cell_branch_data, by="cellname") %>%
   dplyr::group_by(genename, celltype) %>%
   # calculate percentage of cells in each cluster expressing gene
-  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
+  dplyr::mutate('Proportion of Cells Expressing' = sum(value > 0)/n()) %>%
   # scale data
   dplyr::group_by(genename) %>%
   dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
   # calculate mean expression
   dplyr::group_by(genename, celltype) %>%
-  dplyr::mutate('scaled average expression' = mean(value)) %>%
+  dplyr::mutate('Scaled Average Expression' = mean(value)) %>%
   dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
   dplyr::ungroup() %>%
   # make factor levels to order plot
@@ -613,8 +594,8 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
 
 
 
-png(paste0(plot_path, "m_oep_dotplot.png"), width = 15, height = 8, units = "cm", res = 200)
-ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+png(paste0(plot_path, "m_oep_dotplot.png"), width = 18, height = 10, units = "cm", res = 200)
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expressing`, color=`Scaled Average Expression`)) +
   geom_count() +
   scale_size_area(max_size=5) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
@@ -624,13 +605,8 @@ graphics.off()
 
 
 
-
-
-
-
 ###############################################################
 # COEXPRESSION ANALYSIS
-
 
 # plot gradient gene expression on monocle embeddings
 curr.plot.folder = paste0(plot_path, 'coexpression_plots/')
