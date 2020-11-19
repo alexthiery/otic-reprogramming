@@ -288,10 +288,10 @@ cell_cluster_data = data.frame(cluster = m2$cellClusters$Mansel$cell_ids) %>%
   tibble::rownames_to_column('cellname') %>%
   dplyr::mutate(celltype = case_when(
     cluster == "1" ~ "OEP",
-    cluster == "2" ~ "late placodal",
-    cluster == "3" ~ 'neural',
-    cluster == "4" ~ 'mesodermal',
-    cluster == "5" ~ 'neural crest'
+    cluster == "2" ~ "Late Placodal",
+    cluster == "3" ~ 'Neural',
+    cluster == "4" ~ 'Mesodermal',
+    cluster == "5" ~ 'Neural Crest'
   ))
 
 # gather data for dotplot
@@ -301,22 +301,22 @@ dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check
   dplyr::left_join(cell_cluster_data, by="cellname") %>%
   dplyr::group_by(genename, celltype) %>%
   # calculate percentage of cells in each cluster expressing gene
-  dplyr::mutate('proportion of cells expressing' = sum(value > 0)/n()) %>%
+  dplyr::mutate('Proportion of Cells Expressing' = sum(value > 0)/n()) %>%
   # scale data
   dplyr::group_by(genename) %>%
   dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
   # calculate mean expression
   dplyr::group_by(genename, celltype) %>%
-  dplyr::mutate('scaled average expression'=mean(value)) %>%
+  dplyr::mutate('Scaled Average Expression'=mean(value)) %>%
   dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
   dplyr::ungroup() %>%
   # make factor levels to order genes in dotplot
   dplyr::mutate(genename = factor(genename, levels = gene_list)) %>%
   # make factor levels to order cells in dotplott
-  dplyr::mutate(celltype = factor(celltype, levels = rev(c("OEP", "late placodal", "neural crest", "neural", "mesodermal"))))
+  dplyr::mutate(celltype = factor(celltype, levels = rev(c("OEP", "Late Placodal", "Neural Crest", "Neural", "Mesodermal"))))
 
-png(paste0(plot_path, "all_cells_dotplot.png"), width = 30, height = 12, units = "cm", res = 200)
-ggplot(dotplot_data, aes(x=genename, y=celltype, size=`proportion of cells expressing`, color=`scaled average expression`)) +
+png(paste0(plot_path, "all_cells_dotplot.png"), width = 28, height = 12, units = "cm", res = 200)
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expressing`, color=`Scaled Average Expression`)) +
   geom_count() +
   scale_size_area(max_size=5) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
@@ -353,7 +353,6 @@ m_oep$identifyGeneModules(
   topcorr_mod_consistency_thres=0.4, # default
   topcorr_mod_skewness_thres=-Inf, # default
   topcorr_min_cell_level=5,
-  # topcorr_num_max_final_gms=100,
   data_status='Normalized'
 )
 
