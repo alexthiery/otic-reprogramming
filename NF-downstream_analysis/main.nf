@@ -24,6 +24,8 @@ Channel
     .fromPath(params.sox8_counts)
     .set { ch_sox8_counts }
 
+
+// need to add all inputs for antler together here
 // Channel
 //     .fromPath(params.smartseq2_counts)
 //     .set { ch_smartseq2_counts }
@@ -47,32 +49,3 @@ workflow {
     //  Run smartseq2 Antler analysis
     // smartseq_analysis( params.modules['smartseq_analysis'], ch_smartseq2_counts )
 }
-
-
-// /*------------------------------------------------------------------------------------*/
-// /* Workflow to run sox8 DEA
-// --------------------------------------------------------------------------------------*/
-
-// include {r_analysis as lmx1a_dea} from "$baseDir/modules/r_analysis/main.nf"
-// include {r_analysis as sox8_dea} from "$baseDir/modules/r_analysis/main.nf"
-// include {r_analysis as enhancer_profile} from "$baseDir/modules/r_analysis/main.nf"
-
-// Channel
-//     .fromPath(params.lmx1a_counts)
-//     .set { ch_lmx1a_counts }
-
-// Channel
-//     .fromPath(params.sox8_counts)
-//     .set { ch_sox8_counts }
-
-
-// Channel
-//     .fromPath(params.chip_bigwig)
-//     .set { ch_chip_bigwig }
-
-// workflow {
-//     lmx1a_dea( params.modules['lmx1a_dea'], ch_lmx1a_counts )
-//     sox8_dea( params.modules['sox8_dea'], ch_sox8_counts )
-//     // enhancer_profile( params.modules['enhancer_profile'], ch_chip_bigwig.combine(peak_intersect.out.putative_enhancers) )
-
-// }
