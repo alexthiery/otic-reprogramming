@@ -303,17 +303,12 @@ write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE,
 rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
-
-plot <- pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
+# plot DE TFs
+png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 20, width = 25, units = "cm", res = 200)
+pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
                  show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
                  annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
                  scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA,
                  cellheight = 10, cellwidth = 75)
-
-cat(rownames(rld.plot[res_sub_TF$gene_name,][plot$tree_row[["order"]],]), file=paste0(output_path, "sox8_DE_TFs.txt"))
-
-# plot DE TFs
-png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 20, width = 25, units = "cm", res = 200)
-plot
 graphics.off()
 
