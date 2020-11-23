@@ -1,3 +1,5 @@
 sample_id,data
 sox8_alignment_out,/Users/alex/dev/repos/otic-reprogramming/output/NF-sox8_alignment
 lmx1a_alignment_out,/Users/alex/dev/repos/otic-reprogramming/output/NF-lmx1a_alignment
+ChIP_alignment_out,/Users/alex/dev/repos/otic-reprogramming/output/NF-ChIP_alignment
+ATAC_alignment_out,/Users/alex/dev/repos/otic-reprogramming/output/NF-ATAC_alignment
