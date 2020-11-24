@@ -10,7 +10,7 @@ process r_analysis {
                     if (opts.publish_results == "none") null
                     else filename }
 
-    container "alexthiery/modules-r_analysis:latest"
+    container "alexthiery/otic-reprogramming-r_analysis:latest"
 
     input:
         val opts
