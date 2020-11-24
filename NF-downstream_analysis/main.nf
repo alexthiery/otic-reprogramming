@@ -10,6 +10,7 @@ nextflow.enable.dsl=2
 /* Module inclusions
 --------------------------------------------------------------------------------------*/
 
+include {extract_gtf_annotations} from "$baseDir/../modules/genome-tools/main.nf"
 include {enhancer_analysis} from "$baseDir/../workflows/enhancer_analysis/main.nf"
 include {r_analysis as lmx1a_dea; r_analysis as sox8_dea; r_analysis as smartseq_analysis} from "$baseDir/../modules/r_analysis/main.nf"
 
@@ -22,8 +23,7 @@ Channel
     .set {ch_genome}
 
 Channel
-    .fromPath(params.gtf)
-    .map { [[:], [file(it, checkIfExists: true)]]}
+    .value(file(params.gtf, checkIfExists:true))
     .set {ch_gtf}
 
 Channel
@@ -83,7 +83,6 @@ metadata
     .set { ch_smartseq2_velocyto }
 
 
-
 // /*------------------------------------------------------------------------------------*/
 // /* Workflow to full downstream analysis
 // --------------------------------------------------------------------------------------*/
@@ -96,10 +95,13 @@ workflow {
     sox8_dea( params.modules['sox8_dea'], ch_sox8_readcounts )
 
     // Identify putative enhancers (overlap ATAC + ChIP) and run peak profiles, motif enrichment and functional enrichment analysis
-    enhancer_analysis( ch_chip_bigwig, ch_atac_bigwig, ch_chip_peaks, ch_atac_peaks, ch_genome, ch_gtf )
+    enhancer_analysis( ch_chip_bigwig, ch_atac_bigwig, ch_chip_peaks, ch_atac_peaks, ch_genome, ch_gtf.map { [[:], [it]]} )
+
+    // Extract gene annotations from gtf
+    extract_gtf_annotations( params.modules['extract_gtf_annotations'], ch_gtf )
 
     //  Run smartseq2 Antler analysis
-    smartseq_analysis( params.modules['smartseq_analysis'], ch_smartseq2_counts.combine(ch_smartseq2_velocyto) )
+    smartseq_analysis( params.modules['smartseq_analysis'], ch_smartseq2_counts.combine(ch_smartseq2_velocyto).combine(extract_gtf_annotations.out) )
 }
 
 // /*------------------------------------------------------------------------------------*/
