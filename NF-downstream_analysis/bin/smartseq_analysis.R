@@ -34,7 +34,6 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     
     output_path = "./output/NF-downstream_analysis/smartseq_analysis/output/"
     plot_path = "./output/NF-downstream_analysis/smartseq_analysis/output/plots/"
-    rds_path = "../output/NF-downstream_analysis/smartseq_analysis/output/rds_files/"
     merged_counts_path = './output/NF-smartseq2_alignment/merged_counts/output/'
     genome_annotations_path = './output/NF-downstream_analysis/extract_gtf_annotations/'
     gfp_counts = './output/NF-smartseq2_alignment/merged_counts/output/'
@@ -48,7 +47,6 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     sapply(list.files(opt$custom_functions, full.names = T), source)
     output_path = "./output/"
     plot_path = "./output/plots/"
-    rds_path = "./output/rds_files/"
     merged_counts_path = './'
     genome_annotations_path = './'
     gfp_counts = './'
@@ -59,7 +57,6 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   
   dir.create(output_path, recursive = T)
   dir.create(plot_path, recursive = T)
-  dir.create(rds_path, recursive = T)
   
   # loadload required packages
   library(Antler)
