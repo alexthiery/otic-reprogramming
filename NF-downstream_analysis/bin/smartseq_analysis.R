@@ -587,9 +587,22 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
   dplyr::group_by(genename, celltype) %>%
   dplyr::mutate('Scaled Average Expression' = mean(value)) %>%
   dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
-  dplyr::ungroup() %>%
-  # make factor levels to order plot
-  dplyr::mutate(genename = factor(genename, levels = gene_list))
+  dplyr::ungroup()
+
+# order genes for dotplot based on divergent expression in otic and NC lineages
+gene_order <- dotplot_data %>%
+  select(genename, celltype, `Scaled Average Expression`) %>%
+  filter(celltype %in% c('Otic', 'Epibranchial')) %>%
+  tidyr::pivot_wider(names_from = celltype, 
+              values_from = `Scaled Average Expression`) %>%
+  dplyr::mutate(order = Otic-Epibranchial) %>%
+  arrange(-order) %>%
+  dplyr::pull(genename)
+
+
+# add gene order to dotplot_data
+dotplot_data <- dotplot_data %>%
+  dplyr::mutate(genename = factor(genename, levels = gene_order))
 
 png(paste0(curr_plot_folder, "m_oep_dotplot.png"), width = 18, height = 10, units = "cm", res = 200)
 ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expressing`, color=`Scaled Average Expression`)) +
