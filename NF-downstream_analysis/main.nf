@@ -19,8 +19,8 @@ include {r_analysis as lmx1a_dea; r_analysis as sox8_dea; r_analysis as smartseq
 --------------------------------------------------------------------------------------*/
 
 Channel
-    .value(file(params.genome, checkIfExists: true))
-    .set {ch_genome}
+    .value(file(params.fasta, checkIfExists: true))
+    .set {ch_fasta}
 
 Channel
     .value(file(params.gtf, checkIfExists:true))
@@ -95,7 +95,7 @@ workflow {
     sox8_dea( params.modules['sox8_dea'], ch_sox8_readcounts )
 
     // Identify putative enhancers (overlap ATAC + ChIP) and run peak profiles, motif enrichment and functional enrichment analysis
-    enhancer_analysis( ch_chip_bigwig, ch_atac_bigwig, ch_chip_peaks, ch_atac_peaks, ch_genome, ch_gtf.map { [[:], [it]]} )
+    enhancer_analysis( ch_chip_bigwig, ch_atac_bigwig, ch_chip_peaks, ch_atac_peaks, ch_fasta, ch_gtf.map { [[:], [it]]} )
 
     // Extract gene annotations from gtf
     extract_gtf_annotations( params.modules['extract_gtf_annotations'], ch_gtf )
