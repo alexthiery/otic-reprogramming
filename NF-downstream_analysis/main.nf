@@ -34,12 +34,12 @@ Channel
 
 metadata
     .filter{ it[0].sample_id == 'sox8_alignment_out' }
-    .map { row -> row[1].collect{ file(it+"/star/featurecounts/featurecounts.merged.counts.tsv", checkIfExists: true) } }
+    .map { row -> row[1].collect{ file(it+"/star/featurecounts.merged.counts.tsv", checkIfExists: true) } }
     .set { ch_sox8_readcounts }
 
 metadata
     .filter{ it[0].sample_id == 'lmx1a_alignment_out' }
-    .map { row -> row[1].collect{ file(it+"/star/featurecounts/featurecounts.merged.counts.tsv", checkIfExists: true) } }
+    .map { row -> row[1].collect{ file(it+"/star/featurecounts.merged.counts.tsv", checkIfExists: true) } }
     .set { ch_lmx1a_readcounts }
 
 metadata
