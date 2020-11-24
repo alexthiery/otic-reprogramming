@@ -30,15 +30,15 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 # Set paths and load data
 {
   if (opt$runtype == "user"){
-    sapply(list.files('./bin/custom_functions/', full.names = T), source)
+    sapply(list.files('./NF-downstream_analysis/bin/custom_functions/', full.names = T), source)
     
     output_path = "./output/antler"
     plot_path = "./output/antler/plots/"
     rds_path = "./output/antler/rds_files/"
-    merged_counts_path = './output/merged_counts/'
-    genome_annotations_path = './output/extract_gtf_annotations'
-    gfp_counts = './output/merged_counts/'
-    velocyto_input = './output/velocyto/'
+    merged_counts_path = './output/NF-smartseq2_alignment/merged_counts/output/'
+    genome_annotations_path = './output/NF-downstream_analysis/extract_gtf_annotations/'
+    gfp_counts = './output/NF-smartseq2_alignment/merged_counts/output/'
+    velocyto_input = './output/NF-smartseq2_alignment/velocyto/'
     
     ncores = 8
     
