@@ -3,7 +3,7 @@
 // Define DSL2
 nextflow.enable.dsl=2
 
-include {awk as awk_enhancer_filter; awk as awk_gtf_filter; cut} from "$baseDir/../luslab-nf-modules/tools/luslab_linux_tools/main.nf"
+include {awk as awk_enhancer_filter; awk as awk_gtf_filter; awk as awk_trim_head; cut} from "$baseDir/../luslab-nf-modules/tools/luslab_linux_tools/main.nf"
 include {bedtools_intersect} from "$baseDir/../luslab-nf-modules/tools/bedtools/main.nf"
 include {bedtools_subtract} from "$baseDir/../luslab-nf-modules/tools/bedtools/main.nf"
 include {homer_annotate_peaks; homer_find_motifs} from "$baseDir/../luslab-nf-modules/tools/homer/main.nf"
@@ -56,6 +56,9 @@ workflow enhancer_analysis {
 
         // Convert awk output to bed file
         cut(params.modules['cut'], awk_enhancer_filter.out.file)
+
+        // Trim first line from bed file
+        awk_trim_head(params.modules['awk_trim_head'], cut.out.file)
 
         // Run motif enrichment analysis on remaining peaks
         homer_find_motifs(params.modules['homer_find_motifs'], awk_enhancer_filter.out.file, genome)
