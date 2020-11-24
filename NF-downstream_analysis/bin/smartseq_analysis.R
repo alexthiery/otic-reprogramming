@@ -36,7 +36,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     plot_path = "./output/antler/plots/"
     rds_path = "./output/antler/rds_files/"
     merged_counts_path = './output/merged_counts/'
-    genome_annotations_path = './output/extract_gtf_annotations'
+    genome_annotations_file = './output/extract_gtf_annotations'
     gfp_counts = './output/merged_counts/'
     velocyto_input = './output/velocyto/'
     
@@ -50,7 +50,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     plot_path = "./output/plots/"
     rds_path = "./output/rds_files/"
     merged_counts_path = './'
-    genome_annotations_path = './'
+    genome_annotations_file = './Gallus_gallus.GRCg6a.97_gene_annotations.csv'
     gfp_counts = './'
     velocyto_input = './'
     
@@ -93,7 +93,7 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
 
 # set gene names
 # read in annotations file
-gtf_annotations = read.csv(list.files(genome_annotations_path, full.names = T), stringsAsFactors = F)
+gtf_annotations = read.csv(genome_annotations_file, stringsAsFactors = F)
 
 # add missing annotations to annotations file
 extra_annotations = c('FOXI3' = 'ENSGALG00000037457', 'ATN1' = 'ENSGALG00000014554', 'TBX10' = 'ENSGALG00000038767',
