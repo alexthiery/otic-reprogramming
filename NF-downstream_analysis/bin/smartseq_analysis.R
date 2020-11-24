@@ -789,7 +789,7 @@ curr_plot_folder = paste0(plot_path, "velocyto/")
 dir.create(curr_plot_folder)
 
 # read in loom data, with ensembl ID as rownames instead of gene name
-velocyto_dat <- custom_read_loom(list.files(velocyto_input, full.names = T))
+velocyto_dat <- custom_read_loom(list.files(velocyto_input, pattern = '*.loom' full.names = T))
 
 # change cell names in velocyto dat to match antler cell names
 velocyto_dat <- lapply(velocyto_dat, function(x) {
