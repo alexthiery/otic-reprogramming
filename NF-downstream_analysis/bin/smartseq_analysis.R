@@ -36,7 +36,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     plot_path = "./output/antler/plots/"
     rds_path = "./output/antler/rds_files/"
     merged_counts_path = './output/merged_counts/'
-    genome_annotations_file = './output/extract_gtf_annotations'
+    genome_annotations_path = './output/extract_gtf_annotations'
     gfp_counts = './output/merged_counts/'
     velocyto_input = './output/velocyto/'
     
@@ -50,7 +50,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     plot_path = "./output/plots/"
     rds_path = "./output/rds_files/"
     merged_counts_path = './'
-    genome_annotations_file = './Gallus_gallus.GRCg6a.97_gene_annotations.csv'
+    genome_annotations_path = './'
     gfp_counts = './'
     velocyto_input = './'
     
@@ -93,7 +93,7 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
 
 # set gene names
 # read in annotations file
-gtf_annotations = read.csv(genome_annotations_file, stringsAsFactors = F)
+gtf_annotations = read.csv(list.files(genome_annotations_path, pattern = '*gene_annotations.csv', full.names = T), stringsAsFactors = F)
 
 # add missing annotations to annotations file
 extra_annotations = c('FOXI3' = 'ENSGALG00000037457', 'ATN1' = 'ENSGALG00000014554', 'TBX10' = 'ENSGALG00000038767',
@@ -273,7 +273,7 @@ tsne_plot(m2, m2$dR$genemodules, "allcells_stage", seed=seed,
 # plot tsne for gradient expression of select genes in gene_list
 gene_list = c('SOX2', 'SOX10', 'SOX8', 'PAX7', 'PAX2', 'LMX1A', 'SOX21', 'SIX1')
 for(gn in gene_list){
-  path = paste0(tsne_path, gn)
+  path = paste0(curr_plot_folder, gn)
   tsne_plot(m2, m2$dR$genemodules, basename = paste0("allcells.", gn), seed=seed,
             cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
             perplexity=perp, pca=FALSE, eta=eta, plot_folder = curr_plot_folder, main = gn)
