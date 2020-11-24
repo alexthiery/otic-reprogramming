@@ -32,9 +32,9 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   if (opt$runtype == "user"){
     sapply(list.files('./NF-downstream_analysis/bin/custom_functions/', full.names = T), source)
     
-    output_path = "./output/antler"
-    plot_path = "./output/antler/plots/"
-    rds_path = "./output/antler/rds_files/"
+    output_path = "./output/NF-downstream_analysis/smartseq_analysis/output/"
+    plot_path = "./output/NF-downstream_analysis/smartseq_analysis/output/plots/"
+    rds_path = "../output/NF-downstream_analysis/smartseq_analysis/output/rds_files/"
     merged_counts_path = './output/NF-smartseq2_alignment/merged_counts/output/'
     genome_annotations_path = './output/NF-downstream_analysis/extract_gtf_annotations/'
     gfp_counts = './output/NF-smartseq2_alignment/merged_counts/output/'
@@ -522,7 +522,7 @@ graphics.off()
 #' State subplots
 pdf(paste0(curr_plot_folder, 'Monocle_DDRTree_State_facet.pdf'), width=7, height=7)
 plot_cell_trajectory(HSMM, color_by = "State") +
-  scale_color_manual(values = c('#f55f20', '#48d1cc', '#dda0dd'), name = "State")
+  scale_color_manual(values = c( '#48d1cc', '#f55f20', '#dda0dd'), name = "State")
 graphics.off()
 
 
@@ -570,8 +570,8 @@ cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
   tibble::rownames_to_column('cellname') %>%
   dplyr::rename(branch = State) %>%
   dplyr::mutate(celltype = case_when(
-    branch == "1" ~ "Otic",
-    branch == "2" ~ "Epibranchial",
+    branch == "1" ~ "Epibranchial",
+    branch == "2" ~ "Otic",
     branch == "3" ~ 'OEP'
   ))
 
