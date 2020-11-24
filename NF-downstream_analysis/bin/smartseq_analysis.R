@@ -514,7 +514,7 @@ p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples") +
 p2 = plot_cell_trajectory(HSMM, color_by = "Pseudotime") +
   scale_color_gradient(low = "#008ABF", high = "#E53F00")
 
-pdf(paste0(curr_plot_folder, "Monocle_DDRTree_trajectories.pdf"), width=10, height=8)
+pdf(paste0(curr_plot_folder, "Monocle_DDRTree_trajectories.pdf"), width=12, height=7)
 gridExtra::grid.arrange(grobs=list(p1, p2), layout_matrix=matrix(seq(2), ncol=2, byrow=T))
 graphics.off()
 
