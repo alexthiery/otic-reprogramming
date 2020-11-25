@@ -3,7 +3,7 @@
 // Define DSL2
 nextflow.enable.dsl=2
 
-include {awk as awk_enhancer_filter; awk as awk_gtf_filter; cut} from "$baseDir/../luslab-nf-modules/tools/luslab_linux_tools/main.nf"
+include {awk as awk_enhancer_filter; awk as awk_gtf_filter; awk as awk_trim_head; cut} from "$baseDir/../luslab-nf-modules/tools/luslab_linux_tools/main.nf"
 include {bedtools_intersect} from "$baseDir/../luslab-nf-modules/tools/bedtools/main.nf"
 include {bedtools_subtract} from "$baseDir/../luslab-nf-modules/tools/bedtools/main.nf"
 include {homer_annotate_peaks; homer_find_motifs} from "$baseDir/../luslab-nf-modules/tools/homer/main.nf"
@@ -15,7 +15,10 @@ include {r_analysis as enhancer_profile; r_analysis as plot_motifs; r_analysis a
 
 workflow enhancer_analysis {
     take:
-        peaks
+        chip_bigwig
+        atac_bigwig
+        chip_peaks
+        atac_peaks
         genome
         gtf
 
@@ -23,11 +26,11 @@ workflow enhancer_analysis {
         // Keep only protein coding genes in gtf
         awk_gtf_filter(params.modules['awk_gtf_filter'], gtf)
 
-        // Intersect ATAC peaks with H3K27Ac peaks
-        bedtools_intersect(params.modules['bedtools_intersect'], peaks.filter{ it[0].sample_id == 'ATAC' }, peaks.filter{ it[0].sample_id == 'H3K27Ac' }.map{ it[1] } )
+        // // Intersect ATAC peaks with H3K27Ac peaks
+        bedtools_intersect(params.modules['bedtools_intersect'], atac_peaks.filter{ it[0].sample_id == 'ATAC' }, chip_peaks.filter{ it[0].sample_id == 'H3K27Ac' }.map{ it[1] } )
 
         // Remove any peaks which also have hits for H3K27me3
-        bedtools_subtract(params.modules['bedtools_subtract'], bedtools_intersect.out, peaks.filter{ it[0].sample_id == 'H3K27me3' }.map{ it[1] } )
+        bedtools_subtract(params.modules['bedtools_subtract'], bedtools_intersect.out, chip_peaks.filter{ it[0].sample_id == 'H3K27me3' }.map{ it[1] } )
 
         // Annotate remaining peaks
         homer_annotate_peaks(params.modules['homer_annotate_peaks'], bedtools_subtract.out, genome, awk_gtf_filter.out.file_no_meta)
@@ -41,11 +44,21 @@ workflow enhancer_analysis {
         // Run functional enrichment analysis on annotated putative enhancers
         functional_enrichment_analysis(params.modules['functional_enrichment_analysis'], awk_enhancer_filter.out.file_no_meta)
 
+        // Combine all peak data for enhancer profile input
+        enhancer_profile_input = chip_peaks.map{it[1]}.flatten().collect()
+            .combine(chip_bigwig.map{it[1]}.flatten().collect())
+            .combine(atac_peaks.map{it[1]}.flatten().collect())
+            .combine(atac_bigwig.map{it[1]}.flatten().collect())
+            .combine(awk_enhancer_filter.out.file_no_meta)
+
         // Plot ChIP and ATAC profile across enhancers
-        enhancer_profile( params.modules['enhancer_profile'], peaks.map{ [it[1]]}.flatten().collect().combine(awk_enhancer_filter.out.file_no_meta))
+        enhancer_profile( params.modules['enhancer_profile'], enhancer_profile_input)
 
         // Convert awk output to bed file
         cut(params.modules['cut'], awk_enhancer_filter.out.file)
+
+        // Trim first line from bed file
+        awk_trim_head(params.modules['awk_trim_head'], cut.out.file)
 
         // Run motif enrichment analysis on remaining peaks
         homer_find_motifs(params.modules['homer_find_motifs'], awk_enhancer_filter.out.file, genome)
