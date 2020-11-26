@@ -220,6 +220,13 @@ write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, ro
 # To prevent the highest expressed genes from dominating when clustering we need to rlog (regularised log) transform the data
 rld <- rlog(deseq, blind=FALSE)
 
+# Plot sample correlogram
+png(paste0(output_path, "SampleCorrelogram.png"), height = 20, width = 20, units = "cm", res = 400)
+corrgram::corrgram(as.data.frame(assay(rld)), order=TRUE, lower.panel=corrgram::panel.cor,
+                   upper.panel=corrgram::panel.pts, text.panel=corrgram::panel.txt,
+                   main="Correlogram of rlog sample expression", cor.method = 'pearson')
+graphics.off()
+
 # Plot sample distance heatmap
 sample_dists <- dist(t(assay(rld)))
 
