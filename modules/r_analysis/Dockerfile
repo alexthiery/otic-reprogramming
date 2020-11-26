@@ -42,4 +42,5 @@ RUN R -e 'install.packages("ggseqlogo")'
 RUN R -e 'install.packages("cowplot")'
 RUN R -e 'install.packages("gridGraphics")'
 RUN R -e 'install.packages("gprofiler2")'
-RUN R -e "install.packages('rstatix')"
+RUN R -e 'install.packages("rstatix")'
+RUN R -e 'install.packages("corrgram")'
