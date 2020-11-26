@@ -25,7 +25,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 {
   if (opt$runtype == "user"){
     output_path = "./output/NF-downstream_analysis/sox8_dea/output/"
-    input_file <- "./output/NF-sox8_alignment/featurecounts.merged.counts.tsv"
+    input_file <- "./output/NF-sox8_alignment/star/featurecounts.merged.counts.tsv"
     
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
@@ -48,6 +48,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(DESeq2)
   library(apeglm)
   library(openxlsx)
+  library(corrgram)
 }
 
 # read in count data and rename columns
@@ -229,6 +230,14 @@ write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, ro
 
 # To prevent the highest expressed genes from dominating when clustering we need to rlog (regularised log) transform the data
 rld <- rlog(deseq, blind=FALSE)
+
+# Plot sample correlogram
+png(paste0(output_path, "SampleCorrelogram.png"), height = 17, width = 17, units = "cm", res = 400)
+corrgram::corrgram(as.data.frame(assay(rld)), order=TRUE, lower.panel=corrgram::panel.cor,
+                   upper.panel=corrgram::panel.pts, text.panel=corrgram::panel.txt,
+                   main="Correlogram of rlog sample expression", cor.method = 'pearson')
+graphics.off()
+
 
 # Plot sample distance heatmap
 sample_dists <- dist(t(assay(rld)))
