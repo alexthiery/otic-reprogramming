@@ -15,8 +15,7 @@ fea_res <- gost(putative_enhancers$Entrez.ID, organism = 'ggallus', sources = c(
 # generate URL for full results
 # gost(putative_enhancers$Entrez.ID, organism = 'ggallus', sources = c('GO:BP', 'KEGG'), as_short_link = TRUE)
 
-go_terms <- c("GO:0007399", "GO:0060070", "GO:0060322", "KEGG:04310", "GO:0030509", "KEGG:04010", "GO:0048839", "GO:0050767", "GO:0031175",
-              "GO:0043408", "KEGG:04330")
+go_terms <- c("GO:0007399", "KEGG:04310", "GO:0048839", "GO:0050767", "GO:0043408", "KEGG:04330")
 
 # select enriched terms of interest and generate bar plot
 plot_data <- fea_res$result %>%
