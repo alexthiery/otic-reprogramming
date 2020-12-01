@@ -68,6 +68,8 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(ggsignif)
   library(cowplot)
   library(rstatix)
+  library(extrafont)
+  font_import(prompt = FALSE)
 }
 
 # set pipeline params
@@ -318,7 +320,7 @@ dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check
   # make factor levels to order cells in dotplott
   dplyr::mutate(celltype = factor(celltype, levels = rev(c("OEP", "Late Placodal", "Neural Crest", "Neural", "Mesodermal"))))
 
-png(paste0(curr_plot_folder, "all_cells_dotplot.png"), width = 28, height = 12, units = "cm", res = 200)
+png(paste0(curr_plot_folder, "all_cells_dotplot.png"), width=28, height=12, family = 'Arial', units = "cm", res = 400)
 ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expressing`, color=`Scaled Average Expression`)) +
   geom_count() +
   scale_size_area(max_size=5) +
@@ -469,15 +471,15 @@ HSMM <- orderCells(HSMM)
 #' Order cells from earliest "State" (ie DDRTree branch)
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 
-pdf(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.pdf'))
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
 z_order = sample(seq(m_oep$getNumberOfCells()))
 plot(t(reducedDimS(HSMM))[z_order,], col=pData(m_oep$expressionSet)$stage_colors[z_order], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
-dev.off()
+graphics.off()
 
 #' Plot cell clusters over projected coordinates
-pdf(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.pdf'))
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
 plot(t(reducedDimS(HSMM)), col=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
-dev.off()
+graphics.off()
 
 
 ########################################################################
@@ -487,11 +489,11 @@ dir.create(curr_plot_folder)
 
 for(gn in gene_list){
   print(gn)
-  pdf(paste0(curr_plot_folder, "monocle.gradient.", gn, '.pdf'))
+  png(paste0(curr_plot_folder, "monocle.gradient.", gn, '.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
   plot(t(reducedDimS(HSMM)), pch=16, main=gn, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
        col=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
   )
-  dev.off()
+  graphics.off()
 }
 
 curr_plot_folder = paste0(plot_path, "monocle_plots/coexpression/")
@@ -511,13 +513,13 @@ p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples") +
 p2 = plot_cell_trajectory(HSMM, color_by = "Pseudotime") +
   scale_color_gradient(low = "#008ABF", high = "#E53F00")
 
-pdf(paste0(curr_plot_folder, "Monocle_DDRTree_trajectories.pdf"), width=12, height=7)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_trajectories.png'), width=12, height=7, family = 'Arial', units = "cm", res = 400)
 gridExtra::grid.arrange(grobs=list(p1, p2), layout_matrix=matrix(seq(2), ncol=2, byrow=T))
 graphics.off()
 
 
 #' State subplots
-pdf(paste0(curr_plot_folder, 'Monocle_DDRTree_State_facet.pdf'), width=7, height=7)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_State_facet.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
 plot_cell_trajectory(HSMM, color_by = "State") +
   scale_color_manual(values = c( '#48d1cc', '#f55f20', '#dda0dd'), name = "State")
 graphics.off()
@@ -551,7 +553,7 @@ for(n in rownames(gene_level.2)){
   plot(t(reducedDimS(HSMM)), pch=16, main=n, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
        col=colorRampPalette(c("#0464DF", "#FFE800"))(n = 10)[gene_level.2[n,]]
   )
-  dev.off()
+  graphics.off()
 }
 
 system(paste0("zip -rj ", plot_path, "monocle_plots/all_monocle_projections.zip", curr_plot_folder))
@@ -604,7 +606,7 @@ gene_order <- dotplot_data %>%
 dotplot_data <- dotplot_data %>%
   dplyr::mutate(genename = factor(genename, levels = gene_order))
 
-png(paste0(curr_plot_folder, "m_oep_dotplot.png"), width = 18, height = 10, units = "cm", res = 200)
+png(paste0(curr_plot_folder, "m_oep_dotplot.png"), width=18, height=10, family = 'Arial', units = "cm", res = 400)
 ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expressing`, color=`Scaled Average Expression`)) +
   geom_count() +
   scale_size_area(max_size=5) +
@@ -718,12 +720,12 @@ oo_plot <- ggplot(plot_dat$`o-o`, aes(x=branch,y=`Proportion of Cells Co-express
   ggtitle("Ot-Ot") +
   theme(plot.title = element_text(hjust = 0.5))
 
-png(paste0(curr_plot_folder, "coexpression_test.png"), width = 20, height = 12, units = "cm", res = 200)
+png(paste0(curr_plot_folder, "coexpression_test.png"), width=20, height=12, family = 'Arial', units = "cm", res = 400)
 plot_grid(oe_plot, ee_plot, oo_plot, align = "hv", nrow = 1, rel_widths = c(1,1,1))
 graphics.off()
 
 
-png(paste0(curr_plot_folder, "coexpression_test_OE.png"), width = 7, height = 12, units = "cm", res = 200)
+png(paste0(curr_plot_folder, "coexpression_test_OE.png"), width=7, height=12, family = 'Arial', units = "cm", res = 400)
 oe_plot
 graphics.off()
 
@@ -745,7 +747,7 @@ BEAM_res <- BEAM(HSMM[genes_sel, ], branch_point = branch_point_id, cores = m_oe
 BEAM_res <- BEAM_res[order(BEAM_res$qval),]
 BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
 
-pdf(paste0(curr_plot_folder, 'Monocle_Beam.pdf'), width=8, height=40)
+png(paste0(curr_plot_folder, 'Monocle_Beam.png'), width=8, height=40, family = 'Arial', units = "cm", res = 400)
 beam_hm = plot_genes_branched_heatmap(HSMM[row.names(subset(BEAM_res, qval < .05)),],
                                       branch_point = branch_point_id,
                                       num_clusters = 20,
@@ -762,7 +764,7 @@ write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(curr_plot_folder, 'beam_scor
 
 
 #' BEAM plot of the original known genes
-pdf(paste0(curr_plot_folder, 'Monocle_Beam_knownGenes.pdf'), width=8, height=10)
+png(paste0(curr_plot_folder, 'Monocle_Beam_knownGenes.png'), width=8, height=10, family = 'Arial', units = "cm", res = 400)
 beam_hm = plot_genes_branched_heatmap(HSMM[m_oep$favorite_genes,],
                                       branch_point = branch_point_id,
                                       cores = 1,
@@ -777,7 +779,7 @@ graphics.off()
 # BEAM plot of the selected genes
 beam_gene_list = c(gene_list, 'SOX13', 'TFAP2A', 'GATA3', 'EPHA4', 'DLX5', 'PRDM1', 'PRDM12', 'EYA1', 'EYA2', 'ETV4')
 
-pdf(paste0(curr_plot_folder, 'Monocle_Beam_selGenes.pdf'), width=8, height=5)
+png(paste0(curr_plot_folder, 'Monocle_Beam_selGenes.png'), width=8, height=5, family = 'Arial', units = "cm", res = 400)
 beam_hm = plot_genes_branched_heatmap(HSMM[beam_gene_list,],
                                       branch_point = branch_point_id,
                                       cluster_rows=FALSE,
@@ -847,28 +849,28 @@ tsne.embeddings = tsne_embeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, 
 cluster.colors <- c('#ffa07a', '#f55f20', '#dda0dd', '#48d1cc', '#b2ffe5')[m_oep$cellClusters$Mansel$cell_ids]
 names(cluster.colors) <- names(m_oep$cellClusters$Mansel$cell_ids)
 
-pdf(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_clusters.pdf'), width = 7, height = 7)
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
 show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
                                cex=1, arrow.scale=6, arrow.lwd=1, cell.border.alpha = 0)
-dev.off()
+graphics.off()
 
 
 stage.colors <- pData(m$expressionSet)$stage_colors
 names(stage.colors) <- rownames(pData(m$expressionSet))
 
-pdf(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_stage.pdf'), width = 7, height = 7)
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_stage.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
 show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
                                cex=1, arrow.scale=6, arrow.lwd=1, cell.border.alpha = 0)
-dev.off()
+graphics.off()
 
 
 # plot cell velocity on monocle embeddings
-pdf(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_clusters.pdf'), width = 7, height = 7)
+png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
 show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
                                cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
-dev.off()
+graphics.off()
 
-pdf(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_stage.pdf'), width = 7, height = 7)
+png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_stage.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
 show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
                                cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
-dev.off()
+graphics.off()
