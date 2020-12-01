@@ -125,10 +125,10 @@ volc_dat <- volc_dat %>%
 
 # label outliers with triangles for volcano plot
 volc_dat <- volc_dat %>%
-  mutate(shape = ifelse(abs(log2FoldChange)>7.5 | -log10(padj) > 20, "triangle", "circle")) %>%
+  mutate(shape = ifelse(abs(log2FoldChange)>7.5 | -log10(padj) > 15, "triangle", "circle")) %>%
   mutate(log2FoldChange = ifelse(log2FoldChange > 7.5, 7.5, log2FoldChange)) %>%
   mutate(log2FoldChange = ifelse(log2FoldChange < -7.5, -7.5, log2FoldChange)) %>%
-  mutate('-log10(padj)' = ifelse(-log10(padj) > 20, 20, -log10(padj)))
+  mutate('-log10(padj)' = ifelse(-log10(padj) > 15, 15, -log10(padj)))
 
 
 # select genes to add as labels on volcano plot
@@ -139,28 +139,28 @@ downreg <- volc_dat %>%
   dplyr::arrange(padj) %>%
   dplyr::mutate(gene = as.character(gene)) %>%
   dplyr::filter(!stringr::str_detect(gene, "ENS"))
-
 downreg <- downreg[1:10,"gene"]
 
-labels <- volc_dat[volc_dat$gene %in% c(otic_genes, downreg, "SNAI1"),]
-
-
-png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
-ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape)) +
+png(paste0(output_path, "volcano.png"), width = 16, height = 10, units = "cm", res = 500)
+ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene)) +
   geom_point(aes(colour = sig, fill = sig), size = 1) +
-  # xlim(-8, 8) +
   scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
                     values = alpha(c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1]), 0.3)) +
   scale_color_manual(breaks = c("not sig", "downregulated", "upregulated"),
                      values= c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-  theme(legend.position = "top", legend.title = element_blank()) +
-  guides(colour = guide_legend(override.aes = list(size=2))) +
-  geom_text_repel(data=labels, size = 3.5, aes(label=gene), segment.color = "black") +
-  xlab('log2FC (Sox8_OE - Control)') +
-  theme(legend.position = "none")
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        text = element_text(family = "", color = "grey20"),
+        legend.position = "none", legend.title = element_blank()) +
+  geom_text_repel(data = subset(volc_dat, gene %in% c(otic_genes, downreg, "SNAI1")), min.segment.length = 0, segment.size  = 0.6, segment.color = "black") +
+  xlab('log2FC (Sox8_OE - Control)')
 graphics.off()
+
+
+
+install.packages("extrafont")
+library("extrafont")
+font_import()
 
 ################################################################################
 # make ordered dataframe for raw counts, normalised counts, and differential expression output
