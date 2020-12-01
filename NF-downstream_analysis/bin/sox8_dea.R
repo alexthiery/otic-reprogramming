@@ -49,6 +49,8 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(apeglm)
   library(openxlsx)
   library(corrgram)
+  library(extrafont)
+  font_import()
 }
 
 # read in count data and rename columns
@@ -150,17 +152,14 @@ ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene))
                      values= c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        text = element_text(family = "", color = "grey20"),
-        legend.position = "none", legend.title = element_blank()) +
+        text = element_text(family = "Arial"), legend.position = "none", legend.title = element_blank()) +
   geom_text_repel(data = subset(volc_dat, gene %in% c(otic_genes, downreg, "SNAI1")), min.segment.length = 0, segment.size  = 0.6, segment.color = "black") +
   xlab('log2FC (Sox8_OE - Control)')
 graphics.off()
 
 
 
-install.packages("extrafont")
-library("extrafont")
-font_import()
+
 
 ################################################################################
 # make ordered dataframe for raw counts, normalised counts, and differential expression output
