@@ -14,41 +14,23 @@ RUN apt-get update \
     libboost-filesystem1.67-dev
 
 # Install and unpack webfonts for plotting with Arial
-RUN wget https://www.freedesktop.org/software/fontconfig/webfonts/webfonts.tar.gz &&\
+RUN wget https://www.freedesktop.org/software/fontconfig/webfonts/webfonts.tar.gz && \
     tar -xzf webfonts.tar.gz && \
     cd msfonts/ && \
-    cabextract *.exeD && \
+    cabextract *.exe && \
     cp *.ttf *.TTF /usr/share/fonts/
 
-RUN R -e "install.packages('BiocManager')"
-RUN R -e "BiocManager::install(version = '3.10')"
-
-RUN R -e 'BiocManager::install("rtracklayer")'
-RUN R -e 'BiocManager::install("ChIPpeakAnno")'
-RUN R -e 'BiocManager::install("biomaRt")'
-RUN R -e 'BiocManager::install("DESeq2")'
-RUN R -e 'BiocManager::install("apeglm")'
-RUN R -e "BiocManager::install('pcaMethods')"
-RUN R -e "BiocManager::install('monocle')"
-
-RUN R -e "devtools::install_github('velocyto-team/velocyto.R')"
-RUN R -e "devtools::install_github('juliendelile/Antler', ref = 'Development2019')"
-RUN R -e "devtools::install_github('hadley/multidplyr')"
-
-RUN R -e 'install.packages("getopt")'
-RUN R -e 'install.packages("ggsignif")'
-RUN R -e 'install.packages("getopt")'
-RUN R -e 'install.packages("plyr")'
-RUN R -e 'install.packages("readr")'
-RUN R -e 'install.packages("RColorBrewer")'
-RUN R -e 'install.packages("VennDiagram")'
-RUN R -e 'install.packages("pheatmap")'
-RUN R -e 'install.packages("ggplot2")'
-RUN R -e 'install.packages("openxlsx")'
-RUN R -e 'install.packages("ggrepel")'
-RUN R -e 'install.packages("ggseqlogo")'
-RUN R -e 'install.packages("cowplot")'
-RUN R -e 'install.packages("gridGraphics")'
-RUN R -e 'install.packages("gprofiler2")'
-RUN R -e 'install.packages("rstatix")'
-RUN R -e 'install.packages("corrgram")'
+RUN R -e "install.packages('BiocManager')" && \
+    R -e "BiocManager::install(version = '3.10')" && \
+    R -e 'BiocManager::install("rtracklayer")' && \
+    R -e 'BiocManager::install("ChIPpeakAnno")' && \
+    R -e 'BiocManager::install("biomaRt")' && \
+    R -e 'BiocManager::install("DESeq2")' && \
+    R -e 'BiocManager::install("apeglm")' && \
+    R -e "BiocManager::install('pcaMethods')" && \
+    R -e "BiocManager::install('monocle')" && \
+    R -e "devtools::install_github('velocyto-team/velocyto.R')" && \
+    R -e "devtools::install_github('juliendelile/Antler', ref = 'Development2019')" && \
+    R -e "devtools::install_github('hadley/multidplyr')" && \
+    R -e 'install.packages(c("getopt", "ggsignif", "getopt", "plyr", "readr", "RColorBrewer", "VennDiagram", \
+    "pheatmap", "ggplot2", "openxlsx", "ggrepel", "ggseqlogo", "cowplot", "gridGraphics", "gprofiler2", "rstatix", "corrgram")'
