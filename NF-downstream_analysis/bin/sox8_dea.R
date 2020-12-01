@@ -50,7 +50,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(openxlsx)
   library(corrgram)
   library(extrafont)
-  font_import()
+  font_import(prompt = FALSE)
 }
 
 # read in count data and rename columns
@@ -93,7 +93,7 @@ deseq <- deseq[rowSums(counts(deseq)) >= 10, ]
 deseq <- DESeq(deseq)
 
 ### Plot dispersion estimates - dispersion should decrease as counts increase
-png(paste0(output_path, "dispersion_est.png"), height = 20, width = 25, units = "cm", res = 400)
+png(paste0(output_path, "dispersion_est.png"), height = 20, width = 25, family = 'Arial', units = "cm", res = 400)
 plotDispEsts(deseq)
 graphics.off()
 
@@ -106,7 +106,7 @@ res$gene_name <- gene_annotations$gene_name[match(rownames(res), gene_annotation
 
 
 # plot MA with cutoff for significant genes = padj < 0.05
-png(paste0(output_path, "MA_plot.png"), height = 20, width = 25, units = "cm", res = 400)
+png(paste0(output_path, "MA_plot.png"), height = 20, width = 25, family = 'Arial', units = "cm", res = 400)
 DESeq2::plotMA(res, alpha = 0.05)
 graphics.off()
 
@@ -143,7 +143,7 @@ downreg <- volc_dat %>%
   dplyr::filter(!stringr::str_detect(gene, "ENS"))
 downreg <- downreg[1:10,"gene"]
 
-png(paste0(output_path, "volcano.png"), width = 16, height = 10, units = "cm", res = 500)
+png(paste0(output_path, "volcano.png"), width = 16, height = 10, family = 'Arial', units = "cm", res = 500)
 ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene)) +
   geom_point(aes(colour = sig, fill = sig), size = 1) +
   scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
@@ -152,7 +152,7 @@ ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene))
                      values= c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        text = element_text(family = "Arial"), legend.position = "none", legend.title = element_blank()) +
+        legend.position = "none", legend.title = element_blank()) +
   geom_text_repel(data = subset(volc_dat, gene %in% c(otic_genes, downreg, "SNAI1")), min.segment.length = 0, segment.size  = 0.6, segment.color = "black") +
   xlab('log2FC (Sox8_OE - Control)')
 graphics.off()
@@ -238,7 +238,7 @@ write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, ro
 rld <- rlog(deseq, blind=FALSE)
 
 # Plot sample correlogram
-png(paste0(output_path, "SampleCorrelogram.png"), height = 17, width = 17, units = "cm", res = 400)
+png(paste0(output_path, "SampleCorrelogram.png"), height = 17, width = 17, family = 'Arial', units = "cm", res = 400)
 corrgram::corrgram(as.data.frame(assay(rld)), order=TRUE, lower.panel=corrgram::panel.cor,
                    upper.panel=corrgram::panel.pts, text.panel=corrgram::panel.txt,
                    main="Correlogram of rlog sample expression", cor.method = 'pearson')
@@ -254,12 +254,12 @@ rownames(sampleDistMatrix) <- paste(colnames(rld))
 colnames(sampleDistMatrix) <- paste(colnames(rld))
 colours = colorRampPalette(rev(brewer.pal(9, "Blues")))(255)
 
-png(paste0(output_path, "SampleDist.png"), height = 12, width = 15, units = "cm", res = 400)
+png(paste0(output_path, "SampleDist.png"), height = 12, width = 15, family = 'Arial', units = "cm", res = 400)
 pheatmap(sampleDistMatrix, color = colours)
 graphics.off()
 
 # Plot sample PCA
-png(paste0(output_path, "SamplePCA.png"), height = 12, width = 12, units = "cm", res = 200)
+png(paste0(output_path, "SamplePCA.png"), height = 12, width = 12, family = 'Arial', units = "cm", res = 400)
 plotPCA(rld, intgroup = "Group") +
   scale_color_manual(values=plot_colours$Group) +
   theme(aspect.ratio=1,
@@ -272,7 +272,7 @@ res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1.5), ]
 res_sub <- res_sub[order(-res_sub$log2FoldChange),]
 
 # plot heatmap of DE genes
-png(paste0(output_path, "sox8_oe_hm.png"), height = 30, width = 21, units = "cm", res = 200)
+png(paste0(output_path, "sox8_oe_hm.png"), height = 30, width = 21, family = 'Arial', units = "cm", res = 400)
 pheatmap(assay(rld)[rownames(res_sub),], cluster_rows=T, show_rownames=FALSE,
          show_colnames = F, cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
          annotation_colors = plot_colours, scale = "row", treeheight_row = 0, treeheight_col = 25, cellheight = 1.5, cellwidth = 75)
@@ -319,7 +319,7 @@ rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
 # plot DE TFs
-png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 20, width = 25, units = "cm", res = 200)
+png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 20, width = 25, family = 'Arial', units = "cm", res = 400)
 pheatmap(rld.plot[res_sub_TF$gene_name,], cluster_rows=T, show_rownames=T,
                  show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
                  annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
