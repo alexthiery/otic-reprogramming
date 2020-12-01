@@ -25,7 +25,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 {
   if (opt$runtype == "user"){
     output_path = "./output/NF-downstream_analysis/lmx1a_dea/output/"
-    input_file <- "./output/NF-lmx1a_alignment/featurecounts.merged.counts.tsv"
+    input_file <- "./output/NF-lmx1a_alignment/star/featurecounts.merged.counts.tsv"
     
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
@@ -110,40 +110,45 @@ graphics.off()
 # Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5 (remove annotation column first)
 volc_dat <- as.data.frame(res[,-6])
 
-volc_dat$sig <- apply(volc_dat, 1, function(x) {
-  if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] > 1.5){
-    "upregulated"
-  } else if(!is.na(x["padj"]) & x["padj"]<0.05 & x["log2FoldChange"] < -1.5){
-    "downregulated"
-  } else {"not sig"}
-}
-)
-
-volc_dat <- volc_dat[order(abs(volc_dat$padj)),]
-
 # add gene name to volcano data
 volc_dat$gene <- gene_annotations$gene_name[match(rownames(volc_dat), gene_annotations$gene_id)]
 
-# select genes to add as labels on volcano plot
-otic_genes <- c('MEF2C', 'SOX10', 'SOX8', 'ZIC1', 'ZIC2', 'COL9A3', 'DACT2', 'LEF1', 'ZCCHC24', 'RNF122')
-epibranchial_genes <- c('PRDM1', 'VGLL2', 'PDLIM1', 'KRT18', 'ISL1', 'UPK1B', 'TFAP2E', 'NELL1')
-labels <- volc_dat[volc_dat$gene %in% c(otic_genes, epibranchial_genes),]
+# label significance
+volc_dat <- volc_dat %>%
+  filter(!is.na(padj)) %>%
+  mutate(sig = case_when((padj < 0.05 & log2FoldChange > 1.5) == 'TRUE' ~ 'upregulated',
+                         (padj < 0.05 & log2FoldChange < -1.5) == 'TRUE' ~ 'downregulated',
+                         (padj >= 0.05 | abs(log2FoldChange) <= 1.5) == 'TRUE' ~ 'not sig')) %>%
+  arrange(abs(padj))
 
-png(paste0(output_path, "volcano.png"), width = 22, height = 16, units = "cm", res = 200)
-ggplot(volc_dat, aes(log2FoldChange, -log10(padj))) +
-  geom_point(shape=21, aes(colour = sig, fill = sig), size = 0.7) +
+# label outliers with triangles for volcano plot
+volc_dat <- volc_dat %>%
+  mutate(shape = ifelse(abs(log2FoldChange) > 3 | -log10(padj) > 50, "triangle", "circle")) %>%
+  mutate(log2FoldChange = ifelse(log2FoldChange > 3, 3, log2FoldChange)) %>%
+  mutate(log2FoldChange = ifelse(log2FoldChange < -3, -3, log2FoldChange)) %>%
+  mutate('-log10(padj)' = ifelse(-log10(padj) > 50, 50, -log10(padj)))
+
+
+# select genes to add as labels on volcano plot
+otic_genes <- c('MEF2C', 'SOX10', 'SOX8', 'ZIC1', 'ZIC2', 'DACT2', 'LEF1', 'ZCCHC24', 'RNF122')
+epibranchial_genes <- c('PRDM1', 'VGLL2', 'PDLIM1', 'KRT18', 'ISL1', 'UPK1B', 'TFAP2E', 'NELL1')
+
+png(paste0(output_path, "volcano.png"), width = 16, height = 10, units = "cm", res = 500)
+ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene)) +
+  geom_point(aes(colour = sig, fill = sig), size = 1) +
   scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
                     values = alpha(c(plot_colours$Group[1], "#c1c1c1", plot_colours$Group[2]), 0.3)) +
   scale_color_manual(breaks = c("not sig", "downregulated", "upregulated"),
                      values= c(plot_colours$Group[1], "#c1c1c1", plot_colours$Group[2])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-  theme(legend.position = "top", legend.title = element_blank()) +
-  guides(colour = guide_legend(override.aes = list(size=2))) +
-  geom_text_repel(data=labels, size = 3.5, aes(label=gene), segment.color = "gray80") +
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        text = element_text(family = "", color = "grey20"),
+        legend.position = "none", legend.title = element_blank()) +
+  geom_text_repel(data = subset(volc_dat, gene %in% c(otic_genes, epibranchial_genes)), min.segment.length = 0, segment.size  = 0.6, segment.color = "black") +
   xlab('log2FC (Lmx1a_E1 - Sox3U3)') +
   theme(legend.position = "none")
 graphics.off()
+
 
 ################################################################################
 # make ordered dataframe for raw counts, normalised counts, and differential expression output
