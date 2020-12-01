@@ -1,11 +1,13 @@
 #!/usr/bin/env Rscript
 
-output_path = './output/'
-dir.create(output_path, recursive = T)
-
 library(gprofiler2)
 library(dplyr)
 library(ggplot2)
+library(extrafont)
+font_import(prompt = FALSE)
+
+output_path = './output/'
+dir.create(output_path, recursive = T)
 
 putative_enhancers <- read.delim(list.files(pattern = '*txt', full.names = TRUE))
 
@@ -26,7 +28,7 @@ plot_data <- fea_res$result %>%
   mutate(term_name = paste0(term_name, ' (', term_id, ")")) %>%
   mutate(term_name = factor(term_name, levels = term_name))
 
-png(paste0(output_path, "functional_enrichment.png"), height = 10, width = 15, units = "cm", res = 400)
+png(paste0(output_path, "functional_enrichment.png"), height = 10, width = 15, family = 'Arial', units = 'cm', res = 400)
 ggplot(plot_data, aes(x = term_name, y = -log10(p_value), label = term_name)) +
   geom_bar(stat='identity', width=0.5, fill='steelblue') +
   coord_flip() +

@@ -2,6 +2,8 @@
 
 library(ChIPpeakAnno)
 library(rtracklayer)
+library(extrafont)
+font_import(prompt = FALSE)
 
 output_path = "./output/"
 dir.create(output_path, recursive = T)
@@ -38,11 +40,11 @@ sig <- featureAlignedSignal(bw, peaks.recentered,
 
 
 # plot profile around ATAC peaks
-png(paste0(output_path, "metaprofile.png"), width=20, height=17, units = 'cm', res = 200)
+png(paste0(output_path, "metaprofile.png"), width=20, height=17, family = 'Arial', units = 'cm', res = 400)
 featureAlignedDistribution(sig, peaks.recentered, upstream=2000, downstream=2000, type="l")
 graphics.off()
 
 # plot heatmap
-png(paste0(output_path, "heatmap.png"), width=15, height=15, units = 'cm', res = 200)
+png(paste0(output_path, "heatmap.png"), width=15, height=15, family = 'Arial', units = 'cm', res = 400)
 featureAlignedHeatmap(sig, peaks.recentered, upstream=2000, downstream=2000, upper.extreme=2.5)
 graphics.off()

@@ -4,6 +4,8 @@ library(ggseqlogo)
 library(gridExtra)
 library(cowplot)
 library(ggplot2)
+library(extrafont)
+font_import(prompt = FALSE)
 
 output_path = "./output/"
 dir.create(output_path, recursive = T)
@@ -48,7 +50,7 @@ motif_pval <- lapply(motif_meta[,2], function(x) {as_grob(~plot(c(0, 1), c(0, 1)
                                                              text(x = 0.5, y = 0.5, x, cex = 10, col = "black"))})
 
 ######## plot grobs
-png(paste0(output_path, 'top20_motifs.png'), width = 180, height = 300, res = 100, units = 'cm')
+png(paste0(output_path, 'top20_motifs.png'), width = 180, height = 300, family = 'Arial', units = 'cm', res = 400)
 grid.arrange(grobs=c(gene, motif_names, motif, motif_logos, pval, motif_pval), ncol=3, widths = c(1, 3, 1), as.table=FALSE)
 graphics.off()
 
@@ -59,7 +61,7 @@ graphics.off()
 motifs_of_interest <- c('Sox3', 'Sox2', 'Sox10', 'TEAD3', 'Six2', 'Six1', 'Sox9', 'AP-2alpha')
 motifs_of_interest <- which(motif_meta$Motif.Name %in% motifs_of_interest)
 
-png(paste0(output_path, 'selected_motifs.png'), width = 150, height = 150, res = 100, units = 'cm')
+png(paste0(output_path, 'selected_motifs.png'), width = 150, height = 150, family = 'Arial', units = 'cm', res = 400)
 grid.arrange(grobs=c(gene, motif_names[motifs_of_interest], motif, motif_logos[motifs_of_interest], pval, motif_pval[motifs_of_interest]), ncol=3, widths = c(1, 4, 1), as.table=FALSE)
 graphics.off()
 

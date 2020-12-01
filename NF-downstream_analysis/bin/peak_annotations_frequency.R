@@ -1,5 +1,9 @@
 #!/usr/bin/env Rscript
+
 library(ggplot2)
+library(extrafont)
+font_import(prompt = FALSE)
+
 output_path = './output/'
 dir.create(output_path)
 
@@ -15,7 +19,7 @@ colnames(freq_data) = c('peaks', 'Frequency')
 
 
 # plot frequency plot of peak annotations
-png(paste0(output_path, "peak_annotation_frequency.png"), height = 10, width = 10, units = "cm", res = 400)
+png(paste0(output_path, "peak_annotation_frequency.png"), height = 10, width = 10, family = 'Arial', units = 'cm', res = 400)
 ggplot(freq_data, aes(x = peaks, y = Frequency)) +
   geom_bar(stat='identity', fill='steelblue') +
   theme_classic() +
@@ -36,7 +40,7 @@ freq_data <- as.data.frame(prop.table(table(detailed_annotation_peaks))[order(pr
 colnames(freq_data) = c('peaks', 'Frequency')
 
 # plot frequency plot of detailed peak annotations
-png(paste0(output_path, "detailed_peak_annotation_frequency.png"), height = 10, width = 15, units = "cm", res = 400)
+png(paste0(output_path, "detailed_peak_annotation_frequency.png"), height = 10, width = 15, family = 'Arial', units = 'cm', res = 400)
 ggplot(freq_data, aes(x = peaks, y = Frequency)) +
   geom_bar(stat='identity', fill='steelblue') +
   theme_classic() +
