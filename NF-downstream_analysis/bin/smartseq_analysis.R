@@ -252,6 +252,8 @@ m2$plotGeneModules(
   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
 )
 
+m2$writeGeneModules(basename='AllCells_baitGMs', gms='dR.genemodules', folder_path = curr_plot_folder)
+
 ##################################################################################################################################
 # Plot tsne prior to removing Pax2- cells
 #' # Transcriptomic features
