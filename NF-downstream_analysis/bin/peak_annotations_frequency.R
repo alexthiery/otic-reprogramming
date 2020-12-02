@@ -2,7 +2,6 @@
 
 library(ggplot2)
 library(extrafont)
-font_import(prompt = FALSE)
 
 output_path = './output/'
 dir.create(output_path)

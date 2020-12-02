@@ -5,7 +5,6 @@ library(gridExtra)
 library(cowplot)
 library(ggplot2)
 library(extrafont)
-font_import(prompt = FALSE)
 
 output_path = "./output/"
 dir.create(output_path, recursive = T)

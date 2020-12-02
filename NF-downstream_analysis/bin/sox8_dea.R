@@ -50,7 +50,6 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(openxlsx)
   library(corrgram)
   library(extrafont)
-  font_import(prompt = FALSE)
 }
 
 # read in count data and rename columns
