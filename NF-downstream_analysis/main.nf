@@ -33,7 +33,6 @@ summary['Launch Dir']             = workflow.launchDir
 summary['Working Dir']            = workflow.workDir
 summary['Script Dir']             = workflow.projectDir
 summary['User']                   = workflow.userName
-summary['Config Profile']         = workflow.profile
 log.info summary.collect { k,v -> "${k.padRight(20)}: $v" }.join('\n')
 log.info "-\033[2m--------------------------------------------------\033[0m-"
 
