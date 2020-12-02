@@ -463,8 +463,8 @@ for(gn in gene_list){
 
 # Plot tSNE co-expression plots
 gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
-lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected,
-                                                       gene1 = x[1], gene2 = x[2], plot_folder = curr_plot_folder, seed=seed, perplexity=perp, pca=FALSE, eta=eta)})
+lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected, gene1 = x[1], gene2 = x[2], plot_folder = curr_plot_folder,
+                                                       seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 10, width = 15, res = 400, units = 'cm', family = 'Arial')})
 
 
 ##################################################################
@@ -495,16 +495,22 @@ HSMM <- orderCells(HSMM)
 #' Order cells from earliest "State" (ie DDRTree branch)
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-z_order = sample(seq(m_oep$getNumberOfCells()))
-plot(t(reducedDimS(HSMM))[z_order,], col=pData(m_oep$expressionSet)$stage_colors[z_order], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.factor(pData(m_oep$expressionSet)$timepoint)), aes(x=V1, y=V2, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = stage_cols) +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
 graphics.off()
 
 #' Plot cell clusters over projected coordinates
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-plot(t(reducedDimS(HSMM)), col=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids)), aes(x=V1, y=V2, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = clust.colors) +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
 graphics.off()
-
 
 ########################################################################
 # plot gradient gene expression on monocle embeddings
@@ -512,11 +518,13 @@ curr_plot_folder = paste0(plot_path, "monocle_plots/gradient_plots/")
 dir.create(curr_plot_folder)
 
 for(gn in gene_list){
-  print(gn)
-  png(paste0(curr_plot_folder, "monocle.gradient.", gn, '.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-  plot(t(reducedDimS(HSMM)), pch=16, main=gn, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
-       col=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
-  )
+  png(paste0(curr_plot_folder, "monocle.gradient.", gn, '.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+  print(ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))),
+               aes(x=V1, y=V2, color=colour_by)) +
+    geom_point() +
+    scale_color_gradient(low = "grey", high = "darkmagenta") +
+    theme_void() +
+    theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none"))
   graphics.off()
 }
 
@@ -525,7 +533,8 @@ dir.create(curr_plot_folder)
 
 # plot gradient gene co-expression on monocle embeddings
 gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
-lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2], plot_folder = curr_plot_folder)})
+lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2],
+                                                          plot_folder = curr_plot_folder, height = 10, width = 15, res = 400, units = 'cm', family = 'Arial')})
 
 ########################################################################
 

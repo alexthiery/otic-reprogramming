@@ -1,4 +1,4 @@
-plot_tsne_coexpression <- function(curr_m, gms, gene1, gene2, basename = paste0(gene1, "_", gene2), seed=1, pca=F, perplexity=12, eta=200, plot_folder=output_path, main = NULL){
+plot_tsne_coexpression <- function(curr_m, gms, gene1, gene2, basename = paste0(gene1, "_", gene2), seed=1, pca=F, perplexity=12, eta=200, plot_folder=output_path, main = NULL, ...){
   genes <- c(gene1, gene2)
   a <- as.integer(100*log10(1+curr_m$getReadcounts(data_status='Normalized')[genes[1],]) / max(log10(1+curr_m$getReadcounts(data_status='Normalized')[genes[1],])))
   b <- as.integer(100*log10(1+curr_m$getReadcounts(data_status='Normalized')[genes[2],]) / max(log10(1+curr_m$getReadcounts(data_status='Normalized')[genes[2],])))
@@ -25,15 +25,15 @@ plot_tsne_coexpression <- function(curr_m, gms, gene1, gene2, basename = paste0(
   tsne_xy <- as.data.frame(tsne_xy, names(cell.cols))
   tsne.plot <- ggplot(tsne_xy, aes(x = tsne_xy[,1], y = tsne_xy[,2], color = rownames(tsne_xy))) +
     geom_point() +
-    xlab("tSNE_1")+
-    ylab("tSNE_2")+
+    xlab("tSNE 1")+
+    ylab("tSNE 2")+
     scale_color_manual(values=cell.cols)+
     scale_fill_manual(values=cell.cols)+
     theme(legend.position = "none", panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
           panel.background = element_blank(), axis.line = element_line(colour = "black"))
   
   
-  pdf(paste0(plot_folder, '/', basename, '_co-expression_TSNE.pdf'), height = 5, width = 7.5)
+  png(paste0(plot_folder, '/', basename, '_co-expression_TSNE.png'), ...)
   gridExtra::grid.arrange(tsne.plot, key.plot, layout_matrix = rbind(c(1,1,2),
                                                                      c(1,1,NA)))
   graphics.off()
