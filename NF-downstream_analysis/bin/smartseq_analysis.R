@@ -899,11 +899,11 @@ graphics.off()
 
 # plot cell velocity on monocle embeddings
 png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
+show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
                                cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
 graphics.off()
 
 png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_stage.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
+show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
                                cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
 graphics.off()
