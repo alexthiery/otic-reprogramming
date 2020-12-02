@@ -33,7 +33,7 @@ ${c_blue}                     / ____ \\| |  __/>  <     | |  | | | | |  __| |  |
 ${c_blue}                    /_/    \\_|_|\\___/_/\\_\\    |_|  |_| |_|_|\\___|_|   \\__, |                       ${c_reset}
 ${c_blue}                                                                       __/ |                       ${c_reset}
 ${c_blue}                                                                      |___/                        ${c_reset}
-${c_magenta} alexthiery/otic-reprogramming ${c_reset}
+${c_dim} alexthiery/otic-reprogramming ${c_reset}
 -${c_dim}---------------------------------------------------------------${c_reset}-
     """.stripIndent()
 }
