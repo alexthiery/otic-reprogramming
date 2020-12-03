@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --job-name=NF-smartseq2
+#SBATCH --job-name=NF-downstream_analysis
 #SBATCH -t 72:00:00
 #SBATCH --mail-type=ALL,ARRAY_TASKS
 #SBATCH --mail-user=alex.thiery@crick.ac.uk

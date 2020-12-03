@@ -69,7 +69,6 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(cowplot)
   library(rstatix)
   library(extrafont)
-  font_import(prompt = FALSE)
 }
 
 # set pipeline params
@@ -252,31 +251,47 @@ m2$plotGeneModules(
   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
 )
 
+m2$writeGeneModules(basename='AllCells_baitGMs', gms='dR.genemodules', folder_path = curr_plot_folder)
+
 ##################################################################################################################################
 # Plot tsne prior to removing Pax2- cells
 #' # Transcriptomic features
 curr_plot_folder = paste0(plot_path, "all_cells/tsne/")
 dir.create(curr_plot_folder)
 
-# here you can assign cluster colours for the tsne >> change this so that colours are directly selected by cluster number
-tsne_plot(m2, m2$dR$genemodules, "allcells_clusters", seed=seed,
-          cols=clust.colors[m2$cellClusters$Mansel$cell_ids], perplexity=perp, eta=eta, plot_folder = curr_plot_folder)
 
-tsne_plot(m2, m2$dR$genemodules, "allcells_stage", seed=seed,
-          cols=pData(m2$expressionSet)$stage_colors, perplexity=perp, eta=eta, plot_folder = curr_plot_folder)
+png(paste0(curr_plot_folder, 'allcells_clusters_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by=m2$cellClusters$Mansel$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+graphics.off()
+
+
+png(paste0(curr_plot_folder, 'allcells_stage_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by = pData(m2$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+graphics.off()
+
 
 
 ########################################################################################################################
 # Plot expression of genes of interest on tsne before filtering
 
 # plot tsne for gradient expression of select genes in gene_list
+
 gene_list = c('SOX2', 'SOX10', 'SOX8', 'PAX7', 'PAX2', 'LMX1A', 'SOX21', 'SIX1')
 for(gn in gene_list){
-  path = paste0(curr_plot_folder, gn)
-  tsne_plot(m2, m2$dR$genemodules, basename = paste0("allcells.", gn), seed=seed,
-            cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
-            perplexity=perp, pca=FALSE, eta=eta, plot_folder = curr_plot_folder, main = gn)
+  png(paste0(curr_plot_folder, gn, '_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+  print(tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by = as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,]))),
+            colours = c("grey", "darkmagenta"), perplexity=perp, eta=eta)  +
+          theme_void() +
+          theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none"))
+  graphics.off()
 }
+
+
+
 
 ###############################################################
 # DOTPLOTS
@@ -417,30 +432,39 @@ m_oep$plotGeneModules(
 # OEP tSNE plots
 
 # Plot tSNE for oep data
-curr_plot_folder = paste0(plot_path, 'oep_subset/tsne')
+curr_plot_folder = paste0(plot_path, 'oep_subset/tsne/')
 dir.create(curr_plot_folder)
 
+png(paste0(curr_plot_folder, 'OEP_Clusters_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+graphics.off()
 
-tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = curr_plot_folder, basename = "OEP_Clusters", seed=seed,
-          cols=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], perplexity=perp, pca=FALSE, eta=eta)
 
-tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, plot_folder = curr_plot_folder, basename = "OEP_samples", seed=1,
-          cols=pData(m_oep$expressionSet)$stage_colors, perplexity=perp, pca=FALSE, eta=eta)
+png(paste0(curr_plot_folder, 'OEP_stage_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by = pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+graphics.off()
+
 
 # Plot expression of bait genes plus genes from bulk RNAseq and literature on tsne
 gene_list = c(bait_genes, 'SOX8', 'PAX2', 'TFAP2E', 'SIX1', 'ZBTB16', 'FOXG1',  'PDLIM1')
-
 for(gn in gene_list){
-  path = paste0(curr_plot_folder, gn)
-  tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, basename = paste0("OEP.subset.", gn), seed=seed,
-            cols=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,])))],
-            perplexity=perp, pca=FALSE, eta=eta, plot_folder = curr_plot_folder, main = gn)
+  png(paste0(curr_plot_folder, gn, '_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+  print(tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]))),
+                  colours = c("grey", "darkmagenta"), perplexity=perp, eta=eta)  +
+          theme_void() +
+          theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none"))
+  graphics.off()
 }
+
 
 # Plot tSNE co-expression plots
 gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
-lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected,
-                                                       gene1 = x[1], gene2 = x[2], plot_folder = curr_plot_folder, seed=seed, perplexity=perp, pca=FALSE, eta=eta)})
+lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected, gene1 = x[1], gene2 = x[2], plot_folder = curr_plot_folder,
+                                                       seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 10, width = 15, res = 400, units = 'cm', family = 'Arial')})
 
 
 ##################################################################
@@ -471,16 +495,22 @@ HSMM <- orderCells(HSMM)
 #' Order cells from earliest "State" (ie DDRTree branch)
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-z_order = sample(seq(m_oep$getNumberOfCells()))
-plot(t(reducedDimS(HSMM))[z_order,], col=pData(m_oep$expressionSet)$stage_colors[z_order], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.factor(pData(m_oep$expressionSet)$timepoint)), aes(x=V1, y=V2, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = stage_cols) +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
 graphics.off()
 
 #' Plot cell clusters over projected coordinates
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-plot(t(reducedDimS(HSMM)), col=clust.colors[m_oep$cellClusters[['Mansel']]$cell_ids], pch=16, main=names(d), xaxt='n', ann=FALSE, yaxt='n', asp=1)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids)), aes(x=V1, y=V2, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = clust.colors) +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
 graphics.off()
-
 
 ########################################################################
 # plot gradient gene expression on monocle embeddings
@@ -488,11 +518,13 @@ curr_plot_folder = paste0(plot_path, "monocle_plots/gradient_plots/")
 dir.create(curr_plot_folder)
 
 for(gn in gene_list){
-  print(gn)
-  png(paste0(curr_plot_folder, "monocle.gradient.", gn, '.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-  plot(t(reducedDimS(HSMM)), pch=16, main=gn, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
-       col=colorRampPalette(c("grey", "darkmagenta"))(n=101)[as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))],
-  )
+  png(paste0(curr_plot_folder, "monocle.gradient.", gn, '.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+  print(ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))),
+               aes(x=V1, y=V2, color=colour_by)) +
+    geom_point() +
+    scale_color_gradient(low = "grey", high = "darkmagenta") +
+    theme_void() +
+    theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none"))
   graphics.off()
 }
 
@@ -501,7 +533,8 @@ dir.create(curr_plot_folder)
 
 # plot gradient gene co-expression on monocle embeddings
 gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
-lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2], plot_folder = curr_plot_folder)})
+lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2],
+                                                          plot_folder = curr_plot_folder, height = 10, width = 15, res = 400, units = 'cm', family = 'Arial')})
 
 ########################################################################
 
@@ -866,11 +899,11 @@ graphics.off()
 
 # plot cell velocity on monocle embeddings
 png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
+show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
                                cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
 graphics.off()
 
 png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_stage.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
-show.velocity.on.embedding.cor(t(reducedDimS(HSMM))[z_order,], rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
+show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
                                cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
 graphics.off()

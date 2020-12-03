@@ -9,10 +9,33 @@ nextflow.enable.dsl=2
 /*------------------------------------------------------------------------------------*/
 /* Module inclusions
 --------------------------------------------------------------------------------------*/
-
+include {projectHeader} from "$baseDir/../modules/projectHeader/main.nf"
 include {extract_gtf_annotations} from "$baseDir/../modules/genome-tools/main.nf"
 include {enhancer_analysis} from "$baseDir/../workflows/enhancer_analysis/main.nf"
 include {r_analysis as lmx1a_dea; r_analysis as sox8_dea; r_analysis as smartseq_analysis} from "$baseDir/../modules/r_analysis/main.nf"
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+Init
+-------------------------------------------------------------------------------------------------------------------------------*/
+// Show banner
+log.info projectHeader()
+
+// Header log info
+def summary = [:]
+summary['Run Name']               = workflow.runName
+summary['Input File']          = params.input
+summary['Fasta File']             = params.fasta
+summary['GTF File']               = params.gtf
+summary['Max Resources']          = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
+if (workflow.containerEngine)     summary['Container'] = "$workflow.containerEngine - $workflow.container"
+summary['Output Dir']             = params.outdir
+summary['Launch Dir']             = workflow.launchDir
+summary['Working Dir']            = workflow.workDir
+summary['Script Dir']             = workflow.projectDir
+summary['User']                   = workflow.userName
+log.info summary.collect { k,v -> "${k.padRight(20)}: $v" }.join('\n')
+log.info "-\033[2m--------------------------------------------------\033[0m-"
+
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels

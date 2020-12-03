@@ -3,7 +3,6 @@
 library(ChIPpeakAnno)
 library(rtracklayer)
 library(extrafont)
-font_import(prompt = FALSE)
 
 output_path = "./output/"
 dir.create(output_path, recursive = T)

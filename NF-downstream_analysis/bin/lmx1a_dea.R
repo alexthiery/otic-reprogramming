@@ -49,7 +49,6 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
   library(apeglm)
   library(openxlsx)
   library(extrafont)
-  font_import(prompt = FALSE)
 }
 
 # read in count data and rename columns

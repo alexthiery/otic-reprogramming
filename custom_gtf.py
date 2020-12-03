@@ -7,14 +7,13 @@ outfile = open("/Users/alex/dev/repos/otic-reprogramming/GalGal6_protein_coding_
 
 with open("/Users/alex/dev/repos/otic-reprogramming/output/NF-downstream_analysis/enhancer_analysis/gtf_filter/GalGal6_protein_coding.gtf", 'rt') as gtf:
     for line in gtf:
-        # only search lines with gene_id in order to skip header lines
-        if 'gene_id' in line:
-            if 'gene_name' in line:
-                if line[0].isdigit():
+        if line[0].isdigit():
+            # only search lines with gene_id in order to skip header lines
+            if 'gene_id' in line:
+                if 'gene_name' in line:
                     gene_name = re.sub('.*gene_name "', '', line)
                     gene_name = re.sub('".*', '', gene_name).rstrip()
                     new_line = re.sub('gene_id.*?gene_version', 'gene_id "'+gene_name+'"; gene_version', line)
                     outfile.write('chr' + new_line)
-            else:
-                if line[0].isdigit():
+                else:
                     outfile.write('chr' + line)
