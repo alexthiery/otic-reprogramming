@@ -324,7 +324,7 @@ dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check
   dplyr::mutate('Proportion of Cells Expressing' = sum(value > 0)/n()) %>%
   # scale data
   dplyr::group_by(genename) %>%
-  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  dplyr::mutate(value = scale(value)) %>%  
   # calculate mean expression
   dplyr::group_by(genename, celltype) %>%
   dplyr::mutate('Scaled Average Expression'=mean(value)) %>%
@@ -335,13 +335,15 @@ dotplot_data <- data.frame(t(m2$getReadcounts('Normalized')[gene_list, ]), check
   # make factor levels to order cells in dotplott
   dplyr::mutate(celltype = factor(celltype, levels = rev(c("OEP", "Late Placodal", "Neural Crest", "Neural", "Mesodermal"))))
 
-png(paste0(curr_plot_folder, "all_cells_dotplot.png"), width=28, height=12, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, "all_cells_dotplot.png"), width=25, height=10, family = 'Arial', units = "cm", res = 400)
 ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expressing`, color=`Scaled Average Expression`)) +
   geom_count() +
   scale_size_area(max_size=5) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
   scale_color_gradient(low = "grey90", high = "blue") +
-  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0, size=9), axis.text.y = element_text(colour = clust.colors[c(4,3,5,2,1)], face = 'bold', size = 12),
+        legend.position="bottom", legend.box = "horizontal", plot.margin=unit(c(0,1,0,0),"cm"))
 graphics.off()
 
 ########################################################################################################################
@@ -617,7 +619,7 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
   dplyr::mutate('Proportion of Cells Expressing' = sum(value > 0)/n()) %>%
   # scale data
   dplyr::group_by(genename) %>%
-  dplyr::mutate(value = (value - mean(value, na.rm=TRUE)) / sd(value, na.rm=TRUE)) %>%  
+  dplyr::mutate(value = scale(value)) %>%  
   # calculate mean expression
   dplyr::group_by(genename, celltype) %>%
   dplyr::mutate('Scaled Average Expression' = mean(value)) %>%
@@ -639,13 +641,16 @@ gene_order <- dotplot_data %>%
 dotplot_data <- dotplot_data %>%
   dplyr::mutate(genename = factor(genename, levels = gene_order))
 
-png(paste0(curr_plot_folder, "m_oep_dotplot.png"), width=18, height=10, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, "m_oep_dotplot.png"), width=24, height=10, family = 'Arial', units = "cm", res = 400)
 ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expressing`, color=`Scaled Average Expression`)) +
   geom_count() +
-  scale_size_area(max_size=5) +
+  scale_size_area(max_size=10) +
   scale_x_discrete(position = "top") + xlab("") + ylab("") +
   scale_color_gradient(low = "grey90", high = "blue") +
-  theme_classic() + theme(axis.text.x = element_text(angle = 45, hjust = 0, size=7))
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0, size=14),
+        axis.text.y = element_text(colour =  c("Otic" = "#f55f20",  "OEP" = "#dda0dd", "Epibranchial" = "#48d1cc"), face = 'bold', size = 16),
+        legend.position="bottom", legend.box = "horizontal", plot.margin=unit(c(0,1,0,0),"cm"), legend.text=element_text(size=10), legend.title=element_text(size=12))
 graphics.off()
 
 ###############################################################
