@@ -260,19 +260,20 @@ curr_plot_folder = paste0(plot_path, "all_cells/tsne/")
 dir.create(curr_plot_folder)
 
 
-png(paste0(curr_plot_folder, 'allcells_clusters_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'allcells_clusters_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by=m2$cellClusters$Mansel$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
-  theme_void() +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
 
 
-png(paste0(curr_plot_folder, 'allcells_stage_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'allcells_stage_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by = pData(m2$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
   theme_void() +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none") +
+  ggtitle('Developmental stage') +
+  theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
-
 
 
 ########################################################################################################################
@@ -282,14 +283,21 @@ graphics.off()
 
 gene_list = c('SOX2', 'SOX10', 'SOX8', 'PAX7', 'PAX2', 'LMX1A', 'SOX21', 'SIX1')
 for(gn in gene_list){
-  png(paste0(curr_plot_folder, gn, '_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+  png(paste0(curr_plot_folder, gn, '_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
   print(tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by = as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,]))),
-            colours = c("grey", "darkmagenta"), perplexity=perp, eta=eta)  +
-          theme_void() +
-          theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none"))
+            colours = c("grey", "darkmagenta"), perplexity=perp, eta=eta) +
+          ggtitle(gn) +
+          theme(plot.title = element_text(hjust = 0.5)))
   graphics.off()
 }
 
+
+png(paste0(curr_plot_folder, 'GFP_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by = as.integer(1+100*log10(1+gfp_counts[m2$getCellsNames()]) / max(log10(1+gfp_counts[m2$getCellsNames()]))),
+                colours = c("grey", "darkgreen"), perplexity=perp, eta=eta) +
+  ggtitle('GFP') +
+  theme(plot.title = element_text(hjust = 0.5))
+graphics.off()
 
 
 
@@ -437,28 +445,27 @@ m_oep$plotGeneModules(
 curr_plot_folder = paste0(plot_path, 'oep_subset/tsne/')
 dir.create(curr_plot_folder)
 
-png(paste0(curr_plot_folder, 'OEP_Clusters_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'OEP_Clusters_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
-  theme_void() +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
 
-
-png(paste0(curr_plot_folder, 'OEP_stage_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'OEP_stage_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by = pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
-  theme_void() +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+  ggtitle('Developmental stage') +
+  theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
 
 
 # Plot expression of bait genes plus genes from bulk RNAseq and literature on tsne
 gene_list = c(bait_genes, 'SOX8', 'PAX2', 'TFAP2E', 'SIX1', 'ZBTB16', 'FOXG1',  'PDLIM1')
 for(gn in gene_list){
-  png(paste0(curr_plot_folder, gn, '_TSNE.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+  png(paste0(curr_plot_folder, gn, '_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
   print(tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]))),
                   colours = c("grey", "darkmagenta"), perplexity=perp, eta=eta)  +
-          theme_void() +
-          theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none"))
+          ggtitle(gn) +
+          theme(plot.title = element_text(hjust = 0.5)))
   graphics.off()
 }
 
@@ -497,21 +504,28 @@ HSMM <- orderCells(HSMM)
 #' Order cells from earliest "State" (ie DDRTree branch)
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
-ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.factor(pData(m_oep$expressionSet)$timepoint)), aes(x=V1, y=V2, color=colour_by)) +
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
   scale_color_manual(values = stage_cols) +
-  theme_void() +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Developmental stage') +
+  theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
+
 
 #' Plot cell clusters over projected coordinates
 png(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
-ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids)), aes(x=V1, y=V2, color=colour_by)) +
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
   scale_color_manual(values = clust.colors) +
-  theme_void() +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none")
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
 
 ########################################################################
@@ -520,13 +534,17 @@ curr_plot_folder = paste0(plot_path, "monocle_plots/gradient_plots/")
 dir.create(curr_plot_folder)
 
 for(gn in gene_list){
-  png(paste0(curr_plot_folder, "monocle.gradient.", gn, '.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
-  print(ggplot(cbind(as.data.frame(t(reducedDimS(HSMM))), colour_by = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,])))),
-               aes(x=V1, y=V2, color=colour_by)) +
-    geom_point() +
-    scale_color_gradient(low = "grey", high = "darkmagenta") +
-    theme_void() +
-    theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none"))
+  png(paste0(curr_plot_folder, "monocle_gradient_", gn, '.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+  print(ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                          'colour_by' = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]))),
+                          check.names = FALSE),
+               aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+          geom_point() +
+          scale_color_gradient(low = "grey", high = "darkmagenta") +
+          theme_classic() +
+          theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+          ggtitle(gn) +
+          theme(plot.title = element_text(hjust = 0.5)))
   graphics.off()
 }
 
@@ -548,13 +566,13 @@ p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples") +
 p2 = plot_cell_trajectory(HSMM, color_by = "Pseudotime") +
   scale_color_gradient(low = "#008ABF", high = "#E53F00")
 
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_trajectories.png'), width=12, height=7, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_trajectories.png'), width=20, height=12, family = 'Arial', units = "cm", res = 400)
 gridExtra::grid.arrange(grobs=list(p1, p2), layout_matrix=matrix(seq(2), ncol=2, byrow=T))
 graphics.off()
 
 
 #' State subplots
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_State_facet.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_State_facet.png'), width=12, height=12, family = 'Arial', units = "cm", res = 400)
 plot_cell_trajectory(HSMM, color_by = "State") +
   scale_color_manual(values = c( '#48d1cc', '#f55f20', '#dda0dd'), name = "State")
 graphics.off()
@@ -604,7 +622,7 @@ cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
   tibble::rownames_to_column('cellname') %>%
   dplyr::rename(branch = State) %>%
   dplyr::mutate(celltype = case_when(
-    branch == "1" ~ "Epibranchial",
+    branch == "1" ~ "Epib",
     branch == "2" ~ "Otic",
     branch == "3" ~ 'OEP'
   ))
@@ -629,10 +647,10 @@ dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), ch
 # order genes for dotplot based on divergent expression in otic and NC lineages
 gene_order <- dotplot_data %>%
   select(genename, celltype, `Scaled Average Expression`) %>%
-  filter(celltype %in% c('Otic', 'Epibranchial')) %>%
+  filter(celltype %in% c('Otic', 'Epib')) %>%
   tidyr::pivot_wider(names_from = celltype, 
               values_from = `Scaled Average Expression`) %>%
-  dplyr::mutate(order = Otic-Epibranchial) %>%
+  dplyr::mutate(order = Otic-Epib) %>%
   arrange(-order) %>%
   dplyr::pull(genename)
 
@@ -649,7 +667,7 @@ ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expre
   scale_color_gradient(low = "grey90", high = "blue") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 0, size=14),
-        axis.text.y = element_text(colour =  c("Otic" = "#f55f20",  "OEP" = "#dda0dd", "Epibranchial" = "#48d1cc"), face = 'bold', size = 16),
+        axis.text.y = element_text(colour =  c("Otic" = "#f55f20",  "OEP" = "#dda0dd", "Epib" = "#48d1cc"), face = 'bold', size = 16),
         legend.position="bottom", legend.box = "horizontal", plot.margin=unit(c(0,1,0,0),"cm"), legend.text=element_text(size=10), legend.title=element_text(size=12))
 graphics.off()
 
@@ -703,12 +721,12 @@ names(plot_dat) <- lapply(plot_dat, function(x) as.character(unique(x[["comparis
 # bar plots
 oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`Proportion of Cells Co-expressing`, fill = branch)) +
   geom_bar(stat='identity') +
-  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epibranchial" = "#48d1cc", "OEP" = "#dda0dd")) +
+  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epib" = "#48d1cc", "OEP" = "#dda0dd")) +
   geom_errorbar(aes(ymin=`Proportion of Cells Co-expressing`-sd, ymax=`Proportion of Cells Co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
   geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "***",
               y_position = 0.83, tip_length = 0.02, vjust=0.4) +
-  geom_signif(comparisons=list(c("OEP", "Epibranchial")), annotations = "***",
+  geom_signif(comparisons=list(c("OEP", "Epib")), annotations = "***",
               y_position = 0.8, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
@@ -719,12 +737,12 @@ oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`Proportion of Cells Co-express
 
 ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`Proportion of Cells Co-expressing`, fill = branch)) +
   geom_bar(stat='identity') +
-  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epibranchial" = "#48d1cc", "OEP" = "#dda0dd")) +
+  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epib" = "#48d1cc", "OEP" = "#dda0dd")) +
   geom_errorbar(aes(ymin=`Proportion of Cells Co-expressing`-sd, ymax=`Proportion of Cells Co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
   geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "***",
               y_position = 0.83, tip_length = 0.02, vjust=0.4) +
-  geom_signif(comparisons=list(c("OEP", "Epibranchial")), annotations = "*",
+  geom_signif(comparisons=list(c("OEP", "Epib")), annotations = "*",
               y_position = 0.8, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
@@ -740,12 +758,12 @@ ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`Proportion of Cells Co-express
 
 oo_plot <- ggplot(plot_dat$`o-o`, aes(x=branch,y=`Proportion of Cells Co-expressing`, fill = branch)) +
   geom_bar(stat='identity') +
-  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epibranchial" = "#48d1cc", "OEP" = "#dda0dd")) +
+  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epib" = "#48d1cc", "OEP" = "#dda0dd")) +
   geom_errorbar(aes(ymin=`Proportion of Cells Co-expressing`-sd, ymax=`Proportion of Cells Co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
   geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "ns",
               y_position = 0.83, tip_length = 0.02, vjust=0.4) +
-  geom_signif(comparisons=list(c("OEP", "Epibranchial")), annotations = "**",
+  geom_signif(comparisons=list(c("OEP", "Epib")), annotations = "**",
               y_position = 0.8, tip_length = 0.02, vjust=0.4) +
   ylim(c(0, 0.85)) +
   theme_classic() +
@@ -794,7 +812,7 @@ beam_hm = plot_genes_branched_heatmap(HSMM[row.names(subset(BEAM_res, qval < .05
                                       show_rownames = T,
                                       return_heatmap=T,
                                       branch_colors=c('#dd70dd', '#48d1cc', '#f55f20'),
-                                      branch_labels=c("Epibranchial", 'Otic'))
+                                      branch_labels=c("Epib", 'Otic'))
 graphics.off()
 
 # save beam score to file
@@ -810,7 +828,7 @@ beam_hm = plot_genes_branched_heatmap(HSMM[m_oep$favorite_genes,],
                                       show_rownames = T,
                                       return_heatmap=T,
                                       branch_colors=c('#dd70dd', '#48d1cc', '#f55f20'),
-                                      branch_labels=c("Epibranchial", 'Otic'))
+                                      branch_labels=c("Epib", 'Otic'))
 graphics.off()
 
 
@@ -827,7 +845,7 @@ beam_hm = plot_genes_branched_heatmap(HSMM[beam_gene_list,],
                                       show_rownames = T,
                                       return_heatmap=T,
                                       branch_colors=c('#dd70dd', '#48d1cc', '#f55f20'),
-                                      branch_labels=c("Epibranchial", 'Otic'))
+                                      branch_labels=c("Epib", 'Otic'))
 graphics.off()
 
 
@@ -887,7 +905,7 @@ tsne.embeddings = tsne_embeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, 
 cluster.colors <- c('#ffa07a', '#f55f20', '#dda0dd', '#48d1cc', '#b2ffe5')[m_oep$cellClusters$Mansel$cell_ids]
 names(cluster.colors) <- names(m_oep$cellClusters$Mansel$cell_ids)
 
-png(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_clusters.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
 show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
                                cex=1, arrow.scale=6, arrow.lwd=1, cell.border.alpha = 0)
 graphics.off()
@@ -896,19 +914,19 @@ graphics.off()
 stage.colors <- pData(m$expressionSet)$stage_colors
 names(stage.colors) <- rownames(pData(m$expressionSet))
 
-png(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_stage.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_stage.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
 show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
                                cex=1, arrow.scale=6, arrow.lwd=1, cell.border.alpha = 0)
 graphics.off()
 
 
 # plot cell velocity on monocle embeddings
-png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_clusters.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_clusters.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
 show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
                                cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
 graphics.off()
 
-png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_stage.png'), width=7, height=7, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_stage.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
 show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
                                cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
 graphics.off()
