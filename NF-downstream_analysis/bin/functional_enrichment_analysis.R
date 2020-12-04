@@ -37,6 +37,6 @@ ggplot(plot_data, aes(x = term_name, y = -log10(p_value), label = term_name)) +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         axis.line.y=element_blank()) +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 20)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 26)) +
   theme(plot.margin=unit(c(0.5,0.5,0.5,0.5),"cm"))
 graphics.off()
