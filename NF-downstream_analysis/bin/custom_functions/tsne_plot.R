@@ -7,17 +7,21 @@ tsne_plot <- function(curr_m, gms, colour_by, colours, seed=1, pca=FALSE, perple
   if(length(unique(colour_by)) > length(unique(colours)) & length(unique(colours)) == 2){
     cat('\nPlotting with continuous colour scale\n\n')
     
-    plot_data = cbind(as.data.frame(tsne_xy), colour_by = as.numeric(colour_by))
-    plot = ggplot(plot_data, aes(x=V1, y=V2, color=colour_by)) +
+    plot_data = data.frame('t-SNE 1' = tsne_xy[,1], 't-SNE 2' = tsne_xy[,2], 'colour_by' = as.numeric(colour_by), check.names = FALSE)
+    plot = ggplot(plot_data, aes(x=`t-SNE 1`, y=`t-SNE 2`, color=colour_by)) +
       geom_point() +
-      scale_colour_gradient(low = colours[1], high = colours[2])
+      scale_colour_gradient(low = colours[1], high = colours[2]) +
+      theme_classic() +
+      theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank())
   } else {
     cat('\nPlotting with discrete colour scale\n\n')
     
-    plot_data = cbind(as.data.frame(tsne_xy), colour_by = as.factor(colour_by))
-    plot = ggplot(plot_data, aes(x=V1, y=V2, color=colour_by)) +
+    plot_data = data.frame('t-SNE 1' = tsne_xy[,1], 't-SNE 2' = tsne_xy[,2], 'colour_by' = factor(colour_by), check.names = FALSE)
+    plot = ggplot(plot_data, aes(x=`t-SNE 1`, y=`t-SNE 2`, color=colour_by)) +
       geom_point() +
-      scale_colour_manual(values = colours)
+      scale_colour_manual(values = colours) +
+      theme_classic() +
+      theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank())
   }
   return(plot)
 }

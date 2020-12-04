@@ -20,14 +20,14 @@ monocle_coexpression_plot <- function(curr_m, gms, gene1, gene2, basename = past
   monocle.embed <- as.data.frame(t(reducedDimS(monocle_obj)))
   monocle.plot <- ggplot(monocle.embed, aes(x = monocle.embed[,1], y = monocle.embed[,2], color = rownames(monocle.embed))) +
     geom_point() +
-    xlab("tSNE_1")+
-    ylab("tSNE_2")+
+    xlab("Component 1")+
+    ylab("Component 2")+
     scale_color_manual(values=cell.cols)+
     scale_fill_manual(values=cell.cols)+
-    theme(legend.position = "none", panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-          panel.background = element_blank(), axis.line = element_line(colour = "black"))
+    theme_classic() +
+    theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank())
   
-  png(paste0(plot_folder, '/', basename, '_co-expression_TSNE.png'), ...)
+  png(paste0(plot_folder, '/', basename, '_co-expression_monocle.png'), ...)
   gridExtra::grid.arrange(monocle.plot, key.plot, layout_matrix = rbind(c(1,1,2),
                                                                      c(1,1,NA)))
   graphics.off()
