@@ -196,7 +196,7 @@ m$plotGeneModules(
   file_settings=list(list(type='pdf', width=20, height=20)),
   data_status='Normalized',
   gene_transformations='logscaled',
-  pretty.params=list("size_factor"=3, "ngenes_per_lines" = 0, "side.height.fraction"=.3),
+  pretty.params=list("size_factor"=3, "ngenes_per_lines" = 0, "side.height.fraction"=.15),
   display.legend = FALSE,
   extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
 )
