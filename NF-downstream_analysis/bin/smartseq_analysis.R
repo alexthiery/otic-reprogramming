@@ -732,7 +732,7 @@ oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`Proportion of Cells Co-express
   theme_classic() +
   theme(axis.title.x=element_blank(),
         legend.position="none") +
-  ggtitle("Ep-Ot") +
+  ggtitle("Epib-Otic") +
   theme(plot.title = element_text(hjust = 0.5))
 
 ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`Proportion of Cells Co-expressing`, fill = branch)) +
@@ -752,7 +752,7 @@ ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`Proportion of Cells Co-express
         axis.line.y = element_blank(),
         axis.title.x=element_blank(),
         legend.position="none") +
-  ggtitle("Ep-Ep") +
+  ggtitle("Epib-Epib") +
   theme(plot.title = element_text(hjust = 0.5))
 
 
@@ -773,7 +773,7 @@ oo_plot <- ggplot(plot_dat$`o-o`, aes(x=branch,y=`Proportion of Cells Co-express
         axis.line.y=element_blank(),
         axis.title.x=element_blank(),
         legend.position="none") +
-  ggtitle("Ot-Ot") +
+  ggtitle("Otic-Otic") +
   theme(plot.title = element_text(hjust = 0.5))
 
 png(paste0(curr_plot_folder, "coexpression_test.png"), width=20, height=12, family = 'Arial', units = "cm", res = 400)
