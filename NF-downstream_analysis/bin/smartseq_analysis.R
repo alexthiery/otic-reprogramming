@@ -454,7 +454,6 @@ m_oep$plotGeneModules(
   data_status='Normalized',
   gene_transformations=c('log', 'logscaled'),
   extra_colors=cbind(
-    pData(m_oep$expressionSet)$stage_colors,
     m_oep$cellClusters$Mansel$cell_ids %>% clust.colors[.]
   ),
   pretty.params=list("size_factor"=2, "ngenes_per_lines" = 6, "side.height.fraction"=0.5),
@@ -471,7 +470,6 @@ m_oep$plotGeneModules(
   data_status='Normalized',
   gene_transformations=c('log', 'logscaled'),
   extra_colors=cbind(
-    pData(m_oep$expressionSet)$stage_colors,
     m_oep$cellClusters$Mansel$cell_ids %>% clust.colors[.]
   ),
   pretty.params=list("size_factor"=100, "ngenes_per_lines" = 6, "side.height.fraction"=0.5),
@@ -544,6 +542,7 @@ HSMM <- orderCells(HSMM)
 #' Order cells from earliest "State" (ie DDRTree branch)
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 
+#' Plot cell stage over projected coordinates
 png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
 ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                   'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
@@ -654,8 +653,6 @@ unlink(curr_plot_folder, recursive=TRUE, force=TRUE)
 
 ###############################################################
 # DOTPLOTS
-
-curr_plot_folder = paste0(plot_path, "oep_subset/")
 
 # get cell branch information for dotplot
 cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
@@ -844,6 +841,7 @@ BEAM_res <- BEAM_res[order(BEAM_res$qval),]
 BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
 
 png(paste0(curr_plot_folder, 'Monocle_Beam.png'), width=8, height=40, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_Beam.png'), width=20, height=100, family = 'Arial', units = "cm", res = 400)
 beam_hm = plot_genes_branched_heatmap(HSMM[row.names(subset(BEAM_res, qval < .05)),],
                                       branch_point = branch_point_id,
                                       num_clusters = 20,
@@ -860,7 +858,7 @@ write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(curr_plot_folder, 'beam_scor
 
 
 #' BEAM plot of the original known genes
-png(paste0(curr_plot_folder, 'Monocle_Beam_knownGenes.png'), width=8, height=10, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_Beam_knownGenes.png'), width=20, height=25, family = 'Arial', units = "cm", res = 400)
 beam_hm = plot_genes_branched_heatmap(HSMM[m_oep$favorite_genes,],
                                       branch_point = branch_point_id,
                                       cores = 1,
@@ -875,7 +873,7 @@ graphics.off()
 # BEAM plot of the selected genes
 beam_gene_list = c(gene_list, 'SOX13', 'TFAP2A', 'GATA3', 'EPHA4', 'DLX5', 'PRDM1', 'PRDM12', 'EYA1', 'EYA2', 'ETV4')
 
-png(paste0(curr_plot_folder, 'Monocle_Beam_selGenes.png'), width=8, height=5, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_Beam_selGenes.png'), width=16, height=10, family = 'Arial', units = "cm", res = 400)
 beam_hm = plot_genes_branched_heatmap(HSMM[beam_gene_list,],
                                       branch_point = branch_point_id,
                                       cluster_rows=FALSE,
@@ -887,9 +885,6 @@ beam_hm = plot_genes_branched_heatmap(HSMM[beam_gene_list,],
                                       branch_colors=c('#dd70dd', '#48d1cc', '#f55f20'),
                                       branch_labels=c("Epib", 'Otic'))
 graphics.off()
-
-
-
 
 #####################################################################################
 ######                    Velocity - read and clean loom data                  ######
@@ -935,38 +930,143 @@ nmat <- m_oep_velocyto_dat$unspliced
 smat <- m_oep_velocyto_dat$spanning
 
 # calculate cell velocity
-rvel <- gene.relative.velocity.estimates(emat, nmat, smat=smat, kCells = 5, fit.quantile = 0.05, diagonal.quantiles = TRUE)
+rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, diagonal.quantiles = TRUE, fit.quantile = 0.05, n.cores = ncores)
+
+
+############### plot velocity on tSNE embeddings
 
 # get tsne embeddings for m_oep cells
 tsne.embeddings = tsne_embeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, perplexity=perp, pca=FALSE, eta=eta)
 
+# return velocity object to plot with ggplot
+vector_dat <- show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt',
+                               cex=1.5, arrow.scale=8, arrow.lwd=1.5, n.cores = ncores,
+                               show.grid.flow=TRUE, min.grid.cell.mass=0.5,grid.n=20, return.details = TRUE)
 
-# plot cell velocity on embeddings from tsne for m_oep cells
-cluster.colors <- c('#ffa07a', '#f55f20', '#dda0dd', '#48d1cc', '#b2ffe5')[m_oep$cellClusters$Mansel$cell_ids]
-names(cluster.colors) <- names(m_oep$cellClusters$Mansel$cell_ids)
+# plot vector map on clusters
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_clusters_vector.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_segment(data = as.data.frame(vector_dat$garrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40")
+graphics.off()
 
-png(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_clusters.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
-show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
-                               cex=1, arrow.scale=6, arrow.lwd=1, cell.border.alpha = 0)
+# plot cell arrows on clusters
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_clusters_arrows.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_segment(data = as.data.frame(vector_dat$arrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40")
 graphics.off()
 
 
-stage.colors <- pData(m$expressionSet)$stage_colors
-names(stage.colors) <- rownames(pData(m$expressionSet))
+# plot vector map on stage
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_stage_vector.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_segment(data = as.data.frame(vector_dat$garrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40")
+graphics.off()
 
-png(paste0(curr_plot_folder, 'OEP_subset_velocity_inc_spanning_stage.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
-show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
-                               cex=1, arrow.scale=6, arrow.lwd=1, cell.border.alpha = 0)
+# plot cell arrows on stage
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_stage_arrows.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_segment(data = as.data.frame(vector_dat$arrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40")
 graphics.off()
 
 
-# plot cell velocity on monocle embeddings
-png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_clusters.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
-show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt', cell.colors=ac(cluster.colors, alpha=1),
-                               cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
+
+############### plot velocity on monocle embeddings
+
+# return velocity object to plot with ggplot
+vector_dat <- show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt',
+                                             cex=1.5, arrow.scale=1, arrow.lwd=1.2, cell.border.alpha = 0, n.cores = ncores,
+                                             show.grid.flow=TRUE, min.grid.cell.mass=0.5,grid.n=20, return.details = TRUE)
 graphics.off()
 
-png(paste0(curr_plot_folder, 'Monocle_OEP_subset_velocity_inc_spanning_stage.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
-show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt', cell.colors=ac(stage.colors, alpha=1),
-                               cex=1, arrow.scale=1, arrow.lwd=0.5, cell.border.alpha = 0)
+# plot vector map on clusters
+png(paste0(curr_plot_folder, 'Monocle_velocity_clusters_vector.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = clust.colors) +
+  geom_segment(data = as.data.frame(vector_dat$garrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40") +
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5))
+graphics.off()
+
+# plot cell arrows on clusters
+png(paste0(curr_plot_folder, 'Monocle_velocity_clusters_arrows.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = clust.colors) +
+  geom_segment(data = as.data.frame(vector_dat$arrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40") +
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5))
+graphics.off()
+
+# plot vector map on stage
+png(paste0(curr_plot_folder, 'Monocle_velocity_stage_vector.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = stage_cols) +
+  geom_segment(data = as.data.frame(vector_dat$garrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40") +
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Developmental stage') +
+  theme(plot.title = element_text(hjust = 0.5))
+graphics.off()
+
+
+# plot cell arrows on stage
+png(paste0(curr_plot_folder, 'Monocle_velocity_stage_arrows.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = stage_cols) +
+  geom_segment(data = as.data.frame(vector_dat$arrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40") +
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Developmental stage') +
+  theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
