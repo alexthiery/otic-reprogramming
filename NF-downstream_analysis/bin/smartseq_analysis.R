@@ -85,7 +85,7 @@ m = Antler$new(plot_folder=plot_path, num_cores=ncores)
 # load in phenoData and assayData from ../dataset -> assayData is count matrix; phenoData is metaData (i.e. replicated, conditions, samples etc)
 m$loadDataset(folderpath=merged_counts_path)
 
-pData(m$expressionSet)$stage_colors = stage_cols[as.character(pData(m$expressionSet)$timepoint)]
+pData(m$expressionSet)$cells_colors = stage_cols[as.character(pData(m$expressionSet)$timepoint)]
 
 m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", basename="preQC", reads_name="read", cat_colors=unname(stage_cols))
 
@@ -196,10 +196,9 @@ m$plotGeneModules(
   file_settings=list(list(type='pdf', width=20, height=20)),
   data_status='Normalized',
   gene_transformations='logscaled',
-  extra_colors=cbind(
-    pData(m$expressionSet)$stage_colors
-  ),
-  pretty.params=list("size_factor"=3, "ngenes_per_lines" = 0, "side.height.fraction"=.3)
+  pretty.params=list("size_factor"=3, "ngenes_per_lines" = 0, "side.height.fraction"=.3),
+  display.legend = FALSE,
+  extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
 )
 
 m$writeGeneModules(basename='AllCells_allGms', gms='topCorr_DR.genemodules', folder_path = curr_plot_folder)
@@ -236,7 +235,6 @@ m2$plotGeneModules(
   data_status='Normalized',
   gene_transformations=c('log', 'logscaled'),
   extra_colors=cbind(
-    pData(m2$expressionSet)$stage_colors,
     m2$cellClusters$Mansel$cell_ids %>% clust.colors[.],
     "PAX2_log"=m2$getReadcounts(data_status='Normalized')['PAX2',] %>%
       {log10(1+.)} %>%
@@ -247,8 +245,35 @@ m2$plotGeneModules(
       {as.integer(1+100*./max(.))} %>%
       colorRampPalette(c("white", "darkgreen"))(n=100)[.]
   ),
-  pretty.params=list("size_factor"=3, "ngenes_per_lines" = 0, "side.height.fraction"=0.8),
-  extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
+  pretty.params=list("size_factor"=2, "side.height.fraction"=0.5),
+  display.legend = FALSE,
+  extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
+)
+
+
+m2$plotGeneModules(
+  basename='AllCellsManualGMselection_nolab',
+  curr_plot_folder = curr_plot_folder,
+  displayed.gms = 'dR.genemodules',
+  displayed.geneset='',
+  use.dendrogram='Mansel',
+  file_settings=list(list(type='pdf', width=10, height=10)),
+  data_status='Normalized',
+  gene_transformations=c('log', 'logscaled'),
+  extra_colors=cbind(
+    m2$cellClusters$Mansel$cell_ids %>% clust.colors[.],
+    "PAX2_log"=m2$getReadcounts(data_status='Normalized')['PAX2',] %>%
+      {log10(1+.)} %>%
+      {as.integer(1+100*./max(.))} %>%
+      colorRampPalette(c("white", "black"))(n=100)[.],
+    "GFP_log"= as.numeric(gfp_counts[m2$getCellsNames()]) %>%
+      {log10(1+.)} %>%
+      {as.integer(1+100*./max(.))} %>%
+      colorRampPalette(c("white", "darkgreen"))(n=100)[.]
+  ),
+  pretty.params=list("size_factor"=100, "side.height.fraction"=0.5),
+  display.legend = FALSE,
+  extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
 )
 
 m2$writeGeneModules(basename='AllCells_baitGMs', gms='dR.genemodules', folder_path = curr_plot_folder)
@@ -401,10 +426,9 @@ m_oep$plotGeneModules(
   file_settings=list(list(type='pdf', width=10, height=10)),
   data_status='Normalized',
   gene_transformations='logscaled',
-  extra_colors=cbind(
-    pData(m_oep$expressionSet)$stage_colors
-  ),
-  pretty.params=list("size_factor"=1, "ngenes_per_lines" = 8, "side.height.fraction"=.3)
+  pretty.params=list("size_factor"=2, "ngenes_per_lines" = 8, "side.height.fraction"=0.15),
+  display.legend = FALSE,
+  extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
 )
 
 # add gene modules txt
@@ -433,10 +457,26 @@ m_oep$plotGeneModules(
     pData(m_oep$expressionSet)$stage_colors,
     m_oep$cellClusters$Mansel$cell_ids %>% clust.colors[.]
   ),
-  pretty.params=list("size_factor"=1, "ngenes_per_lines" = 6, "side.height.fraction"=1),
+  pretty.params=list("size_factor"=2, "ngenes_per_lines" = 6, "side.height.fraction"=0.5),
   extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
 )
 
+m_oep$plotGeneModules(
+  curr_plot_folder = curr_plot_folder,
+  basename='OEP_GMselection_nolab',
+  displayed.gms = 'topCorr_DR.genemodules.selected',
+  displayed.geneset='',
+  use.dendrogram='Mansel',
+  file_settings=list(list(type='pdf', width=10, height=5)),
+  data_status='Normalized',
+  gene_transformations=c('log', 'logscaled'),
+  extra_colors=cbind(
+    pData(m_oep$expressionSet)$stage_colors,
+    m_oep$cellClusters$Mansel$cell_ids %>% clust.colors[.]
+  ),
+  pretty.params=list("size_factor"=100, "ngenes_per_lines" = 6, "side.height.fraction"=0.5),
+  extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
+)
 
 ########################################################################################################################
 # OEP tSNE plots
