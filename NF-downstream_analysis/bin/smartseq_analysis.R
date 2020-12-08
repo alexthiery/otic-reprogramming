@@ -285,14 +285,14 @@ curr_plot_folder = paste0(plot_path, "all_cells/tsne/")
 dir.create(curr_plot_folder)
 
 
-png(paste0(curr_plot_folder, 'allcells_clusters_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'allcells_clusters_TSNE.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by=m2$cellClusters$Mansel$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
   ggtitle('Clusters') +
   theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
 
 
-png(paste0(curr_plot_folder, 'allcells_stage_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'allcells_stage_TSNE.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by = pData(m2$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
   theme_void() +
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1), legend.position = "none") +
@@ -308,7 +308,7 @@ graphics.off()
 
 gene_list = c('SOX2', 'SOX10', 'SOX8', 'PAX7', 'PAX2', 'LMX1A', 'SOX21', 'SIX1')
 for(gn in gene_list){
-  png(paste0(curr_plot_folder, gn, '_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+  png(paste0(curr_plot_folder, gn, '_TSNE.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
   print(tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by = as.integer(1+100*log10(1+m2$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m2$getReadcounts(data_status='Normalized')[gn,]))),
             colours = c("grey", "darkmagenta"), perplexity=perp, eta=eta) +
           ggtitle(gn) +
@@ -317,7 +317,7 @@ for(gn in gene_list){
 }
 
 
-png(paste0(curr_plot_folder, 'GFP_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'GFP_TSNE.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m2, m2$dR$genemodules, seed=seed, colour_by = as.integer(1+100*log10(1+gfp_counts[m2$getCellsNames()]) / max(log10(1+gfp_counts[m2$getCellsNames()]))),
                 colours = c("grey", "darkgreen"), perplexity=perp, eta=eta) +
   ggtitle('GFP') +
@@ -485,13 +485,13 @@ m_oep$plotGeneModules(
 curr_plot_folder = paste0(plot_path, 'oep_subset/tsne/')
 dir.create(curr_plot_folder)
 
-png(paste0(curr_plot_folder, 'OEP_Clusters_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'OEP_Clusters_TSNE.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
   ggtitle('Clusters') +
   theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
 
-png(paste0(curr_plot_folder, 'OEP_stage_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'OEP_stage_TSNE.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by = pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
   ggtitle('Developmental stage') +
   theme(plot.title = element_text(hjust = 0.5))
@@ -501,7 +501,7 @@ graphics.off()
 # Plot expression of bait genes plus genes from bulk RNAseq and literature on tsne
 gene_list = c(bait_genes, 'SOX8', 'PAX2', 'TFAP2E', 'SIX1', 'ZBTB16', 'FOXG1',  'PDLIM1')
 for(gn in gene_list){
-  png(paste0(curr_plot_folder, gn, '_TSNE.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+  png(paste0(curr_plot_folder, gn, '_TSNE.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
   print(tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]))),
                   colours = c("grey", "darkmagenta"), perplexity=perp, eta=eta)  +
           ggtitle(gn) +
@@ -513,7 +513,7 @@ for(gn in gene_list){
 # Plot tSNE co-expression plots
 gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
 lapply(gene_pairs, function(x) {plot_tsne_coexpression(m_oep, m_oep$topCorr_DR$genemodules.selected, gene1 = x[1], gene2 = x[2], plot_folder = curr_plot_folder,
-                                                       seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 10, width = 15, res = 400, units = 'cm', family = 'Arial')})
+                                                       seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 16, width = 24, res = 400, units = 'cm', family = 'Arial')})
 
 
 ##################################################################
@@ -545,7 +545,7 @@ HSMM <- orderCells(HSMM)
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 
 #' Plot cell stage over projected coordinates
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'),  height = 15, width = 16, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
 ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                   'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
@@ -558,7 +558,7 @@ graphics.off()
 
 
 #' Plot cell clusters over projected coordinates
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.png'),  height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_Clusters.png'), height = 16, width = 15, family = 'Arial', units = 'cm', res = 400)
 ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                   'colour_by' = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
@@ -575,7 +575,7 @@ curr_plot_folder = paste0(plot_path, "monocle_plots/gradient_plots/")
 dir.create(curr_plot_folder)
 
 for(gn in gene_list){
-  png(paste0(curr_plot_folder, "monocle_gradient_", gn, '.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+  png(paste0(curr_plot_folder, "monocle_gradient_", gn, '.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
   print(ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                           'colour_by' = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]))),
                           check.names = FALSE),
@@ -595,7 +595,7 @@ dir.create(curr_plot_folder)
 # plot gradient gene co-expression on monocle embeddings
 gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
 lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2],
-                                                          plot_folder = curr_plot_folder, height = 10, width = 15, res = 400, units = 'cm', family = 'Arial')})
+                                                          plot_folder = curr_plot_folder, height = 16, width = 24, res = 400, units = 'cm', family = 'Arial')})
 
 ########################################################################
 
@@ -946,7 +946,7 @@ vector_dat <- show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale
                                show.grid.flow=TRUE, min.grid.cell.mass=0.5,grid.n=20, return.details = TRUE)
 
 # plot vector map on clusters
-png(paste0(curr_plot_folder, 'OEP_subset_velocity_clusters_vector.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_clusters_vector.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
   ggtitle('Clusters') +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -958,7 +958,7 @@ tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_o
 graphics.off()
 
 # plot cell arrows on clusters
-png(paste0(curr_plot_folder, 'OEP_subset_velocity_clusters_arrows.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_clusters_arrows.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
   ggtitle('Clusters') +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -971,7 +971,7 @@ graphics.off()
 
 
 # plot vector map on stage
-png(paste0(curr_plot_folder, 'OEP_subset_velocity_stage_vector.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_stage_vector.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
   ggtitle('Clusters') +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -983,7 +983,7 @@ tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=pDa
 graphics.off()
 
 # plot cell arrows on stage
-png(paste0(curr_plot_folder, 'OEP_subset_velocity_stage_arrows.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_stage_arrows.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
 tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
   ggtitle('Clusters') +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -1005,7 +1005,7 @@ vector_dat <- show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, 
 graphics.off()
 
 # plot vector map on clusters
-png(paste0(curr_plot_folder, 'Monocle_velocity_clusters_vector.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_velocity_clusters_vector.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
 ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                   'colour_by' = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
@@ -1022,7 +1022,7 @@ ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reduced
 graphics.off()
 
 # plot cell arrows on clusters
-png(paste0(curr_plot_folder, 'Monocle_velocity_clusters_arrows.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_velocity_clusters_arrows.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
 ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                   'colour_by' = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
@@ -1039,7 +1039,7 @@ ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reduced
 graphics.off()
 
 # plot vector map on stage
-png(paste0(curr_plot_folder, 'Monocle_velocity_stage_vector.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_velocity_stage_vector.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
 ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                   'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
@@ -1057,7 +1057,7 @@ graphics.off()
 
 
 # plot cell arrows on stage
-png(paste0(curr_plot_folder, 'Monocle_velocity_stage_arrows.png'), width=15, height=15, family = 'Arial', units = "cm", res = 400)
+png(paste0(curr_plot_folder, 'Monocle_velocity_stage_arrows.png'), height = 16, width = 15, family = 'Arial', units = "cm", res = 400)
 ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                   'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
