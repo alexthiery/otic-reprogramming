@@ -456,8 +456,9 @@ m_oep$plotGeneModules(
   extra_colors=cbind(
     m_oep$cellClusters$Mansel$cell_ids %>% clust.colors[.]
   ),
+  display.legend = FALSE,
   pretty.params=list("size_factor"=2, "ngenes_per_lines" = 6, "side.height.fraction"=0.5),
-  extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
+  extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
 )
 
 m_oep$plotGeneModules(
@@ -472,8 +473,9 @@ m_oep$plotGeneModules(
   extra_colors=cbind(
     m_oep$cellClusters$Mansel$cell_ids %>% clust.colors[.]
   ),
+  display.legend = FALSE,
   pretty.params=list("size_factor"=100, "ngenes_per_lines" = 6, "side.height.fraction"=0.5),
-  extra_legend=list("text"=names(stage_cols), "colors"=unname(stage_cols))
+  extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
 )
 
 ########################################################################################################################
