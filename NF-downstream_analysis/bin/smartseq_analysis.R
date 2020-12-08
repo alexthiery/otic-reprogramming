@@ -655,6 +655,7 @@ unlink(curr_plot_folder, recursive=TRUE, force=TRUE)
 
 ###############################################################
 # DOTPLOTS
+curr_plot_folder = paste0(plot_path, "monocle_plots/")
 
 # get cell branch information for dotplot
 cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
