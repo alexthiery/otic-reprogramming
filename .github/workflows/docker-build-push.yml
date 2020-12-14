@@ -5,7 +5,7 @@ on:
     branches:
       - master
     path:
-      - modules/r_analysis/Dockerfile
+      - "./modules/r_analysis/Dockerfile"
 
 jobs:
   build-push-docker:
