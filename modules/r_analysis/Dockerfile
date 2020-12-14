@@ -35,3 +35,4 @@ RUN R -e "install.packages('BiocManager')" && \
     R -e 'install.packages(c("getopt", "ggsignif", "getopt", "plyr", "readr", "RColorBrewer", "VennDiagram", "pheatmap", "ggplot2", "openxlsx", "ggrepel", "ggseqlogo", "cowplot", "gridGraphics", "gprofiler2", "rstatix", "corrgram", "extrafont"))' && \
     # load fonts into R libs
     R -e 'library(extrafont); font_import(prompt = FALSE)'
+    
