@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    path:
-      - "./modules/r_analysis/Dockerfile"
+    paths:
+      - ./modules/r_analysis/Dockerfile
 
 jobs:
   build-push-docker:
