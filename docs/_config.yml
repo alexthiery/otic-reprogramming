@@ -1,30 +1,81 @@
-# Permalinks
-#
-# Use of `relative_permalinks` ensures post links from the index work properly.
-permalink: pretty
-relative_permalinks: false
+# ----
+# Site
 
-# Setup
-title: Poole
-tagline: The Jekyll Butler
-url: http://getpoole.com
-paginate: 1
-baseurl: ""
+title: Streit lab wiki
+url: "https://streit-lab.github.io"
+baseurl:
+google_analytics_key:
+show_full_navigation: true
 
-# Assets
-#
-# We specify the directory for Jekyll so we can use @imports.
-sass:
-  sass_dir: _sass
-  style: :compressed
-
-# About/contact
+# Values for the jekyll-seo-tag gem (https://github.com/jekyll/jekyll-seo-tag)
+logo: /siteicon.png
+description: Main documentation and “play-book” for the Streit Lab.
 author:
-  name: Mark Otto
-  url: https://twitter.com/mdo
-  email: markdotto@gmail.com
+  name: Alex Thiery
+  email: alexandre.thiery@kcl.ac.uk
+  twitter: # twitter username without the @ symbol
 
-# Custom vars
-version: 2.0.0
-github:
-  repo: https://github.com/poole/poole
+
+# -----
+# Build
+
+timezone: Etc/UTC
+
+permalink: pretty
+
+gems:
+  - jekyll-octicons
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-feed
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - LICENCE
+
+collections:
+  docs:
+    title: Documentation
+    permalink: /:path/
+    output: true
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: default
+  -
+    scope:
+      path: ""
+      type: "docs"
+    values:
+      seo:
+        type: Article
+      _comments:
+        category: Group navigation links with this field
+        order: Used to sort links in the navigation
+      _options:
+        content:
+          width: 800
+          height: 2000
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      _comments:
+        type: Marks the impact of this release
+
+# -----------
+# CloudCannon
+
+types:
+  - minor
+  - major
+
+markdown: GFM
