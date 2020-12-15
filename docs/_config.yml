@@ -1,20 +1,19 @@
 # ----
 # Site
 
-title: Streit lab wiki
-url: "https://streit-lab.github.io"
+title: Otic reprogramming
+url: "https://alexthiery.github.io/otic-reprogramming/"
 baseurl:
 google_analytics_key:
 show_full_navigation: true
 
 # Values for the jekyll-seo-tag gem (https://github.com/jekyll/jekyll-seo-tag)
 logo: /siteicon.png
-description: Main documentation and “play-book” for the Streit Lab.
+description: Documentation for Sox8 otic reprogramming in chick
 author:
   name: Alex Thiery
   email: alexandre.thiery@kcl.ac.uk
   twitter: # twitter username without the @ symbol
-
 
 # -----
 # Build
@@ -44,13 +43,11 @@ collections:
     output: true
 
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
     values:
       layout: default
-  -
-    scope:
+  - scope:
       path: ""
       type: "docs"
     values:
@@ -63,8 +60,7 @@ defaults:
         content:
           width: 800
           height: 2000
-  -
-    scope:
+  - scope:
       path: ""
       type: "posts"
     values:
