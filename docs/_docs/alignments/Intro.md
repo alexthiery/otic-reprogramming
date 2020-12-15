@@ -1,6 +1,6 @@
 ---
 title: Intro
-category: Rosalind
+category: Alignments
 order: 1
 ---
 
@@ -14,7 +14,7 @@ They have recently re-written the [HPC wiki](https://rosalind.kcl.ac.uk/) which 
 
 ### Getting access
 
-To request access email [IT](mailto:rosalind-support@kcl.ac.uk), you will need to generate a public key to send to the HPC team. 
+To request access email [IT](mailto:rosalind-support@kcl.ac.uk), you will need to generate a public key to send to the HPC team.
 
 Here are some instructions on how to do this:
 
@@ -83,7 +83,7 @@ Mostly you will submit batch jobs to the "cpu" partition.
 Never run anything substantial (ie. more than simple head, cd, mkdir .etc commands) on the login node (this is where you are when you first ssh into the cluster).
 
 Note that "threads" are equivalent to --cpus-per-task and the max seems to be 32 on the cpu partition.
-We can only have *one* interactive session running at a time. If you can't get one, it might be that you have one running that you forgot about.
+We can only have _one_ interactive session running at a time. If you can't get one, it might be that you have one running that you forgot about.
 
 To check what you've got running:
 `squeue -u <username>`
