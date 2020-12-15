@@ -648,7 +648,7 @@ for(n in rownames(gene_level.2)){
   graphics.off()
 }
 
-system(paste0("zip -rj ", plot_path, "monocle_plots/all_monocle_projections.zip", curr_plot_folder))
+system(paste0("zip -rj ", plot_path, "monocle_plots/all_monocle_projections.zip ", curr_plot_folder))
 unlink(curr_plot_folder, recursive=TRUE, force=TRUE)
 
 ###############################################################
