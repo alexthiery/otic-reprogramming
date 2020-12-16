@@ -705,7 +705,7 @@ ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expre
   scale_color_gradient(low = "grey90", high = "blue") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 0, size=14),
-        axis.text.y = element_text(colour =  c("Otic" = "#f55f20",  "OEP" = "#dda0dd", "Epib" = "#48d1cc"), face = 'bold', size = 16),
+        axis.text.y = element_text(colour =  c("#48d1cc", "#dda0dd", "#f55f20"), face = 'bold', size = 16),
         legend.position="bottom", legend.box = "horizontal", plot.margin=unit(c(0,1,0,0),"cm"), legend.text=element_text(size=10), legend.title=element_text(size=12))
 graphics.off()
 
