@@ -735,13 +735,18 @@ for(pair in 1:nrow(comb)){
 colnames(coexpression_data) = c("value", "comparison", "branch")
 
 # t-test between co-expression in OEP lineage and epibranchial/otic branches
-coexpression_data %>%
-  group_by(comparison) %>%
-  pairwise_t_test(
-    value ~ branch,
-    ref.group = "OEP",
-    p.adjust.method = "bonferroni"
-  )
+coexpression_stats <- coexpression_data %>%
+  mutate(branch = factor(branch, levels = c("OEP", "Epib", "Otic"))) %>%
+  group_split(comparison)
+
+names(coexpression_stats) <- lapply(coexpression_stats, function(x) as.character(unique(x[["comparison"]])))
+  
+# Non parametric kruskal wallis test
+lapply(coexpression_stats, function(x) kruskal.test(value ~ branch, data = x))
+
+# Wilcoxon rank sum test
+lapply(coexpression_stats, function(x) filter(x, branch == 'OEP' | branch == "Otic") %>% wilcox.test(value ~ branch, data = .))
+lapply(coexpression_stats, function(x) filter(x, branch == 'OEP' | branch == "Epib") %>% wilcox.test(value ~ branch, data = .))
 
 # calculate mean value per group and SD for plotting bar plot
 plot_dat <- coexpression_data %>%
@@ -762,7 +767,7 @@ oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`Proportion of Cells Co-express
   scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epib" = "#48d1cc", "OEP" = "#dda0dd")) +
   geom_errorbar(aes(ymin=`Proportion of Cells Co-expressing`-sd, ymax=`Proportion of Cells Co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
-  geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "***",
+  geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "**",
               y_position = 0.83, tip_length = 0.02, vjust=0.4) +
   geom_signif(comparisons=list(c("OEP", "Epib")), annotations = "***",
               y_position = 0.8, tip_length = 0.02, vjust=0.4) +
@@ -778,7 +783,7 @@ ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`Proportion of Cells Co-express
   scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epib" = "#48d1cc", "OEP" = "#dda0dd")) +
   geom_errorbar(aes(ymin=`Proportion of Cells Co-expressing`-sd, ymax=`Proportion of Cells Co-expressing`+sd), width=.2,
                 position=position_dodge(.9)) +
-  geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "***",
+  geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "**",
               y_position = 0.83, tip_length = 0.02, vjust=0.4) +
   geom_signif(comparisons=list(c("OEP", "Epib")), annotations = "*",
               y_position = 0.8, tip_length = 0.02, vjust=0.4) +
