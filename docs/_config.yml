@@ -18,5 +18,8 @@ paginate_path: "/blog/page:num/"
 author:
   name: "Alex Thiery"
   email: "alexthiery1@gmail.com"
-  github: alexthiery/otic-reprogramming
-  orcid: http://orcid.org/0000-0002-5814-4977
+  github: alexthiery
+
+lab:
+  homepage: https://www.kcl.ac.uk/people/andrea-streit
+  publication: http://orcid.org/0000-0002-5814-4977
