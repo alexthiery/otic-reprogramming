@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://0.0.0.0:4000</loc>
-    <lastmod>2021-01-04T06:31:22-06:00</lastmod>
+    <loc>http://patricksteadman.ca</loc>
+    <lastmod>2021-01-04T07:47:12-06:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2017/11/29/updating-website-ruby/</loc>
+      <loc>http://patricksteadman.ca/2017/11/29/updating-website-ruby/</loc>
       
         <lastmod>2017-11-29T00:00:00-06:00</lastmod>
       
@@ -17,7 +17,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2017/11/16/learning-circuits/</loc>
+      <loc>http://patricksteadman.ca/2017/11/16/learning-circuits/</loc>
       
         <lastmod>2017-11-16T00:00:00-06:00</lastmod>
       
@@ -26,7 +26,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2017/11/13/beyond-place-cells/</loc>
+      <loc>http://patricksteadman.ca/2017/11/13/beyond-place-cells/</loc>
       
         <lastmod>2017-11-13T00:00:00-06:00</lastmod>
       
@@ -35,7 +35,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2017/11/11/myelin-early-and-late/</loc>
+      <loc>http://patricksteadman.ca/2017/11/11/myelin-early-and-late/</loc>
       
         <lastmod>2017-11-11T00:00:00-06:00</lastmod>
       
@@ -44,7 +44,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2017/10/25/SfNBloggerIntro/</loc>
+      <loc>http://patricksteadman.ca/2017/10/25/SfNBloggerIntro/</loc>
       
         <lastmod>2017-10-25T00:00:00-05:00</lastmod>
       
@@ -53,7 +53,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2015/01/09/aredocsgoodadvocates/</loc>
+      <loc>http://patricksteadman.ca/2015/01/09/aredocsgoodadvocates/</loc>
       
         <lastmod>2015-01-09T00:00:00-06:00</lastmod>
       
@@ -62,7 +62,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2014/12/05/trainingphysicianadvocates/</loc>
+      <loc>http://patricksteadman.ca/2014/12/05/trainingphysicianadvocates/</loc>
       
         <lastmod>2014-12-05T00:00:00-06:00</lastmod>
       
@@ -71,7 +71,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2014/11/09/dataoath/</loc>
+      <loc>http://patricksteadman.ca/2014/11/09/dataoath/</loc>
       
         <lastmod>2014-11-09T00:00:00-06:00</lastmod>
       
@@ -80,7 +80,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2014/08/22/healthcaretraigesystemsvideos/</loc>
+      <loc>http://patricksteadman.ca/2014/08/22/healthcaretraigesystemsvideos/</loc>
       
         <lastmod>2014-08-22T00:00:00-05:00</lastmod>
       
@@ -89,7 +89,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2014/08/04/lanyonsetup/</loc>
+      <loc>http://patricksteadman.ca/2014/08/04/lanyonsetup/</loc>
       
         <lastmod>2014-08-04T00:00:00-05:00</lastmod>
       
@@ -98,7 +98,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2014/07/30/mdphd-UofT/</loc>
+      <loc>http://patricksteadman.ca/2014/07/30/mdphd-UofT/</loc>
       
         <lastmod>2014-07-30T00:00:00-05:00</lastmod>
       
@@ -107,7 +107,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2014/07/29/msc/</loc>
+      <loc>http://patricksteadman.ca/2014/07/29/msc/</loc>
       
         <lastmod>2014-07-29T00:00:00-05:00</lastmod>
       
@@ -116,7 +116,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2014/07/28/bsc/</loc>
+      <loc>http://patricksteadman.ca/2014/07/28/bsc/</loc>
       
         <lastmod>2014-07-28T00:00:00-05:00</lastmod>
       
@@ -125,7 +125,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2014/02/17/ASD-research-short/</loc>
+      <loc>http://patricksteadman.ca/2014/02/17/ASD-research-short/</loc>
       
         <lastmod>2014-02-17T00:00:00-06:00</lastmod>
       
@@ -134,7 +134,7 @@
     </url>
   
     <url>
-      <loc>http://0.0.0.0:4000/2013/01/19/autism-oped/</loc>
+      <loc>http://patricksteadman.ca/2013/01/19/autism-oped/</loc>
       
         <lastmod>2013-01-19T00:00:00-06:00</lastmod>
       
@@ -144,7 +144,7 @@
   
   
   <url>
-    <loc>http://0.0.0.0:4000/404.html</loc>
+    <loc>http://patricksteadman.ca/404.html</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -157,7 +157,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/about/</loc>
+    <loc>http://patricksteadman.ca/about/</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -170,7 +170,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/archive/</loc>
+    <loc>http://patricksteadman.ca/archive/</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -183,7 +183,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/atom.xml</loc>
+    <loc>http://patricksteadman.ca/atom.xml</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -196,7 +196,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/blog/</loc>
+    <loc>http://patricksteadman.ca/blog/</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -209,7 +209,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/</loc>
+    <loc>http://patricksteadman.ca/</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -222,7 +222,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/sitemap.xml</loc>
+    <loc>http://patricksteadman.ca/sitemap.xml</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -235,7 +235,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/assets/css/style.css</loc>
+    <loc>http://patricksteadman.ca/assets/css/style.css</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -248,7 +248,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/blog/page2/</loc>
+    <loc>http://patricksteadman.ca/blog/page2/</loc>
     
       <lastmod>2021-01-04</lastmod>
     
@@ -261,7 +261,7 @@
   </url>
   
   <url>
-    <loc>http://0.0.0.0:4000/blog/page3/</loc>
+    <loc>http://patricksteadman.ca/blog/page3/</loc>
     
       <lastmod>2021-01-04</lastmod>
     

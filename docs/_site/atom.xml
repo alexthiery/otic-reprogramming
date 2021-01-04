@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Patrick Steadman</title>
- <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
- <link href="http://0.0.0.0:4000/"/>
- <updated>2021-01-04T06:31:22-06:00</updated>
- <id>http://0.0.0.0:4000</id>
+ <link href="http://patricksteadman.ca/atom.xml" rel="self"/>
+ <link href="http://patricksteadman.ca/"/>
+ <updated>2021-01-04T07:47:12-06:00</updated>
+ <id>http://patricksteadman.ca</id>
  <author>
    <name>Patrick Steadman</name>
    <email>patrick.steadman[at]mail[dot]utoronto[dot]ca</email>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Updated ruby on OS X 12 using HomeBrew</title>
-   <link href="http://0.0.0.0:4000/2017/11/29/updating-website-ruby/"/>
+   <link href="http://patricksteadman.ca/2017/11/29/updating-website-ruby/"/>
    <updated>2017-11-29T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2017/11/29/updating-website-ruby</id>
+   <id>http://patricksteadman.ca/2017/11/29/updating-website-ruby</id>
    <content type="html">&lt;p&gt;My old Gemfile.lock had a dependency with a known DoS vulnerability and Github notified me to fix. This ran into some issues of OS X 12 install of ruby (v 2.0.0) so I decided to switch over to HomeBrew and manage my own ruby env there.&lt;/p&gt;
 
 &lt;h1 id=&quot;setup&quot;&gt;Setup&lt;/h1&gt;
@@ -68,9 +68,9 @@ bundle &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
  
  <entry>
    <title>Algorithms and Learning</title>
-   <link href="http://0.0.0.0:4000/2017/11/16/learning-circuits/"/>
+   <link href="http://patricksteadman.ca/2017/11/16/learning-circuits/"/>
    <updated>2017-11-16T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2017/11/16/learning-circuits</id>
+   <id>http://patricksteadman.ca/2017/11/16/learning-circuits</id>
    <content type="html">&lt;p&gt;The last few days at SfN came at me, and maybe you, from all angles. It has been a deluge of information and insight into some amazing work. One ‘theme’ covered the mechanisms of learning from both biological and computational perspectives. Lets take a look at presentations from both vantages.&lt;/p&gt;
 
 &lt;p&gt;Presenting in the session ‘From salient experience to learning and memory’, Dr. Andreas Lüthi examined how an association between a conditioned stimulus (CS) and an unconditioned stimulus (US) is formed by amygdalar neuronal circuits. Understanding the process of forming associations may help prevent or treat anxiety disorders, where a stimulus that may not be concerning is causing debilitating anxiety.&lt;/p&gt;
@@ -100,9 +100,9 @@ Blog: &lt;a href=&quot;http://patricksteadman.ca/blog&quot;&gt;patricksteadman.c
  
  <entry>
    <title>Beyond Place Cells</title>
-   <link href="http://0.0.0.0:4000/2017/11/13/beyond-place-cells/"/>
+   <link href="http://patricksteadman.ca/2017/11/13/beyond-place-cells/"/>
    <updated>2017-11-13T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2017/11/13/beyond-place-cells</id>
+   <id>http://patricksteadman.ca/2017/11/13/beyond-place-cells</id>
    <content type="html">&lt;p&gt;Thanks to O’Keefe and Dostrovsky 45 years ago place cells were discovered in the hippocampus. Since then people have been studying the neurophysiology of neurons to see how place, among other features of the world around us are coded. In this #SfN17 session presenters were urged to move ‘Beyond place cells’ and thankfully many have been doing just that for a number of years. However, many questions remain about mechanistically how the hippocampus and associated structures process for coding environmental features.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://www.frontline.in/multimedia/dynamic/02171/fl14_nobel_medicin_2171449g.jpg&quot; alt=&quot;Coding cells, 25%&quot; /&gt;&lt;/p&gt;
@@ -136,9 +136,9 @@ Blog: &lt;a href=&quot;http://patricksteadman.ca/blog&quot;&gt;patricksteadman.c
  
  <entry>
    <title>Myelin in the early and late stages of life</title>
-   <link href="http://0.0.0.0:4000/2017/11/11/myelin-early-and-late/"/>
+   <link href="http://patricksteadman.ca/2017/11/11/myelin-early-and-late/"/>
    <updated>2017-11-11T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2017/11/11/myelin-early-and-late</id>
+   <id>http://patricksteadman.ca/2017/11/11/myelin-early-and-late</id>
    <content type="html">&lt;h3 id=&quot;how-could-sleep-aging-and-myelin-be-related&quot;&gt;How could sleep, aging and myelin be related?&lt;/h3&gt;
 
 &lt;p&gt;Sometimes its good to get out of your wheelhouse.&lt;/p&gt;
@@ -171,9 +171,9 @@ Blog: &lt;a href=&quot;http://patricksteadman.ca/blog&quot;&gt;patricksteadman.c
  
  <entry>
    <title>Blogging at SfN 2017</title>
-   <link href="http://0.0.0.0:4000/2017/10/25/SfNBloggerIntro/"/>
+   <link href="http://patricksteadman.ca/2017/10/25/SfNBloggerIntro/"/>
    <updated>2017-10-25T00:00:00-05:00</updated>
-   <id>http://0.0.0.0:4000/2017/10/25/SfNBloggerIntro</id>
+   <id>http://patricksteadman.ca/2017/10/25/SfNBloggerIntro</id>
    <content type="html">&lt;p&gt;Hi! I am one of the 2017 Society for Neuroscience Bloggers. I will be posting at Neuronline under the official bloggers tags and at &lt;a href=&quot;http://patricksteadman.ca/blog&quot;&gt;my website&lt;/a&gt;. I will be writing about these two themes:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -199,9 +199,9 @@ Blog: &lt;a href=&quot;http://patricksteadman.ca/blog&quot;&gt;patricksteadman.c
  
  <entry>
    <title>Are physicians good advocates?</title>
-   <link href="http://0.0.0.0:4000/2015/01/09/aredocsgoodadvocates/"/>
+   <link href="http://patricksteadman.ca/2015/01/09/aredocsgoodadvocates/"/>
    <updated>2015-01-09T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2015/01/09/aredocsgoodadvocates</id>
+   <id>http://patricksteadman.ca/2015/01/09/aredocsgoodadvocates</id>
    <content type="html">&lt;p&gt;During my training last year as a medical student a great emphasis was placed on interprofessional education. I learnt about the other health professionals and the vital roles they play in providing the best care for patients. Some of the other professionals appeared to me to be very well suited for patient advocacy. It made me wonder what makes physicians suited for patient advocacy and population health advocacy. I decided to see what literature there was on this topic…&lt;/p&gt;
 
 &lt;p&gt;First, what makes a physician positioned so well for health advocacy work? According to the literature, they “understand the medical aspects of issues better than any sector of society, and they are poised to observe and delineate the links between social factors and health” (Earnest et al. 2010). Furthermore, they are highly trusted by the public for information related to health. Unfortunately, some research shows physicians are more likely to engage in issues affecting their own economic well-being rather than those benefiting society as a whole (Grumbach et al. 1998 NEJM). Given the great potential physicians have for advocacy work, but the (somewhat dated) evidence for them to mostly act in their own best interest, wouldn’t it be wonderful to train physicians to ensure they serve as ‘good’ advocates? As in primarily advocating for improved health in their communities.&lt;/p&gt;
@@ -243,9 +243,9 @@ Source: &lt;a href=&quot;&quot;&gt;https://twitter.com/UofTGoL/status/4264651899
  
  <entry>
    <title>On medical students becoming health advocates</title>
-   <link href="http://0.0.0.0:4000/2014/12/05/trainingphysicianadvocates/"/>
+   <link href="http://patricksteadman.ca/2014/12/05/trainingphysicianadvocates/"/>
    <updated>2014-12-05T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2014/12/05/trainingphysicianadvocates</id>
+   <id>http://patricksteadman.ca/2014/12/05/trainingphysicianadvocates</id>
    <content type="html">&lt;p&gt;A patient is unable to afford medications necessary to manage their chronic illness. As a physician, you may not even inquire as to whether the patient can afford their prescription medication and thus do nothing &lt;em&gt;OR&lt;/em&gt; you may advocate for your patient and for a better healthcare system by ensuring they get their medications and letting healthcare administrators know about this gap in ability to provide care. Which type of physician will you be?&lt;/p&gt;
 
 &lt;p&gt;During a Canadian medical student’s training, we become competent in the Can MEDs roles, all 7 of them. One of those roles is that of &lt;a href=&quot;http://www.deptmedicine.utoronto.ca/CanMEDS/Health_Advocate.htm&quot;&gt;the Health Advocate&lt;/a&gt;. How does medical education and a future physician’s general experience in healthcare teach them to be an advocate and prepare them for contributing to making healthcare better meet patient needs? How do we ensure all “physicians [know their] responsibility [to] use their expertise and influence to advance the health and well-being of individual patients, communities, and &lt;a href=&quot;http://www.royalcollege.ca/portal/page/portal/rc/canmeds/framework&quot;&gt;populations.&lt;/a&gt;”&lt;/p&gt;
@@ -268,9 +268,9 @@ Source: &lt;a href=&quot;&quot;&gt;https://twitter.com/UofTGoL/status/4264651899
  
  <entry>
    <title>Datakind&#58; doing good data science</title>
-   <link href="http://0.0.0.0:4000/2014/11/09/dataoath/"/>
+   <link href="http://patricksteadman.ca/2014/11/09/dataoath/"/>
    <updated>2014-11-09T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2014/11/09/dataoath</id>
+   <id>http://patricksteadman.ca/2014/11/09/dataoath</id>
    <content type="html">&lt;p&gt;Recently &lt;a href=&quot;http://www.DataKind.org&quot;&gt;DataKind&lt;/a&gt;, an organization that I have been following for some time, held a session exploring the need for a ‘hippocratic oath [in] data science’.&lt;/p&gt;
 
 &lt;p&gt;As research using massive amounts of data becomes more and more popular, there develops a need for an ethical line. Similar to physician’s ‘do no harm’ mantra and the intimate access they have to a person’s experience with health, the data scientists access to large swaths of data from distributed sources has the potential for harm and exposure of personal information. To begin a discussion on defining this ethical line and come up with a ‘hippocratic oath for data science’ the people at DataKind held &lt;a href=&quot;http://www.datakind.org/blog/meetup-recap-untangling-ethical-questions-in-data-science/&quot;&gt;an evening forum&lt;/a&gt;. It has left me with many thoughts on this, especially as data science becomes pervasive in all aspects of our lives (including our health), and I felt compelled to share.&lt;/p&gt;
@@ -290,9 +290,9 @@ Source: &lt;a href=&quot;&quot;&gt;https://twitter.com/UofTGoL/status/4264651899
  
  <entry>
    <title>Healthcare Triage and different healthcare systems</title>
-   <link href="http://0.0.0.0:4000/2014/08/22/healthcaretraigesystemsvideos/"/>
+   <link href="http://patricksteadman.ca/2014/08/22/healthcaretraigesystemsvideos/"/>
    <updated>2014-08-22T00:00:00-05:00</updated>
-   <id>http://0.0.0.0:4000/2014/08/22/healthcaretraigesystemsvideos</id>
+   <id>http://patricksteadman.ca/2014/08/22/healthcaretraigesystemsvideos</id>
    <content type="html">&lt;p&gt;Delivery of healthcare differs vastly across nations. We, in Canada, often contrast our system with that of the United States. However, frequently the facts of the system give way to myths. So perhaps a little evidence-based clarification is in order.&lt;/p&gt;
 
 &lt;p&gt;I watch &lt;a href=&quot;https://www.youtube.com/channel/UCabaQPYxxKepWUsEVQMT4Kw&quot;&gt;&lt;em&gt;Healthcare Triage&lt;/em&gt;&lt;/a&gt; which is a youtube channel run by Dr. Aaron Carroll. He is a &lt;a href=&quot;http://pediatrics.iu.edu/chsr/our-team/faculty/bio-carroll/&quot;&gt;pediatrician&lt;/a&gt; at Indiana University and blogs at &lt;a href=&quot;http://theincidentaleconomist.com/&quot;&gt;the Incidental Economist&lt;/a&gt;. Recently, him and his collaborators put together a series on several healthcare systems.&lt;/p&gt;
@@ -314,9 +314,9 @@ Source: &lt;a href=&quot;&quot;&gt;https://twitter.com/UofTGoL/status/4264651899
  
  <entry>
    <title>Using Jekyll, Poole and Lanyon to setup my github user page</title>
-   <link href="http://0.0.0.0:4000/2014/08/04/lanyonsetup/"/>
+   <link href="http://patricksteadman.ca/2014/08/04/lanyonsetup/"/>
    <updated>2014-08-04T00:00:00-05:00</updated>
-   <id>http://0.0.0.0:4000/2014/08/04/lanyonsetup</id>
+   <id>http://patricksteadman.ca/2014/08/04/lanyonsetup</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;https://pages.github.com/&quot;&gt;Github pages&lt;/a&gt; is where I learnt github repositories could be used to host a website using &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;jekyll&lt;/a&gt;. This website was created using the theme &lt;a href=&quot;https://github.com/poole/lanyon&quot;&gt;lanyon&lt;/a&gt;, which derives from &lt;a href=&quot;https://github.com/poole/poole&quot;&gt;poole&lt;/a&gt;. Jekyll, Poole and Lanyon are all characters from &lt;a href=&quot;http://en.wikipedia.org/wiki/Strange_Case_of_Dr_Jekyll_and_Mr_Hyde&quot;&gt;&lt;em&gt;The Strange Case of Dr. Jekyll and Mr. Hyde&lt;/em&gt;&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h3 id=&quot;general-custimizations&quot;&gt;General custimizations&lt;/h3&gt;
@@ -361,9 +361,9 @@ Source: &lt;a href=&quot;&quot;&gt;https://twitter.com/UofTGoL/status/4264651899
  
  <entry>
    <title>The MD/PhD program at UofT</title>
-   <link href="http://0.0.0.0:4000/2014/07/30/mdphd-UofT/"/>
+   <link href="http://patricksteadman.ca/2014/07/30/mdphd-UofT/"/>
    <updated>2014-07-30T00:00:00-05:00</updated>
-   <id>http://0.0.0.0:4000/2014/07/30/mdphd-UofT</id>
+   <id>http://patricksteadman.ca/2014/07/30/mdphd-UofT</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://mdphd.utoronto.ca/&quot;&gt;The MD/PhD program&lt;/a&gt; at the University of Toronto is the largest of its kind in Canada. My class, starting in 2013, had 11 students in it. The program is run out of the &lt;a href=&quot;http://www.medicine.utoronto.ca/&quot;&gt;Faculty of Medicine&lt;/a&gt; and as the name states is split into two sections: the &lt;a href=&quot;http://www.md.utoronto.ca/&quot;&gt;MD side&lt;/a&gt; and the PhD side.&lt;/p&gt;
 
 &lt;p&gt;Most students complete MD year 1 and then transition to the PhD phase. An alternative avenue is to stay for MD year 2 and transition to the PhD phase afterwards. Following the successful defense of the PhD, the final 3 years of the MD degree are completed. Total time is (hopefully) 8 years, though this varies. The choice of PhD department and supervisor is done during first year of medicine with significant freedom to choose from the majority of departments at the university.&lt;/p&gt;
@@ -398,9 +398,9 @@ Supervisor: Dr. Paul Frankland&lt;/p&gt;
  
  <entry>
    <title>MSc at University of Toronto</title>
-   <link href="http://0.0.0.0:4000/2014/07/29/msc/"/>
+   <link href="http://patricksteadman.ca/2014/07/29/msc/"/>
    <updated>2014-07-29T00:00:00-05:00</updated>
-   <id>http://0.0.0.0:4000/2014/07/29/msc</id>
+   <id>http://patricksteadman.ca/2014/07/29/msc</id>
    <content type="html">&lt;h3 id=&quot;university-of-toronto&quot;&gt;&lt;a href=&quot;http://www.utoronto.ca&quot;&gt;University of Toronto&lt;/a&gt;&lt;/h3&gt;
 
 &lt;p&gt;&lt;strong&gt;2011-2013&lt;/strong&gt; &lt;br /&gt;
@@ -434,9 +434,9 @@ Supervisor: Dr. Jason Lerch&lt;/p&gt;
  
  <entry>
    <title>BSc at McMaster University</title>
-   <link href="http://0.0.0.0:4000/2014/07/28/bsc/"/>
+   <link href="http://patricksteadman.ca/2014/07/28/bsc/"/>
    <updated>2014-07-28T00:00:00-05:00</updated>
-   <id>http://0.0.0.0:4000/2014/07/28/bsc</id>
+   <id>http://patricksteadman.ca/2014/07/28/bsc</id>
    <content type="html">&lt;h3 id=&quot;mcmaster-university&quot;&gt;&lt;a href=&quot;http://www.mcmaster.ca&quot;&gt;McMaster University&lt;/a&gt;&lt;/h3&gt;
 
 &lt;p&gt;&lt;strong&gt;2006-2011&lt;/strong&gt; &lt;br /&gt;
@@ -509,9 +509,9 @@ Major: &lt;em&gt;Medical and Health Physics&lt;/em&gt;&lt;/p&gt;
  
  <entry>
    <title>The key to early diagnosis in Autism&#58; three research areas</title>
-   <link href="http://0.0.0.0:4000/2014/02/17/ASD-research-short/"/>
+   <link href="http://patricksteadman.ca/2014/02/17/ASD-research-short/"/>
    <updated>2014-02-17T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2014/02/17/ASD-research-short</id>
+   <id>http://patricksteadman.ca/2014/02/17/ASD-research-short</id>
    <content type="html">&lt;p&gt;&lt;em&gt;“I’m hoping they will realize they get better bang for their buck, the earlier intervention is given.”&lt;/em&gt; - &lt;a title=&quot;Toronto Star February 2013&quot; href=&quot;http://www.thestar.com/news/canada/2013/02/08/ontarios_auditor_general_to_review_autism_services.html&quot;&gt;said Simone Papernick of Whitby&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;The Ontario Auditor General just initiated a review of Autism Services to better determine how to spend the recently tripled budget for treatment. The budget now stands at $186 million a year for Ontarian’s with the developmental disorder. Demand has never been higher, Autism is now estimated to affect 1 in 88 children, based on reports from the Centre For Disease Control in the United States. However, one of the best solutions to making treatment more effective is earlier diagnosis.&lt;/p&gt;
@@ -538,9 +538,9 @@ Major: &lt;em&gt;Medical and Health Physics&lt;/em&gt;&lt;/p&gt;
  
  <entry>
    <title>Autism research, traversing the full spectrum to help children</title>
-   <link href="http://0.0.0.0:4000/2013/01/19/autism-oped/"/>
+   <link href="http://patricksteadman.ca/2013/01/19/autism-oped/"/>
    <updated>2013-01-19T00:00:00-06:00</updated>
-   <id>http://0.0.0.0:4000/2013/01/19/autism-oped</id>
+   <id>http://patricksteadman.ca/2013/01/19/autism-oped</id>
    <content type="html">&lt;p&gt;With a prevalence of one in 88 children, autism has moved to the forefront of discussions amongst Canadian parents. To propel this discussion from the kitchen table to the greater community, the Toronto Star produced a useful series entitled the &lt;a href=&quot;http://www.thestar.com/news/world/autismproject&quot; title=&quot;Autism Project&quot; target=&quot;_blank&quot;&gt;Autism Project&lt;/a&gt;. Yet, little has been discussed on how research is describing brain dysfunction in autism and developing treatments to correct this.&lt;/p&gt;
 
 &lt;p&gt;To recap first: autism, as medicine currently defines it, is a disorder where the brain’s processing of information is affected, disrupting communication, sociability and other behaviours.&lt;/p&gt;
