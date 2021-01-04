@@ -1,23 +1,23 @@
 # Dependencies
-markdown:         kramdown
-highlighter:      rouge # changed from `pygments` as github says so
+markdown: kramdown
+highlighter: rouge # changed from `pygments` as github says so
 
 # Permalinks
-permalink:        pretty
+permalink: pretty
 
 # Setup
-title:            'Patrick Steadman'
-tagline:          'MD-PhD student at The University of Toronto'
-description:      'A student with too many interests'
-url:              http://patricksteadman.ca
-baseurl:          ''
-paginate:         5
-paginate_path:    '/blog/page:num/'
+title: "Otic reprogramming"
+tagline: "Sox8 induced otic reprogramming"
+description: "Documentation for github repository"
+url: https://alexthiery.github.io/otic-reprogramming/
+baseurl: https://alexthiery.github.io/otic-reprogramming/
+paginate: 5
+paginate_path: "/blog/page:num/"
 
 author:
-  name: 'Patrick Steadman'
-  email: 'patrick.steadman[at]mail[dot]utoronto[dot]ca'
-  github: psteadman
+  name: "Alex Thiery"
+  email: "alexthiery1[at]mail[dot]gmail[dot]ca"
+  github: thierya
   twitter: pesteadman
   linkedin: pesteadman
   goodreads: pesteadman
