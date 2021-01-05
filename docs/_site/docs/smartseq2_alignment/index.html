@@ -2,7 +2,6 @@
 <html lang="en-us">
   <head>
   <link href="http://gmpg.org/xfn/11" rel="profile" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
   <!-- Enable responsiveness on mobile devices-->
@@ -12,8 +11,12 @@
   />
 
   <title>
-     Blog &middot; Otic reprogramming 
+     Smartseq2 alignment &middot; Otic reprogramming 
   </title>
+
+  
+  <link rel="canonical" href="http://0.0.0.0:4000/docs/smartseq2_alignment/" />
+  
 
   <!-- CSS -->
   <link rel="stylesheet" href="/public/css/poole.css" />
@@ -24,31 +27,35 @@
     rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400"
   />
+
+  <!-- stylesheet for icons -->
   <link
     rel="stylesheet"
     href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
   />
 
-  <!-- Icons -->
-  <!--   <link rel="apple-touch-icon-precomposed" sizes="144x144" href="public/apple-touch-icon-precomposed.png"> -->
   <link rel="shortcut icon" href="/public/favicon.ico" />
+
+  <i class="fas fa-egg"></i>
 
   <!-- RSS -->
   <link
     rel="alternate"
     type="application/rss+xml"
     title="RSS"
-    href="/atom.xml"
+    href="http://0.0.0.0:4000/atom.xml"
   />
 </head>
 
 
-  <body class="sidebar-overlay">
+  <body>
     <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
      styles, `#sidebar-checkbox` for behavior. -->
 <input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox" />
 
 <!-- Toggleable sidebar -->
+<!-- Sidebar icon elements -->
+
 <div class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <img src="/assets/sidebar_icon.png" />
@@ -77,7 +84,7 @@
       </span>
     </a>
      
-    <a href="https://github.com/alexthiery">
+    <a href="https://github.com/alexthiery/">
       <span class="fa-stack fa-lg">
         <i class="fa fa-square-o fa-stack-2x"></i>
         <i class="fa fa-github-alt fa-stack-1x"></i>
@@ -87,24 +94,82 @@
   </div>
 
   <div class="sidebar-item">
-    <p>Documentation for github repository</p>
+    <p>Documentation for the Buzzi et al. 2021 <a href="https://github.com/alexthiery/otic-reprogramming" target="_blank">Github repository</a>.</p>
   </div>
 
+
+<!-- sidebar tabs -->
   <nav class="sidebar-nav">
-    <a
-      class="sidebar-nav-item"
-      href="/"
-      >Home</a
-    >
+    <a class="sidebar-nav-item" href="/">Home</a>
 
-    <a class="sidebar-nav-item" href="/blog">Blog</a>
+    
+    
+      
+        
+          <a class="sidebar-nav-item" href="/docs/quick_start/">Quick Start</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item active" href="/docs/smartseq2_alignment/">Smartseq2 alignment</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/docs/nextflow_configuration/">Nextflow configuration</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/docs/alignment_ATAC/">ATACseq alignment</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/docs/alignment_ChIP/">ChIPseq alignment</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/docs/getting_started/">Getting Started</a>
+        
+      
+    
 
-                        
 
-    <!-- <a class="sidebar-nav-item" href="/archive/v.zip">Download</a>
-    <a class="sidebar-nav-item" href="">GitHub project</a>
-    <span class="sidebar-nav-item">Currently v</span> -->
-  </nav>
+    <!-- <ul>
+      
+      
+        <li class="nav-item top-level ">
+          
+          <a href="/docs/quick_start/"></a>
+          <ul>
+            
+              <li class="nav-item "><a href="/docs/quick_start/">Quick Start</a></li>
+            
+              <li class="nav-item current"><a href="/docs/smartseq2_alignment/">Smartseq2 alignment</a></li>
+            
+              <li class="nav-item "><a href="/docs/nextflow_configuration/">Nextflow configuration</a></li>
+            
+              <li class="nav-item "><a href="/docs/alignment_ATAC/">ATACseq alignment</a></li>
+            
+              <li class="nav-item "><a href="/docs/alignment_ChIP/">ChIPseq alignment</a></li>
+            
+              <li class="nav-item "><a href="/docs/getting_started/">Getting Started</a></li>
+            
+          </ul>
+        </li>
+      
+    </ul> -->
+
+    <!-- <a class="sidebar-nav-item" href="/_docs/getting_started.md">Getting Started</a> -->
+    <a class="sidebar-nav-item" href="https://github.com/alexthiery/otic-reprogramming">GitHub repository</a>
+    <a class="sidebar-nav-item" href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip">Download</a>
 
   <div class="sidebar-item">
     <p>&copy; 2021. All rights reserved.</p>
@@ -119,64 +184,17 @@
         <div class="container">
           <h3 class="masthead-title">
             <a href="/" title="Home">Otic reprogramming</a>
-            <small>Sox8 induced otic reprogramming</small>
+            <small>Buzzi et al. 2021</small>
           </h3>
         </div>
       </div>
 
-      <div class="container content"><div class="posts">
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2014/02/17/ASD-research-short/">
-        The key to early diagnosis in Autism&#58; three research areas
-      </a>
-    </h1>
+      <div class="container content"><div class="page">
+  <h1 class="page-title">Smartseq2 alignment</h1>
+  <p>This project integrates bulk ATACseq, bulk ChIPseq, bulk RNAseq and single cell RNAseq data for downstream analysis.</p>
 
-    <span class="post-date">17 Feb 2014</span>
+<p>Prior to running the downstream analysis, we align each dataset using a combination of nf-core and custom Nextflow pipelines.</p>
 
-    <div>
-      
-      
-      <p><em>“I’m hoping they will realize they get better bang for their buck, the earlier intervention is given.”</em> - <a title="Toronto Star February 2013" href="http://www.thestar.com/news/canada/2013/02/08/ontarios_auditor_general_to_review_autism_services.html">said Simone Papernick of Whitby</a>.</p>
-
-
-      
-      
-    </div>
-
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2013/01/19/autism-oped/">
-        Autism research, traversing the full spectrum to help children
-      </a>
-    </h1>
-
-    <span class="post-date">19 Jan 2013</span>
-
-    <div>
-      
-      
-      <p>With a prevalence of one in 88 children, autism has moved to the forefront of discussions amongst Canadian parents. To propel this discussion from the kitchen table to the greater community, the Toronto Star produced a useful series entitled the <a href="http://www.thestar.com/news/world/autismproject" title="Autism Project" target="_blank">Autism Project</a>. Yet, little has been discussed on how research is describing brain dysfunction in autism and developing treatments to correct this.</p>
-
-
-      
-      
-    </div>
-
-  </div>
-  
-</div>
-
-<div class="pagination">
-  
-    <span class="pagination-item older">Older</span>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
 </div>
 </div>
     </div>

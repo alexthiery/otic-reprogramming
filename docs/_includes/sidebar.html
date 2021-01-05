@@ -3,6 +3,8 @@
 <input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox" />
 
 <!-- Toggleable sidebar -->
+<!-- Sidebar icon elements -->
+
 <div class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <img src="{{ site.baseurl }}/assets/sidebar_icon.png" />
@@ -30,8 +32,8 @@
         <i class="fa fa-envelope fa-stack-1x"></i>
       </span>
     </a>
-    {% endif %} {% if site.author.github %}
-    <a href="https://github.com/{{ site.author.github }}">
+    {% endif %} {% if site.github.author %}
+    <a href="{{ site.github.author }}">
       <span class="fa-stack fa-lg">
         <i class="fa fa-square-o fa-stack-2x"></i>
         <i class="fa fa-github-alt fa-stack-1x"></i>
@@ -44,30 +46,39 @@
     <p>{{ site.description }}</p>
   </div>
 
+
+<!-- sidebar tabs -->
   <nav class="sidebar-nav">
-    <a
-      class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}"
-      href="{{ site.baseurl }}/"
-      >Home</a
-    >
+    <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/">Home</a>
 
-    <a class="sidebar-nav-item" href="{{ site.baseurl }}/blog">Blog</a>
+    {% assign pages_list = site.docs | sort: 'order' %}
+    {% for node in pages_list %}
+      {% if node.title != null %}
+        {% if node.layout == "page" %}
+          <a class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}" href="{{ node.url }}">{{ node.title }}</a>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
 
-    {% comment %} The code below dynamically generates a sidebar nav of pages
-    with `layout: page` in the front-matter. See readme for usage. {% endcomment
-    %} {% assign pages_list = site.pages %} {% for node in pages_list %} {% if
-    node.title != null %} {% if node.layout == "page" %}
-    <a
-      class="sidebar-nav-item{% if page.url == node.url %} active{% endif %}"
-      href="{{ node.url }}"
-      >{{ node.title }}</a
-    >
-    {% endif %} {% endif %} {% endfor %}
 
-    <!-- <a class="sidebar-nav-item" href="{{ site.github.repo }}/archive/v{{ site.version }}.zip">Download</a>
-    <a class="sidebar-nav-item" href="{{ site.github.repo }}">GitHub project</a>
-    <span class="sidebar-nav-item">Currently v{{ site.version }}</span> -->
-  </nav>
+    <!-- <ul>
+      {% assign grouped = site.docs | group_by: 'category' %}
+      {% for group in grouped %}
+        <li class="nav-item top-level {% if group.name == page.category %}current{% endif %}">
+          {% assign items = group.items | sort: 'order' %}
+          <a href="{{ site.baseurl }}{{ items.first.url }}">{{ group.name }}</a>
+          <ul>
+            {% for item in items %}
+              <li class="nav-item {% if item.url == page.url %}current{% endif %}"><a href="{{ site.baseurl }}{{ item.url }}">{{ item.title }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul> -->
+
+    <!-- <a class="sidebar-nav-item" href="{{ site.baseurl }}/_docs/getting_started.md">Getting Started</a> -->
+    <a class="sidebar-nav-item" href="{{ site.github.repo }}">GitHub repository</a>
+    <a class="sidebar-nav-item" href="{{ site.github.repo }}/archive/master.zip">Download</a>
 
   <div class="sidebar-item">
     <p>&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p>

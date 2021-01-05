@@ -1,25 +1,31 @@
-# Dependencies
-markdown: kramdown
-highlighter: rouge # changed from `pygments` as github says so
-
-# Permalinks
-permalink: pretty
-
 # Setup
-title: "Otic reprogramming"
-tagline: "Sox8 induced otic reprogramming"
-description: "Documentation for github repository"
-# url: https://alexthiery.github.io/otic-reprogramming/
-url: "http://localhost:4000"
+title: Otic reprogramming
+tagline: "Buzzi et al. 2021"
+description: 'Documentation for the Buzzi et al. 2021 <a href="https://github.com/alexthiery/otic-reprogramming" target="_blank">Github repository</a>.'
+url: "http://localhost:3000"
 baseurl: ""
 paginate: 5
-paginate_path: "/blog/page:num/"
+permalink: pretty
+repository: alexthiery/otic-reprogramming.github.io
 
+github:
+  repo: https://github.com/alexthiery/otic-reprogramming
+  author: "https://github.com/alexthiery/"
+
+# About/contact
 author:
   name: "Alex Thiery"
   email: "alexthiery1@gmail.com"
-  github: alexthiery
 
 lab:
   homepage: https://www.kcl.ac.uk/people/andrea-streit
   publication: http://orcid.org/0000-0002-5814-4977
+
+  # Dependencies
+markdown: kramdown
+highlighter: rouge
+
+collections:
+  docs:
+    output: true
+    permalink: /docs/:path/

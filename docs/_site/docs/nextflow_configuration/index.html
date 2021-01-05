@@ -11,11 +11,11 @@
   />
 
   <title>
-     404: Page not found &middot; Otic reprogramming 
+     Nextflow configuration &middot; Otic reprogramming 
   </title>
 
   
-  <link rel="canonical" href="http://0.0.0.0:4000/404.html" />
+  <link rel="canonical" href="http://0.0.0.0:4000/docs/nextflow_configuration/" />
   
 
   <!-- CSS -->
@@ -118,7 +118,7 @@
     
       
         
-          <a class="sidebar-nav-item" href="/docs/nextflow_configuration/">Nextflow configuration</a>
+          <a class="sidebar-nav-item active" href="/docs/nextflow_configuration/">Nextflow configuration</a>
         
       
     
@@ -154,7 +154,7 @@
             
               <li class="nav-item "><a href="/docs/smartseq2_alignment/">Smartseq2 alignment</a></li>
             
-              <li class="nav-item "><a href="/docs/nextflow_configuration/">Nextflow configuration</a></li>
+              <li class="nav-item current"><a href="/docs/nextflow_configuration/">Nextflow configuration</a></li>
             
               <li class="nav-item "><a href="/docs/alignment_ATAC/">ATACseq alignment</a></li>
             
@@ -189,8 +189,70 @@
         </div>
       </div>
 
-      <div class="container content"><h1 id="404-page-not-found">404: Page not found</h1>
-<p>Sorry, we’ve misplaced that URL or it’s pointing to something that doesn’t exist. <a href="http://0.0.0.0:4000">Head back home</a> to try finding it again.</p>
+      <div class="container content"><div class="page">
+  <h1 class="page-title">Nextflow configuration</h1>
+  <p><br /></p>
+
+<p>For simplicity and flexibility, pipeline parametters and configuration properties are set in Nextflow via config files.</p>
+
+<p>This project sets</p>
+
+<p>To run this alignment you will also need to generate a custom configuration file containing:</p>
+
+<ul>
+  <li>genome file path</li>
+  <li>gtf file path</li>
+  <li>max system resource allocation</li>
+  <li>activate Docker/Singularity</li>
+</ul>
+
+<p><br /></p>
+
+<p>Below is a copy of the config file used to run the pipeline at the Crick. Given that this alignment was run on a HPC, we configure nextflow to run with Singularity instead of Docker.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env nextflow</span>
+
+singularity <span class="o">{</span>
+  enabled <span class="o">=</span> <span class="nb">true
+  </span>autoMounts <span class="o">=</span> <span class="nb">true
+  </span>docker.enabled <span class="o">=</span> <span class="nb">false</span>
+<span class="o">}</span>
+
+process <span class="o">{</span>
+  executor <span class="o">=</span> <span class="s1">'slurm'</span>
+<span class="o">}</span>
+
+params <span class="o">{</span>
+  max_memory <span class="o">=</span> 224.GB
+  max_cpus <span class="o">=</span> 32
+  max_time <span class="o">=</span> 72.h
+
+  fasta <span class="o">=</span> <span class="s2">"/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa"</span>
+  gtf <span class="o">=</span> <span class="s2">"/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p>After downloading the required files, you can run the alignment with the following shell <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ATAC_alignment.sh">script</a>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
+
+nextflow pull nf-core/atacseq
+
+nextflow run nf-core/atacseq <span class="se">\</span>
+ <span class="nt">-r</span> 1.2.0 <span class="se">\</span>
+ <span class="nt">-c</span> ./configs/crick.config <span class="se">\</span>
+ <span class="nt">--input</span> ./NF-ATAC_alignment/crick_samplesheet.csv <span class="se">\</span>
+ <span class="nt">--macs_gsize</span> 1.05e9 <span class="se">\</span>
+ <span class="nt">--narrow_peak</span> <span class="se">\</span>
+ <span class="nt">--skip_diff_analysis</span> <span class="se">\</span>
+ <span class="nt">--outdir</span> output/NF-ATAC_alignment <span class="se">\</span>
+ <span class="nt">--email</span> &lt;INSERT_EMAIL_ADDRESS&gt; <span class="se">\</span>
+ <span class="nt">-resume</span>
+</code></pre></div></div>
+
+</div>
 </div>
     </div>
 

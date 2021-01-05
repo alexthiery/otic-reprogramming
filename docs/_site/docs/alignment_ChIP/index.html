@@ -11,11 +11,11 @@
   />
 
   <title>
-     404: Page not found &middot; Otic reprogramming 
+     ChIPseq alignment &middot; Otic reprogramming 
   </title>
 
   
-  <link rel="canonical" href="http://0.0.0.0:4000/404.html" />
+  <link rel="canonical" href="http://0.0.0.0:4000/docs/alignment_ChIP/" />
   
 
   <!-- CSS -->
@@ -130,7 +130,7 @@
     
       
         
-          <a class="sidebar-nav-item" href="/docs/alignment_ChIP/">ChIPseq alignment</a>
+          <a class="sidebar-nav-item active" href="/docs/alignment_ChIP/">ChIPseq alignment</a>
         
       
     
@@ -158,7 +158,7 @@
             
               <li class="nav-item "><a href="/docs/alignment_ATAC/">ATACseq alignment</a></li>
             
-              <li class="nav-item "><a href="/docs/alignment_ChIP/">ChIPseq alignment</a></li>
+              <li class="nav-item current"><a href="/docs/alignment_ChIP/">ChIPseq alignment</a></li>
             
               <li class="nav-item "><a href="/docs/getting_started/">Getting Started</a></li>
             
@@ -189,8 +189,37 @@
         </div>
       </div>
 
-      <div class="container content"><h1 id="404-page-not-found">404: Page not found</h1>
-<p>Sorry, we’ve misplaced that URL or it’s pointing to something that doesn’t exist. <a href="http://0.0.0.0:4000">Head back home</a> to try finding it again.</p>
+      <div class="container content"><div class="page">
+  <h1 class="page-title">ChIPseq alignment</h1>
+  <p><br /></p>
+
+<p>Our ChIPseq data was aligned using the nf-core ChIPseq <a href="https://nf-co.re/ChIPseq/1.2.0/usage">v1.2.0</a> nextflow pipeline.</p>
+
+<p>The paths to the sample fastq files are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ChIP_alignment/crick_samplesheet.csv">here</a>.</p>
+
+<p>To run this alignment you will also need to generate a custom configuration file. Details can be found <a href="/docs/nextflow_configuration/">here</a></p>
+
+<p><br /></p>
+
+<p>After downloading the required files, you can run the alignment with the following shell <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ATAC_alignment.sh">script</a>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
+
+nextflow pull nf-core/atacseq
+
+nextflow run nf-core/atacseq <span class="se">\</span>
+ <span class="nt">-r</span> 1.2.0 <span class="se">\</span>
+ <span class="nt">-c</span> ./configs/crick.config <span class="se">\</span>
+ <span class="nt">--input</span> ./NF-ATAC_alignment/crick_samplesheet.csv <span class="se">\</span>
+ <span class="nt">--macs_gsize</span> 1.05e9 <span class="se">\</span>
+ <span class="nt">--narrow_peak</span> <span class="se">\</span>
+ <span class="nt">--skip_diff_analysis</span> <span class="se">\</span>
+ <span class="nt">--outdir</span> output/NF-ATAC_alignment <span class="se">\</span>
+ <span class="nt">--email</span> &lt;INSERT_EMAIL_ADDRESS&gt; <span class="se">\</span>
+ <span class="nt">-resume</span>
+</code></pre></div></div>
+
+</div>
 </div>
     </div>
 
