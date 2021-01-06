@@ -16,7 +16,7 @@ In order to reproduce our analysis, you will need to:
 - [align sequencing data](#align)
 - [run downstream analysis](#downstream)
 
-**Important!!!** All shell scripts are to be executed from the base project repository!
+**Important!!!** All shell scripts are to be executed from the base directory of the project!
 
 ---
 

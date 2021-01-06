@@ -22,7 +22,7 @@ lab:
   publication: http://orcid.org/0000-0002-5814-4977
 
   # Dependencies
-markdown: kramdown
+markdown: CommonMarkGhPages
 highlighter: rouge
 
 collections:

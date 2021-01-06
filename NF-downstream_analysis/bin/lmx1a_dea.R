@@ -236,7 +236,6 @@ graphics.off()
 # Plot sample distance heatmap
 sample_dists <- dist(t(assay(rld)))
 
-### check this
 sampleDistMatrix <- as.matrix(sample_dists)
 rownames(sampleDistMatrix) <- paste(colnames(rld))
 colnames(sampleDistMatrix) <- paste(colnames(rld))

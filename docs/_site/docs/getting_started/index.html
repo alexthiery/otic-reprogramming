@@ -118,19 +118,7 @@
     
       
         
-          <a class="sidebar-nav-item" href="/docs/nextflow_configuration/">Nextflow configuration</a>
-        
-      
-    
-      
-        
-          <a class="sidebar-nav-item" href="/docs/alignment_ATAC/">ATACseq alignment</a>
-        
-      
-    
-      
-        
-          <a class="sidebar-nav-item" href="/docs/alignment_ChIP/">ChIPseq alignment</a>
+          <a class="sidebar-nav-item" href="/docs/sox8_downstream/">Sox8 downstream</a>
         
       
     
@@ -154,11 +142,7 @@
             
               <li class="nav-item "><a href="/docs/smartseq2_alignment/">Smartseq2 alignment</a></li>
             
-              <li class="nav-item "><a href="/docs/nextflow_configuration/">Nextflow configuration</a></li>
-            
-              <li class="nav-item "><a href="/docs/alignment_ATAC/">ATACseq alignment</a></li>
-            
-              <li class="nav-item "><a href="/docs/alignment_ChIP/">ChIPseq alignment</a></li>
+              <li class="nav-item "><a href="/docs/sox8_downstream/">Sox8 downstream</a></li>
             
               <li class="nav-item current"><a href="/docs/getting_started/">Getting Started</a></li>
             
@@ -192,70 +176,50 @@
       <div class="container content"><div class="page">
   <h1 class="page-title">Getting Started</h1>
   <h2 id="data-availability">Data availability</h2>
-
 <p>This repository contains the required code to run the entire alignment and downstream analysis pipeline. For those who would like to re-run the analysis, the following files should be downloaded:</p>
-
 <ul>
-  <li>to run the analysis including the alignment, the raw fastq sequencing files can be found <a href="">here</a>.</li>
-  <li>to run the downstream analysis from the UMI counts generated from 10x Genomics Cell Ranger are embedded can be found within the repository <a href="&quot;./alignmentOut/cellrangerCounts_renamed&quot;">here</a>.</li>
+<li>to run the analysis including the alignment, the raw fastq sequencing files can be found <a href="">here</a>.</li>
+<li>to run the downstream analysis from the UMI counts generated from 10x Genomics Cell Ranger are embedded can be found within the repository <a href="%22./alignmentOut/cellrangerCounts_renamed%22">here</a>.</li>
 </ul>
-
 <h2 id="analysis-pre-requisites">Analysis pre-requisites</h2>
-
 <p>The pipeline is run using Nextflow and Docker to ensure reproducibility. The repository can be called directly from GitHub, so to re-run the analysis you just need to install <a href="https://www.nextflow.io/docs/latest/getstarted.html#installation">Nextflow</a> and <a href="https://docs.docker.com/get-docker/">Docker</a>.</p>
-
 <p>If you are wanting to run the downstream analysis interactively outside of Nextflow, you still need to download Docker and you will also need to download this repository.</p>
-
 <h2 id="docker">Docker</h2>
-
 <p>Docker allows us to run our analysis through a container with all required libraries and dependencies. This ensures cross-platform reproducibility of our results.</p>
-
 <p>The docker image used can be found <a href="https://hub.docker.com/r/alexthiery/10x_neural_tube">here</a></p>
-
 <p>We have also included Rstudio within our docker image to allow you to run the downstream analysis interactively if you wish - for details on how to do this click <a href="#interactive-downstream-analysis">here</a>.</p>
-
 <h2 id="nextflow">Nextflow</h2>
-
 <p>You can easily re-run our entire pipeline in Nextflow using the following steps:</p>
-
 <ol>
-  <li>Install Nextflow (version &gt;=20.07.1) and Docker</li>
-  <li>Download chick genome (<a href="ftp://ftp.ensembl.org/pub/release-94/fasta/gallus_gallus/dna/Gallus_gallus.Gallus_gallus-5.0.dna.toplevel.fa.gz">galgal5</a>)</li>
-  <li>For this analysis we used a manually edited GTF file as described in the paper methods. However you can also run the analysis with the GTF from ensembl (<a href="ftp://ftp.ensembl.org/pub/release-94/gtf/gallus_gallus/Gallus_gallus.Gallus_gallus-5.0.94.gtf.gz">galgal5</a>)</li>
-  <li>Download raw reads from <a href="">here</a></li>
-  <li>Make a sampleInfo.csv file containing the sample names and corresponding paths using this <a href="sampleInfo.csv">template</a></li>
-  <li>Run Nextflow using the following command</li>
+<li>Install Nextflow (version &gt;=20.07.1) and Docker</li>
+<li>Download chick genome (<a href="ftp://ftp.ensembl.org/pub/release-94/fasta/gallus_gallus/dna/Gallus_gallus.Gallus_gallus-5.0.dna.toplevel.fa.gz">galgal5</a>)</li>
+<li>For this analysis we used a manually edited GTF file as described in the paper methods. However you can also run the analysis with the GTF from ensembl (<a href="ftp://ftp.ensembl.org/pub/release-94/gtf/gallus_gallus/Gallus_gallus.Gallus_gallus-5.0.94.gtf.gz">galgal5</a>)</li>
+<li>Download raw reads from <a href="">here</a></li>
+<li>Make a sampleInfo.csv file containing the sample names and corresponding paths using this <a href="sampleInfo.csv">template</a></li>
+<li>Run Nextflow using the following command</li>
 </ol>
-
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nextflow run alexthiery/10x_neural_tube <span class="se">\</span>
 <span class="nt">-profile</span> docker <span class="se">\</span>
 <span class="nt">--metadata</span> &lt;path to sampleInfo.csv&gt; <span class="se">\</span>
 <span class="nt">--gtf</span> &lt;path to gtf&gt; <span class="se">\</span>
 <span class="nt">--fa</span> &lt;path to genome&gt;
 </code></pre></div></div>
-
-<p>This pipeline is configured to be ran on a cluster with 224GB memory and 32CPUs by default. The <code class="language-plaintext highlighter-rouge">-profile</code> flag can be used to set either ‘docker’ or ‘singularity’, depending on the container application installed on your system. These settings can be adjusted by replacing the <code class="language-plaintext highlighter-rouge">-profile</code> flag with a custom config file as below.</p>
-
+<p>This pipeline is configured to be ran on a cluster with 224GB memory and 32CPUs by default. The <code>-profile</code> flag can be used to set either 'docker' or 'singularity', depending on the container application installed on your system. These settings can be adjusted by replacing the <code>-profile</code> flag with a custom config file as below.</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nextflow run alexthiery/10x_neural_tube <span class="se">\</span>
 <span class="nt">-c</span> &lt;path to custom.config file&gt; <span class="se">\</span>
 <span class="nt">--metadata</span> &lt;path to sampleInfo.csv&gt; <span class="se">\</span>
 <span class="nt">--gtf</span> &lt;path to gtf&gt; <span class="se">\</span>
 <span class="nt">--fa</span> &lt;path to genome&gt;
 </code></pre></div></div>
-
 <p>For a template of a custom.config file, see <a href="conf/crick.config">crick.config</a>. Further information on Nextflow config files can be found <a href="https://www.nextflow.io/docs/latest/config.html#configuration-file">here</a>.</p>
-
 <h2 id="interactive-downstream-analysis">Interactive downstream analysis</h2>
-
 <p>If do not want to re-run the alignment, but would like to run the downstream analysis from the count files, you can run RStudio from within the docker container.</p>
-
 <p>To do this, follow these steps:</p>
-
 <ol>
-  <li>clone this repository to your local computer</li>
-  <li>start a terminal session and download the docker image - <code class="language-plaintext highlighter-rouge">docker pull alexthiery/10x_neural_tube:v1.0</code></li>
-  <li>within terminal launch a docker container interactively - <code class="language-plaintext highlighter-rouge">docker run --rm -e PASSWORD=test -p 8787:8787 -v &lt;PATH_TO_LOCAL_REPOSITORY&gt;:/home/rstudio alexthiery/10x_neural_tube:v1.0</code></li>
-  <li>go to <code class="language-plaintext highlighter-rouge">localhost:8787</code> in the browser to open RStudio</li>
+<li>clone this repository to your local computer</li>
+<li>start a terminal session and download the docker image - <code>docker pull alexthiery/10x_neural_tube:v1.0</code></li>
+<li>within terminal launch a docker container interactively - <code>docker run --rm -e PASSWORD=test -p 8787:8787 -v &lt;PATH_TO_LOCAL_REPOSITORY&gt;:/home/rstudio alexthiery/10x_neural_tube:v1.0</code></li>
+<li>go to <code>localhost:8787</code> in the browser to open RStudio</li>
 </ol>
 
 </div>
