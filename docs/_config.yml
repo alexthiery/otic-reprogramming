@@ -2,7 +2,8 @@
 title: Otic reprogramming
 tagline: "Buzzi et al. 2021"
 description: 'Documentation for the Buzzi et al. 2021 <a href="https://github.com/alexthiery/otic-reprogramming" target="_blank">Github repository</a>.'
-url: "http://localhost:3000"
+# url: "http://localhost:3000"
+url: "https://github.com/alexthiery/otic-reprogramming"
 baseurl: ""
 paginate: 5
 permalink: pretty
