@@ -1,5 +1,5 @@
 ---
 layout: page
-title: Quick Start
+title: Smartseq2 Alignment
 order: 1
 ---
