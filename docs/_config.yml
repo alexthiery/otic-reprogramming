@@ -30,4 +30,4 @@ highlighter: rouge
 collections:
   docs:
     output: true
-    permalink: /otic-reprogramming/docs/:path/
+    permalink: /docs/:path/
