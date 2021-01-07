@@ -4,8 +4,7 @@ work
 NF-ChIP_alignment/genome
 data
 testData
-output
-output_2
+/output
 .rstudio
 .Rhistory
 .cache
