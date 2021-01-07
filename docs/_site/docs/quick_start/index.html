@@ -102,35 +102,35 @@
   <nav class="sidebar-nav">
     <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/">Home</a>
 
-    <!-- 
+    
     
       
         
-          <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/docs/Quick Start">Quick Start</a>
-        
-      
-    
-      
-        
-          <a class="sidebar-nav-item active" href="https://alexthiery.github.io/otic-reprogramming/docs/Quick Start">Quick Start</a>
+          <a class="sidebar-nav-item active" href="https://alexthiery.github.io/otic-reprogramming/docs/getting_started/">Quick Start</a>
         
       
     
       
         
-          <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/docs/Quick Start">Quick Start</a>
+          <a class="sidebar-nav-item active" href="https://alexthiery.github.io/otic-reprogramming/docs/quick_start/">Quick Start</a>
         
       
     
       
         
-          <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/docs/Quick Start">Quick Start</a>
+          <a class="sidebar-nav-item active" href="https://alexthiery.github.io/otic-reprogramming/docs/smartseq2_alignment/">Quick Start</a>
         
       
-     -->
+    
+      
+        
+          <a class="sidebar-nav-item active" href="https://alexthiery.github.io/otic-reprogramming/docs/sox8_downstream/">Quick Start</a>
+        
+      
+    
 
 
-    <ul>
+    <!-- <ul>
       
       
         <li class="nav-item top-level ">
@@ -149,7 +149,7 @@
           </ul>
         </li>
       
-    </ul>
+    </ul> -->
 
     <!-- <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/_docs/getting_started.md">Getting Started</a> -->
     <a class="sidebar-nav-item" href="https://github.com/alexthiery/otic-reprogramming">GitHub repository</a>
@@ -175,7 +175,175 @@
 
       <div class="container content"><div class="page">
   <h1 class="page-title">Quick Start</h1>
-  
+  <br/>
+<p>In order to reproduce our analysis, you will need to:</p>
+<ul>
+<li><a href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip">download Github project repository</a></li>
+<li><a href="https://www.nextflow.io/docs/latest/getstarted.html">install Nextflow</a></li>
+<li><a href="https://www.docker.com/get-started">install Docker Desktop</a> (if running on local PC)</li>
+<li><a href="#download_data">download Galgal6 and sequencing data</a></li>
+<li><a href="#config">set Nextflow configuration file</a></li>
+<li><a href="#align">align sequencing data</a></li>
+<li><a href="#downstream">run downstream analysis</a></li>
+</ul>
+<p><strong>Important!!!</strong> All shell scripts are to be executed from the base directory of the project!</p>
+<hr />
+<h2 id="download-dataa-namedownloaddataa">Download data<a name="download_data"></a></h2>
+<p>To download the Galgal6 genome from Ensembl, run:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync <span class="nt">-av</span> rsync://ftp.ensembl.org/ensembl/pub/release-97/fasta/gallus_gallus/dna/Gallus_gallus.GRCg6a.dna.toplevel.fa.gz &lt;LOCAL_PATH&gt;
+</code></pre></div></div>
+<p>To download the Galgal6 gtf from Ensembl, run:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync <span class="nt">-av</span> rsync://ftp.ensembl.org/ensembl/pub/release-97/gtf/gallus_gallus/Gallus_gallus.GRCg6a.97.gtf.gz &lt;LOCAL_PATH&gt;
+</code></pre></div></div>
+<p>Once the genome files have been downloaded, they need to be unzipped before running the alignment.</p>
+<p><strong>ADD SEQUENCING DATA DOWNLOAD PATHS</strong></p>
+<br/>
+<h2 id="nextflow-configuration-filea-nameconfiga">Nextflow configuration file<a name="config"></a></h2>
+<p>Configuration properties and file paths are passed to Nextflow via configuration files.</p>
+<p>In order to re-run the alignments and downstream analysis for this project, you will need to create a custom configuration file which contains:</p>
+<ul>
+<li>genome file path</li>
+<li>gtf file path</li>
+<li>max system resource allocation</li>
+<li>Docker/Singularity activation</li>
+</ul>
+<br/>
+<p>Below is a copy of the config file used to run the pipeline at the Crick. Given that this alignment was run on a HPC, we configure Nextflow to run with Singularity instead of Docker.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env nextflow</span>
+
+singularity <span class="o">{</span>
+  enabled <span class="o">=</span> <span class="nb">true
+  </span>autoMounts <span class="o">=</span> <span class="nb">true
+  </span>docker.enabled <span class="o">=</span> <span class="nb">false</span>
+<span class="o">}</span>
+
+process <span class="o">{</span>
+  executor <span class="o">=</span> <span class="s1">'slurm'</span>
+<span class="o">}</span>
+
+params <span class="o">{</span>
+  max_memory <span class="o">=</span> 224.GB
+  max_cpus <span class="o">=</span> 32
+  max_time <span class="o">=</span> 72.h
+
+  fasta <span class="o">=</span> <span class="s2">"/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.dna.toplevel.fa"</span>
+  gtf <span class="o">=</span> <span class="s2">"/camp/home/thierya/working/genomes/galgal6/Gallus_gallus.GRCg6a.97.gtf"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>Further information on Nextflow configuration can be found <a href="https://www.nextflow.io/docs/latest/config.html">here</a>.</p>
+<p>After you have saved your custom configuration file, you are ready to align the data!</p>
+<hr />
+<br/>
+<h2 id="sequence-alignmentsa-namealigna">Sequence alignments<a name="align"></a></h2>
+<p>When running the nf-core alignments, the pipeline may be interupted as the relevant docker images are downloaded. If this happens, simply re-run the shell script and the pipeline will continue from where it ended.</p>
+<h3 id="chipseq-alignment">ChIPseq alignment</h3>
+<p>Our ChIPseq data was aligned using the nf-core ChIPseq <a href="https://nf-co.re/ChIPseq/1.2.0/usage">v1.2.0</a> Nextflow pipeline.</p>
+<p>Sample fastq paths are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ChIP_alignment/crick_samplesheet.csv">here</a>.</p>
+<p>After saving the required files, you can run the alignment with the following shell script.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
+
+nextflow pull nf-core/chipseq
+
+nextflow run nf-core/chipseq <span class="se">\</span>
+    <span class="nt">-r</span> 1.2.0 <span class="se">\</span>
+    <span class="nt">-c</span> &lt;PATH_TO_CONFIG&gt; <span class="se">\</span>
+    <span class="nt">--input</span> &lt;PATH_TO_SAMPLESHEET.CSV&gt; <span class="se">\</span>
+    <span class="nt">--macs_gsize</span> 1.05e9 <span class="se">\</span>
+    <span class="nt">--skip_diff_analysis</span> <span class="se">\</span>
+    <span class="nt">--outdir</span> output/NF-ChIP_alignment <span class="se">\</span>
+    <span class="nt">--email</span> &lt;INSERT_EMAIL_ADDRESS&gt; <span class="se">\</span>
+    <span class="nt">-resume</span>
+</code></pre></div></div>
+<hr />
+<br/>
+<h3 id="atacseq-alignment">ATACseq alignment</h3>
+<p>Our ATACseq data was aligned using the nf-core ATACseq <a href="https://nf-co.re/ATACseq/1.2.0/usage">v1.2.0</a> Nextflow pipeline.</p>
+<p>Sample fastq paths are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ATAC_alignment/crick_samplesheet.csv">here</a>.</p>
+<p>After saving the required files, you can run the alignment with the following shell script.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
+
+nextflow pull nf-core/atacseq
+
+nextflow run nf-core/atacseq <span class="se">\</span>
+    <span class="nt">-r</span> 1.2.0 <span class="se">\</span>
+    <span class="nt">-c</span> &lt;PATH_TO_CONFIG&gt; <span class="se">\</span>
+    <span class="nt">--input</span> &lt;PATH_TO_SAMPLESHEET.CSV&gt; <span class="se">\</span>
+    <span class="nt">--macs_gsize</span> 1.05e9 <span class="se">\</span>
+    <span class="nt">--skip_diff_analysis</span> <span class="se">\</span>
+    <span class="nt">--outdir</span> output/NF-ATAC_alignment <span class="se">\</span>
+    <span class="nt">--email</span> &lt;INSERT_EMAIL_ADDRESS&gt; <span class="se">\</span>
+    <span class="nt">-resume</span>
+</code></pre></div></div>
+<hr />
+<br/>
+<h3 id="bulk-rnaseq-alignment">Bulk RNAseq alignment</h3>
+<p>Our bulk RNAseq data were aligned using the nf-core RNAseq <a href="https://nf-co.re/RNAseq/2.0/usage">v2.0</a> Nextflow pipeline.</p>
+<p>We need to align two separate bulk RNAseq datasets.</p>
+<br/>
+<p><strong><em>Lmx1a_E1 vs Sox3U3</em></strong></p>
+<p>First, we collected cells from putative otic and epibranchial fates using Lmx1a_E1 and Sox3U3 enhancers respectively.</p>
+<p>An example samplesheet csv can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-lmx1a_alignment/crick_samplesheet.csv">here</a></p>
+<p>Execute the following shell script to run the Lmx1a overexpression alignment.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
+
+nextflow pull nf-core/rnaseq
+
+nextflow run nf-core/rnaseq <span class="se">\</span>
+  <span class="nt">-r</span> 2.0 <span class="se">\</span>
+  <span class="nt">-c</span> &lt;PATH_TO_CONFIG&gt; <span class="se">\</span>
+  <span class="nt">--input</span> &lt;PATH_TO_LMX1A_SAMPLESHEET.CSV&gt;  <span class="se">\</span>
+  <span class="nt">--outdir</span> output/NF-lmx1a_alignment <span class="se">\</span>
+  <span class="nt">--email</span> &lt;INSERT_EMAIL_ADDRESS&gt; <span class="se">\</span>
+  <span class="nt">-resume</span>
+</code></pre></div></div>
+<br/>
+<p><strong><em>Sox8 overexpression</em></strong></p>
+<p>Next, we collected cells following Sox8 overexpression and compared relative to control cells.</p>
+<p>Sox8 overexpression samples are double positive Sox8-mCherry/Lmx1a-EGFP, whilst control samples are labelled with constitutive mCherry/EGFP.</p>
+<p>An example samplesheet csv can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-sox8_alignment/crick_samplesheet.csv">here</a></p>
+<p>Execute the following shell script to run the Sox8 overexpression alignment.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
+
+nextflow pull nf-core/rnaseq
+
+nextflow run nf-core/rnaseq <span class="se">\</span>
+  <span class="nt">-r</span> 2.0 <span class="se">\</span>
+  <span class="nt">-c</span> &lt;PATH_TO_CONFIG&gt; <span class="se">\</span>
+  <span class="nt">--input</span> &lt;PATH_TO_SOX8_SAMPLESHEET.CSV&gt;  <span class="se">\</span>
+  <span class="nt">--outdir</span> output/NF-sox8_alignment <span class="se">\</span>
+  <span class="nt">--email</span> &lt;INSERT_EMAIL_ADDRESS&gt; <span class="se">\</span>
+  <span class="nt">-resume</span>
+</code></pre></div></div>
+<hr />
+<br/>
+<h3 id="smartseq2-single-cell-rnaseq-alignment">Smartseq2 single cell RNAseq alignment</h3>
+<p>Our Smartseq2 single cell RNAseq data was aligned using a custom DSL2 Nextflow pipeline. Details of the pipeline processes can be found <a href="https://alexthiery.github.io/otic-reprogramming/docs/smartseq2_alignment/">here</a>.</p>
+<p>As with the nf-core pipelines above, our custom smartseq2 alignment pipeline passes the sample fastqs via a samplesheet csv. An example samplesheet can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-smartseq2_alignment/crick_samplesheet.csv">here</a>.</p>
+<p>As we have individual fastq files for each cell, it would be cumbersome to list each file individually. Instead we can pass an entire sample fastq directory which is then enumerated by a custom Nextflow process. For this to work, only the paths in column 2 ($data1) in the samplesheet csv should be edited.</p>
+<p>Once you have saved your samplesheet, execute the following shell script to run the Smartseq2 alignment.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
+
+nextflow run ./NF-smartseq2_alignment/main.nf <span class="se">\</span>
+  <span class="nt">-c</span> &lt;PATH_TO_CONFIG&gt; <span class="se">\</span>
+  <span class="nt">--input</span> &lt;PATH_TO_SMARTSEQ2_SAMPLESHEET.CSV&gt; <span class="se">\</span>
+  <span class="nt">--outdir</span> output/NF-smartseq2_alignment <span class="se">\</span>
+  <span class="nt">-resume</span>
+</code></pre></div></div>
+<hr />
+<br/>
+<h3 id="downstream-analysisa-namedownstreama">Downstream analysis<a name="downstream"></a></h3>
+<p>We have built a custom Nextflow pipeline to integrate the outputs from the separate alignments.</p>
+<p>After aligning the data, you will need to create a samplesheet csv containing the paths to all of the alignment output folders. You can find an example of this <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-downstream_analysis/crick_samplesheet.csv">here</a>.</p>
+<p>To run the integrated downstream analysis execute the following shell script.</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
+
+nextflow run ./NF-downstream_analysis/main.nf <span class="se">\</span>
+  <span class="nt">-c</span> &lt;PATH_TO_CONFIG&gt; <span class="se">\</span>
+  <span class="nt">--input</span> &lt;PATH_TO_DOWNSTREAM_ANALYSIS_SAMPLESHEET.CSV&gt; <span class="se">\</span>
+  <span class="nt">--outdir</span> output/NF-downstream_analysis <span class="se">\</span>
+  <span class="nt">-resume</span>
+</code></pre></div></div>
+
 </div>
 </div>
     </div>
