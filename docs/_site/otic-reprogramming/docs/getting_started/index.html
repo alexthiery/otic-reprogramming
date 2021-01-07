@@ -15,7 +15,7 @@
   </title>
 
   
-  <link rel="canonical" href="https://alexthiery.github.io/otic-reprogramming//https://alexthiery.github.io/otic-reprogramming/docs/getting_started/" />
+  <link rel="canonical" href="https://alexthiery.github.io/otic-reprogramming//https://alexthiery.github.io/otic-reprogramming/otic-reprogramming/docs/getting_started/" />
   
 
   <!-- CSS -->
@@ -106,7 +106,7 @@
     
       
         
-          <a class="sidebar-nav-item active" href="/docs/getting_started/">Quick Start</a>
+          <a class="sidebar-nav-item active" href="/otic-reprogramming/docs/getting_started/">Quick Start</a>
         
       
     
@@ -117,10 +117,10 @@
       
         <li class="nav-item top-level ">
           
-          <a href="https://alexthiery.github.io/otic-reprogramming//docs/getting_started/"></a>
+          <a href="https://alexthiery.github.io/otic-reprogramming//otic-reprogramming/docs/getting_started/"></a>
           <ul>
             
-              <li class="nav-item current"><a href="https://alexthiery.github.io/otic-reprogramming//docs/getting_started/">Quick Start</a></li>
+              <li class="nav-item current"><a href="https://alexthiery.github.io/otic-reprogramming//otic-reprogramming/docs/getting_started/">Quick Start</a></li>
             
           </ul>
         </li>
@@ -293,7 +293,7 @@ nextflow run nf-core/rnaseq <span class="se">\</span>
 <hr />
 <br/>
 <h3 id="smartseq2-single-cell-rnaseq-alignment">Smartseq2 single cell RNAseq alignment</h3>
-<p>Our Smartseq2 single cell RNAseq data was aligned using a custom DSL2 Nextflow pipeline. Details of the pipeline processes can be found <a href="https://alexthiery.github.io/otic-reprogramming//docs/smartseq2_alignment.md">here</a>.</p>
+<p>Our Smartseq2 single cell RNAseq data was aligned using a custom DSL2 Nextflow pipeline. Details of the pipeline processes can be found <a href="https://alexthiery.github.io/otic-reprogramming//otic-reprogramming/docs/smartseq2_alignment.md">here</a>.</p>
 <p>As with the nf-core pipelines above, our custom smartseq2 alignment pipeline passes the sample fastqs via a samplesheet csv. An example samplesheet can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-smartseq2_alignment/crick_samplesheet.csv">here</a>.</p>
 <p>As we have individual fastq files for each cell, it would be cumbersome to list each file individually. Instead we can pass an entire sample fastq directory which is then enumerated by a custom Nextflow process. For this to work, only the paths in column 2 ($data1) in the samplesheet csv should be edited.</p>
 <p>Once you have saved your samplesheet, execute the following shell script to run the Smartseq2 alignment.</p>
