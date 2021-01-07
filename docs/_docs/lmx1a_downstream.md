@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Sox8 downstream
+title: Lmx1a downstream
 order: 4
 ---
 
@@ -35,8 +35,8 @@ Set paths and load data and packages
 ```R
 {
   if (opt$runtype == "user"){
-    output_path = "./output/NF-downstream_analysis/sox8_dea/output/"
-    input_file <- "./output/NF-sox8_alignment/star/featurecounts.merged.counts.tsv"
+    output_path = "./output/NF-downstream_analysis/lmx1a_dea/output/"
+    input_file <- "./output/NF-lmx1a_alignment/star/featurecounts.merged.counts.tsv"
 
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
@@ -59,7 +59,6 @@ Set paths and load data and packages
   library(DESeq2)
   library(apeglm)
   library(openxlsx)
-  library(corrgram)
   library(extrafont)
 }
 ```
@@ -95,23 +94,22 @@ read_counts[,1:2] <- NULL
 Run DESeq2
 
 ```R
-# Add sample group to metadata
-col_data <- as.data.frame(sapply(colnames(read_counts), function(x){ifelse(grepl("sox8_oe", x), "Sox8_OE", "Control")}))
+### Add sample group to metadata
+col_data <- as.data.frame(sapply(colnames(read_counts), function(x){ifelse(grepl("Lmx1a_E1", x), "Lmx1a_E1", "Sox3U3")}))
 colnames(col_data) <- "Group"
 
-# Make deseq object and make Control group the reference level
+### Make deseq object and make Sox3U3 group the reference level
 deseq <- DESeqDataSetFromMatrix(read_counts, design = ~ Group, colData = col_data)
 deseq$Group <- droplevels(deseq$Group)
-deseq$Group <- relevel(deseq$Group, ref = "Control")
+deseq$Group <- relevel(deseq$Group, ref = "Sox3U3")
 
 # set plot colours
-plot_colours <- list(Group = c(Sox8_OE = "#f55f20", Control = "#957dad"))
+plot_colours <- list(Group = c(Sox3U3 = "#48d1cc", Lmx1a_E1 = "#f55f20"))
 
-
-# Filter genes which have fewer than 10 readcounts
+### Filter genes which have fewer than 10 readcounts
 deseq <- deseq[rowSums(counts(deseq)) >= 10, ]
 
-# Run deseq test - size factors for normalisation during this step are calculated using median of ratios method
+### Run deseq test - size factors for normalisation during this step are calculated using median of ratios method
 deseq <- DESeq(deseq)
 ```
 
@@ -130,7 +128,7 @@ graphics.off()
 
 </details>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/sox8_dea/output/dispersion_est.png %})
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/dispersion_est.png %})
 
 </br>
 
@@ -138,7 +136,7 @@ We use the DESeq2 function lfcShrink in order to calculate more accurate log2FC 
 
 ```R
 # Run lfcShrink
-res <- lfcShrink(deseq, coef="Group_Sox8_OE_vs_Control", type="apeglm")
+res <- lfcShrink(deseq, coef="Group_Lmx1a_E1_vs_Sox3U3", type="apeglm")
 
 # Add gene names to shrunken LFC dataframe
 res$gene_name <- gene_annotations$gene_name[match(rownames(res), gene_annotations$gene_id)]
@@ -159,7 +157,7 @@ graphics.off()
 
 </details>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/sox8_dea/output/MA_plot.png %})
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/MA_plot.png %})
 
 </br>
 
@@ -184,34 +182,30 @@ volc_dat <- volc_dat %>%
 
 # label outliers with triangles for volcano plot
 volc_dat <- volc_dat %>%
-  mutate(shape = ifelse(abs(log2FoldChange)>7.5 | -log10(padj) > 15, "triangle", "circle")) %>%
-  mutate(log2FoldChange = ifelse(log2FoldChange > 7.5, 7.5, log2FoldChange)) %>%
-  mutate(log2FoldChange = ifelse(log2FoldChange < -7.5, -7.5, log2FoldChange)) %>%
-  mutate('-log10(padj)' = ifelse(-log10(padj) > 15, 15, -log10(padj)))
+  mutate(shape = ifelse(abs(log2FoldChange) > 3 | -log10(padj) > 50, "triangle", "circle")) %>%
+  mutate(log2FoldChange = ifelse(log2FoldChange > 3, 3, log2FoldChange)) %>%
+  mutate(log2FoldChange = ifelse(log2FoldChange < -3, -3, log2FoldChange)) %>%
+  mutate('-log10(padj)' = ifelse(-log10(padj) > 50, 50, -log10(padj)))
 
 
 # select genes to add as labels on volcano plot
-otic_genes <- c("SOHO-1", "LMX1A", "SOX8", "HOMER2", "DLX3", "ZNF385C", "GATA6", "Six2", "JUN", "PROX1", "HMX1")
-
-downreg <- volc_dat %>%
-  dplyr::filter(log2FoldChange < 1.5) %>%
-  dplyr::arrange(padj) %>%
-  dplyr::mutate(gene = as.character(gene)) %>%
-  dplyr::filter(!stringr::str_detect(gene, "ENS"))
-downreg <- downreg[1:10,"gene"]
+otic_genes <- c('MEF2C', 'SOX10', 'SOX8', 'ZIC1', 'ZIC2', 'DACT2', 'LEF1', 'ZCCHC24', 'RNF122')
+epibranchial_genes <- c('PRDM1', 'VGLL2', 'PDLIM1', 'KRT18', 'ISL1', 'UPK1B', 'TFAP2E', 'NELL1')
 
 png(paste0(output_path, "volcano.png"), width = 16, height = 10, family = 'Arial', units = "cm", res = 500)
 ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene)) +
   geom_point(aes(colour = sig, fill = sig), size = 1) +
   scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
-                    values = alpha(c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1]), 0.3)) +
+                    values = alpha(c(plot_colours$Group[1], "#c1c1c1", plot_colours$Group[2]), 0.3)) +
   scale_color_manual(breaks = c("not sig", "downregulated", "upregulated"),
-                     values= c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1])) +
+                     values= c(plot_colours$Group[1], "#c1c1c1", plot_colours$Group[2])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        text = element_text(family = "", color = "grey20"),
         legend.position = "none", legend.title = element_blank()) +
-  geom_text_repel(data = subset(volc_dat, gene %in% c(otic_genes, downreg, "SNAI1")), min.segment.length = 0, segment.size  = 0.6, segment.color = "black") +
-  xlab('log2FC (Sox8_OE - Control)')
+  geom_text_repel(data = subset(volc_dat, gene %in% c(otic_genes, epibranchial_genes)), min.segment.length = 0, segment.size  = 0.6, segment.color = "black") +
+  xlab('log2FC (Lmx1a_E1 - Sox3U3)') +
+  theme(legend.position = "none")
 graphics.off()
 ```
 
@@ -219,7 +213,7 @@ graphics.off()
 
 </br>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/sox8_dea/output/volcano.png %})
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/volcano.png %})
 
 </br>
 
@@ -259,18 +253,18 @@ res_down <- res_down[order(res_down$log2FoldChange),]
 
 nrow(res_up)
 nrow(res_down)
-# 511 genes DE with padj 0.05 & abs(logFC) > 1.5 (399 upregulated, 112 downregulated)
+# 422 genes DE with padj 0.05 & abs(logFC) > 1.5 (103 upregulated, 319 downregulated)
+
 
 # Write DE data as a csv
 res_de <- rbind(res_up, res_down) %>% arrange(-log2FoldChange)
 
-# Write all data as a csv
-cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Sox8 overexpression and control samples (Sox8 - Control)
+cat("This table shows the differential expression results for genes with absolute log2FC > 1.5 and adjusted p-value < 0.05 when comparing Lmx1a_E1 and Sox3U3 samples (Lmx1a_E1 - Sox3U3)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
-pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
-padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
+padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
     file = paste0(output_path, "Supplementary_1.csv"))
 write.table(res_de, paste0(output_path, "Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
@@ -283,12 +277,12 @@ res_remain <- res_remain[order(-res_remain$log2FoldChange),]
 all_dat <- rbind(res_up, res_down, res_remain)
 
 # Write all data as a csv
-cat("This table shows the differential expression results for all genes when comparing Sox8 overexpression and control samples (Sox8 - Control)
+cat("This table shows the differential expression results for all genes when comparing Lmx1a_E1 and Sox3U3 samples (Lmx1a_E1 - Sox3U3)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
-pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
-padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
+padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
     file = paste0(output_path, "Supplementary_2.csv"))
 write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 ```
@@ -315,7 +309,6 @@ corrgram::corrgram(as.data.frame(assay(rld)), order=TRUE, lower.panel=corrgram::
                    main="Correlogram of rlog sample expression", cor.method = 'pearson')
 graphics.off()
 
-
 # Plot sample distance heatmap
 sample_dists <- dist(t(assay(rld)))
 
@@ -335,7 +328,6 @@ plotPCA(rld, intgroup = "Group") +
   theme(aspect.ratio=1,
         panel.background = element_rect(fill = "white", colour = "black"))
 graphics.off()
-
 ```
 
 </br>
@@ -351,15 +343,15 @@ graphics.off()
 </div>
 
 <div id="Sample Correlogram" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SampleCorrelogram.png">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleCorrelogram.png">
 </div>
 
 <div id="Sample-Sample Distance" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SampleDist.png">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleDist.png">
 </div>
 
 <div id="Sample PCA" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SamplePCA.png">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SamplePCA.png">
 </div>
 
 </br>
@@ -381,17 +373,18 @@ Plot heatmap of differentially expressed genes
 <p>
 
 ```R
-png(paste0(output_path, "sox8_oe_hm.png"), height = 30, width = 21, family = 'Arial', units = "cm", res = 400)
+png(paste0(output_path, "Lmx1a_E1_hm.png"), height = 29, width = 21, family = 'Arial', units = "cm", res = 400)
 pheatmap(assay(rld)[rownames(res_sub),], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=FALSE,
          show_colnames = F, cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
-         annotation_colors = plot_colours, scale = "row", treeheight_row = 0, treeheight_col = 25, cellheight = 1.5, cellwidth = 75)
+         annotation_colors = plot_colours, scale = "row", treeheight_row = 0, treeheight_col = 25,
+         main = "Lmx1a_E1 and Sox3U3 enriched genes (logFC > 1.5, padj = 0.05)", border_color = NA, cellheight = 1.6, cellwidth = 55)
 graphics.off()
 
 ```
 
 </details>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_hm.png %})
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_hm.png %})
 
 </br>
 
@@ -422,12 +415,12 @@ Generate csv for raw counts, normalised counts, and differential expression outp
 # subset TFs from all_dat
 all_dat_TF <- all_dat[all_dat$gene_id %in% rownames(res_sub_TF),]
 
-cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Sox8 overexpression and control samples (Sox8 - Control)
+cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Lmx1a_E1 and Sox3U3 samples (Lmx1a_E1 - Sox3U3)
 Reads are aligned to Galgal6 \n
 Statistics:
 Normalised count: read counts adjusted for library size
-pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
-padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
+padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
     file = paste0(output_path, "Supplementary_3.csv"))
 write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 ```
@@ -446,15 +439,14 @@ rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
 # plot DE TFs
-png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 20, width = 25, family = 'Arial', units = "cm", res = 400)
+png(paste0(output_path, "Lmx1a_E1_TFs_hm.png"), height = 17, width = 25, family = 'Arial', units = "cm", res = 400)
 pheatmap(rld.plot[res_sub_TF$gene_name,], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=T,
-show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
-annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA,
-cellheight = 10, cellwidth = 75)
+         show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
+         annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
+         scale = "row", main = "Lmx1a_E1 and Sox3U3 enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA, cellheight = 10, cellwidth = 50)
 graphics.off()
 ```
 
 </details>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_TFs_hm.png %})
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_TFs_hm.png %})
