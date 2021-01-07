@@ -30,6 +30,8 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 # Set paths and load data
 {
   if (opt$runtype == "user"){
+
+    # load custom functions
     sapply(list.files('./NF-downstream_analysis/bin/custom_functions/', full.names = T), source)
     
     output_path = "./output/NF-downstream_analysis/smartseq_analysis/output/"
@@ -39,11 +41,13 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     gfp_counts = './output/NF-smartseq2_alignment/merged_counts/output/'
     velocyto_input = './output/NF-smartseq2_alignment/velocyto/'
     
+    # set cores
     ncores = 8
     
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
     
+    # load custom functions
     sapply(list.files(opt$custom_functions, full.names = T), source)
     output_path = "./output/"
     plot_path = "./output/plots/"
@@ -52,13 +56,14 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     gfp_counts = './'
     velocyto_input = './'
     
+    # set cores
     ncores = opt$cores
   }
   
   dir.create(output_path, recursive = T)
   dir.create(plot_path, recursive = T)
   
-  # loadload required packages
+  # load required packages
   library(Antler)
   library(velocyto.R)
   library(stringr)
@@ -76,10 +81,10 @@ seed=1
 perp=5
 eta=200
 
-#' Stage colors
+# Stage colors
 stage_cols = setNames(c("#BBBDC1", "#6B98E9", "#05080D"), c('8', '11', '15'))
 
-#' # Load and hygienize dataset
+# Load and hygienize dataset
 m = Antler$new(plot_folder=plot_path, num_cores=ncores)
 
 # load in phenoData and assayData from ../dataset -> assayData is count matrix; phenoData is metaData (i.e. replicated, conditions, samples etc)
@@ -89,7 +94,8 @@ pData(m$expressionSet)$cells_colors = stage_cols[as.character(pData(m$expression
 
 m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", basename="preQC", reads_name="read", cat_colors=unname(stage_cols))
 
-# set gene names
+# Some key genes are not annotated in the GTF - manually add these gene names to the annotations file
+
 # read in annotations file
 gtf_annotations = read.csv(list.files(genome_annotations_path, pattern = '*gene_annotations.csv', full.names = T), stringsAsFactors = F)
 
@@ -127,7 +133,7 @@ apriori_genes = c(
 
 m$favorite_genes <- unique(sort(apriori_genes))
 
-#' Remove outliers genes and cells
+#' Remove gene and cell outliers
 m$removeOutliers( lowread_thres = 5e5,   # select cells with more than 500000 reads 
                   genesmin = 1000,       # select cells expressing more than 1k genes
                   cellmin = 3,           # select genes expressed in more than 3 cells)
@@ -143,7 +149,7 @@ m$excludeCellsFromIds(which(m$getCellsNames() %in% unlist(annotations)))
 
 m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", basename="postQC", reads_name="read", cat_colors=unname(stage_cols))
 
-#' Remove cells having more than 6% of mitochondrial read counts
+#' Remove cells with more than 6% of mitochondrial read counts
 m$removeGenesFromRatio(
   candidate_genes=grep('^MT-', m$getGeneNames(), value=T),
   threshold = 0.06
