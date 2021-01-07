@@ -119,7 +119,7 @@ deseq <- DESeq(deseq)
 
 Plot dispersion estimates
 
-<details><summary>Expand code</summary>
+<details><summary>Code</summary>
 <p>
 
 ```R
@@ -148,7 +148,7 @@ res$gene_name <- gene_annotations$gene_name[match(rownames(res), gene_annotation
 
 Plot MA with cutoff for significant genes = padj < 0.05
 
-<details><summary>Expand code</summary>
+<details><summary>Code</summary>
 <p>
 
 ```R
@@ -165,7 +165,7 @@ graphics.off()
 
 Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5
 
-<details><summary>Expand code</summary>
+<details><summary>Code</summary>
 <p>
 
 ```R
@@ -225,7 +225,7 @@ graphics.off()
 
 Generate csv for raw counts, normalised counts, and differential expression output
 
-<details><summary>Expand code</summary>
+<details><summary>Code</summary>
 <p>
 
 ```R
@@ -302,7 +302,7 @@ write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, ro
 
 Plot sample-sample distances, PC plot and correlogram to show relationship between samples
 
-<details><summary>Expand code</summary>
+<details><summary>Code</summary>
 <p>
 
 ```R
@@ -343,6 +343,8 @@ graphics.off()
 
 </details>
 
+</br>
+
 <div class="tab">
   <button class="tablinks" style="display: block;" onclick="openTab(event, 'Sample Correlogram')">Sample Correlogram</button>
   <button class="tablinks" onclick="openTab(event, 'Sample-Sample Distance')">Sample-Sample Distance</button>
@@ -377,7 +379,7 @@ res_sub <- res_sub[order(-res_sub$log2FoldChange),]
 
 Plot heatmap of differentially expressed genes
 
-<details><summary>Expand code</summary>
+<details><summary>Code</summary>
 <p>
 
 ```R
@@ -419,7 +421,7 @@ res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
 
 Generate csv for raw counts, normalised counts, and differential expression output for transcription factors
 
-<details><summary>Expand code</summary>
+<details><summary>Code</summary>
 <p>
 
 ```R
@@ -443,7 +445,7 @@ write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE,
 
 Plot heatmap for differentially expressed transcription factors
 
-<details><summary>Expand code</summary>
+<details><summary>Code</summary>
 <p>
 
 ```R

@@ -41,16 +41,17 @@
   padding: 14px 16px;
   transition: 0.3s;
   border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-  background-color: rgba(172, 172, 172, 0.612);
+  background-color: rgba(187, 187, 187, 0.379);
 }
 
 /* Create an active/current tablink class */
 .tab button.active {
-  background-color: rgba(172, 172, 172, 0.612);
+  background-color: rgba(187, 187, 187, 0.379);
 }
 
 /* Style the tab content */
@@ -73,4 +74,19 @@
   to {
     opacity: 1;
   }
+}
+
+details {
+  font: 16px "Open Sans", Calibri, sans-serif;
+  width: 620px;
+}
+
+details > summary {
+  padding: 2px 6px;
+  width: 5em;
+  background-color: rgba(237, 237, 237, 0.379);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  list-style: none;
 }
