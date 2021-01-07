@@ -302,24 +302,6 @@ write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, ro
 
 Plot sample-sample distances, PC plot and correlogram to show relationship between samples
 
-<div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'Sample Correlogram')">Sample Correlogram</button>
-  <button class="tablinks" onclick="openTab(event, 'Sample-Sample Distance')">Sample-Sample Distance</button>
-  <button class="tablinks" onclick="openTab(event, 'Sample PCA')">Sample PCA</button>
-</div>
-
-<div id="Sample Correlogram" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SampleCorrelogram.png">
-</div>
-
-<div id="Sample-Sample Distance" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SampleDist.png">
-</div>
-
-<div id="Sample PCA" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SamplePCA.png">
-</div>
-
 <details><summary>Expand code</summary>
 <p>
 
@@ -357,18 +339,48 @@ graphics.off()
 
 ```
 
+</br>
+
 </details>
 
+<div class="tab">
+  <button class="tablinks" style="display: block;" onclick="openTab(event, 'Sample Correlogram')">Sample Correlogram</button>
+  <button class="tablinks" onclick="openTab(event, 'Sample-Sample Distance')">Sample-Sample Distance</button>
+  <button class="tablinks" onclick="openTab(event, 'Sample PCA')">Sample PCA</button>
+</div>
+
+<div id="Sample Correlogram" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SampleCorrelogram.png">
+</div>
+
+<div id="Sample-Sample Distance" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SampleDist.png">
+</div>
+
+<div id="Sample PCA" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/SamplePCA.png">
+</div>
+
 </br>
 
 </br>
+
+Subset differentially expressed genes (adjusted p-value < 0.05, absolute log2FC > 1.5)
 
 ```R
 # subset genes with padj < 0.05 and abs(LFC) > 1.5
 res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1.5), ]
 res_sub <- res_sub[order(-res_sub$log2FoldChange),]
+```
 
-# plot heatmap of DE genes
+</br>
+
+Plot heatmap of differentially expressed genes
+
+<details><summary>Expand code</summary>
+<p>
+
+```R
 png(paste0(output_path, "sox8_oe_hm.png"), height = 30, width = 21, family = 'Arial', units = "cm", res = 400)
 pheatmap(assay(rld)[rownames(res_sub),], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=FALSE,
          show_colnames = F, cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
@@ -376,6 +388,14 @@ pheatmap(assay(rld)[rownames(res_sub),], color = colorRampPalette(c("#191d73", "
 graphics.off()
 
 ```
+
+</details>
+
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_hm.png %})
+
+</br>
+
+Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981')
 
 ```R
 
@@ -393,14 +413,18 @@ TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namesp
 TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
 
 res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
+```
 
+</br>
 
-##############################################################
-## Save CSV for differentially expressed transcription factors
-##############################################################
+Generate csv for raw counts, normalised counts, and differential expression output for transcription factors
+
+<details><summary>Expand code</summary>
+<p>
+
+```R
 
 # subset TFs from all_dat
-
 all_dat_TF <- all_dat[all_dat$gene_id %in% rownames(res_sub_TF),]
 
 cat("This table shows differentially expressed (absolute FC > 1.5 and padj (FDR) < 0.05) transcription factors between Sox8 overexpression and control samples (Sox8 - Control)
@@ -411,21 +435,31 @@ pvalue: unadjusted pvalue for differential expression test between Sox8 overexpr
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
     file = paste0(output_path, "Supplementary_3.csv"))
 write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+```
 
-##############################################################
-# Plot heatmap for differentially expressed transcription factors
-##############################################################
+</details>
 
+</br>
+
+Plot heatmap for differentially expressed transcription factors
+
+<details><summary>Expand code</summary>
+<p>
+
+```R
 rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
 # plot DE TFs
 png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 20, width = 25, family = 'Arial', units = "cm", res = 400)
 pheatmap(rld.plot[res_sub_TF$gene_name,], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=T,
-                 show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
-                 annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-                 scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA,
-                 cellheight = 10, cellwidth = 75)
+show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
+annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
+scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA,
+cellheight = 10, cellwidth = 75)
 graphics.off()
-
 ```
+
+</details>
+
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_TFs_hm.png %})

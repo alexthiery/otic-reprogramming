@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Otic reprogramming</title>
- <link href="https://alexthiery.github.io/otic-reprogramminghttps://alexthiery.github.io/otic-reprogramming/atom.xml" rel="self"/>
- <link href="https://alexthiery.github.io/otic-reprogramminghttps://alexthiery.github.io/otic-reprogramming/"/>
- <updated>2021-01-07T07:49:33-06:00</updated>
- <id>https://alexthiery.github.io/otic-reprogramming</id>
+ <link href="http://localhost:3000/atom.xml" rel="self"/>
+ <link href="http://localhost:3000/"/>
+ <updated>2021-01-07T09:00:19-06:00</updated>
+ <id>http://localhost:3000</id>
  <author>
    <name>Alex Thiery</name>
    <email>alexthiery1@gmail.com</email>
