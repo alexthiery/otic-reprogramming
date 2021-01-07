@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Sox8 downstream
-order: 4
+order: 5
 ---
 
 Automatic switch for running pipeline through Nextflow or interactively in Rstudio
