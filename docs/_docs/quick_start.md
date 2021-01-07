@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Quick Start
-order: 1
+order: 2
 ---
 
 <br/>

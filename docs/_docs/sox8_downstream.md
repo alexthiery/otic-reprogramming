@@ -1,5 +1,5 @@
 ---
 layout: page
 title: Sox8 Downstream
-order: 1
+order: 4
 ---
