@@ -1,7 +1,8 @@
 ---
 layout: page
-title: SmartSeq2 downstream
-order: 6
+title: SmartSeq2 analysis
+category: Downstream analysis
+order: 3
 ---
 
 Automatic switch for running pipeline through Nextflow or interactively in Rstudio

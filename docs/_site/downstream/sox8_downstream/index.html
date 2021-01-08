@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1"
+  />
+
+  <title>
+     Sox8 DEA &middot; Otic reprogramming 
+  </title>
+
+  
+  <link rel="canonical" href="http://localhost:3000/downstream/sox8_downstream/" />
+  
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css" />
+  <link rel="stylesheet" href="/public/css/syntax.css" />
+  <link rel="stylesheet" href="/public/css/custom.css" />
+  <link rel="stylesheet" href="/public/css/lanyon.css" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400"
+  />
+
+  <!-- stylesheet for icons -->
+  <link
+    rel="stylesheet"
+    href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
+  />
+
+  <link rel="shortcut icon" href="/public/favicon.ico" />
+
+  <i class="fas fa-egg"></i>
+
+  <!-- RSS -->
+  <link
+    rel="alternate"
+    type="application/rss+xml"
+    title="RSS"
+    href="http://localhost:3000/atom.xml"
+  />
+</head>
+
+
+  <body>
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox" />
+
+<!-- Toggleable sidebar -->
+<!-- Sidebar icon elements -->
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="/assets/sidebar_icon.png" />
+  </div>
+
+  <div id="contact-list" style="text-align: center">
+    
+    <a href="https://www.kcl.ac.uk/people/andrea-streit">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-square-o fa-stack-2x"></i>
+        <i class="fa fa-users fa-stack-1x"></i>
+      </span>
+    </a>
+     
+    <a href="http://orcid.org/0000-0002-5814-4977">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-square-o fa-stack-2x"></i>
+        <i class="fa fa-align-center fa-stack-1x"></i>
+      </span>
+    </a>
+     
+    <a href="mailto:alexthiery1@gmail.com">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-square-o fa-stack-2x"></i>
+        <i class="fa fa-envelope fa-stack-1x"></i>
+      </span>
+    </a>
+     
+    <a href="https://github.com/alexthiery/">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-square-o fa-stack-2x"></i>
+        <i class="fa fa-github-alt fa-stack-1x"></i>
+      </span>
+    </a>
+    
+  </div>
+
+  <div class="sidebar-item">
+    <p>Documentation for the Buzzi et al. 2021 <a href="https://github.com/alexthiery/otic-reprogramming" target="_blank">Github repository</a>.</p>
+  </div>
+
+  <!-- sidebar tabs -->
+
+     
+  <a class="sidebar-nav-item" href="/general/quick_start/"
+    >Quick Start</a
+  >
+      
+  <a class="sidebar-nav-item" href="/general/smartseq2_alignment/"
+    >Smartseq2 Alignment</a
+  >
+      
+  <li class="sidebar-nav-item">
+    
+    <a href="/downstream/downstream_intro/">Downstream analysis</a>
+    <ul>
+      
+      <li class="sidebar-nav-sub-item">
+        <a href="/downstream/downstream_intro/">Intro</a>
+      </li>
+      
+      <li class="sidebar-nav-sub-item">
+        <a href="/downstream/lmx1a_downstream/">Lmx1a DEA</a>
+      </li>
+      
+      <li class="sidebar-nav-sub-item">
+        <a href="/downstream/smartseq2_downstream/">SmartSeq2 analysis</a>
+      </li>
+      
+      <li class="sidebar-nav-sub-item">
+        <a href="/downstream/sox8_downstream/">Sox8 DEA</a>
+      </li>
+      
+      <li class="sidebar-nav-sub-item">
+        <a href="/downstream/enhancer_downstream/">Enhancer discovery</a>
+      </li>
+      
+    </ul>
+  </li>
+  
+
+  <!-- <a class="sidebar-nav-item" href="/_docs/getting_started.md">Getting Started</a> -->
+  <a class="sidebar-nav-item" href="https://github.com/alexthiery/otic-reprogramming"
+    >GitHub repository</a
+  >
+  <a class="sidebar-nav-item" href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip"
+    >Download</a
+  >
+
+  <div class="sidebar-item">
+    <p>&copy; 2021. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Otic reprogramming</a>
+            <small>Buzzi et al. 2021</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content"><div class="page">
+  <h1 class="page-title">Sox8 DEA</h1>
+  <p>Automatic switch for running pipeline through Nextflow or interactively in Rstudio</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">getopt</span><span class="p">)</span><span class="w">
+</span><span class="n">spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="w">
+  </span><span class="s1">'runtype'</span><span class="p">,</span><span class="w"> </span><span class="s1">'l'</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="s2">"character"</span><span class="p">,</span><span class="w">
+  </span><span class="s1">'cores'</span><span class="w">   </span><span class="p">,</span><span class="w"> </span><span class="s1">'c'</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="s2">"integer"</span><span class="w">
+</span><span class="p">),</span><span class="w"> </span><span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">)</span><span class="w">
+</span><span class="n">opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Set run location</span><span class="w">
+</span><span class="k">if</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">commandArgs</span><span class="p">(</span><span class="n">trailingOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">){</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s1">'No command line arguments provided, user defaults paths are set for running interactively in Rstudio on docker\n'</span><span class="p">)</span><span class="w">
+  </span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"user"</span><span class="w">
+</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="p">)){</span><span class="w">
+    </span><span class="n">stop</span><span class="p">(</span><span class="s2">"--runtype must be either 'user' or 'nextflow'"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="n">tolower</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"user"</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"nextflow"</span><span class="p">){</span><span class="w">
+    </span><span class="n">stop</span><span class="p">(</span><span class="s2">"--runtype must be either 'user' or 'nextflow'"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+</br>
+<p>Set paths and load data and packages</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"user"</span><span class="p">){</span><span class="w">
+    </span><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./output/NF-downstream_analysis/sox8_dea/output/"</span><span class="w">
+    </span><span class="n">input_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"./output/NF-sox8_alignment/star/featurecounts.merged.counts.tsv"</span><span class="w">
+
+  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"nextflow"</span><span class="p">){</span><span class="w">
+    </span><span class="n">cat</span><span class="p">(</span><span class="s1">'pipeline running through nextflow\n'</span><span class="p">)</span><span class="w">
+
+    </span><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/"</span><span class="w">
+    </span><span class="n">input_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"./featurecounts.merged.counts.tsv"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+
+  </span><span class="n">dir.create</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="n">recursive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">)</span><span class="w">
+
+  </span><span class="n">library</span><span class="p">(</span><span class="n">biomaRt</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">RColorBrewer</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">VennDiagram</span><span class="p">)</span><span class="w">
+
+  </span><span class="n">library</span><span class="p">(</span><span class="n">pheatmap</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">ggrepel</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">DESeq2</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">apeglm</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">openxlsx</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">corrgram</span><span class="p">)</span><span class="w">
+  </span><span class="n">library</span><span class="p">(</span><span class="n">extrafont</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+</br>
+<p>Data pre-processing</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read in count data and rename columns</span><span class="w">
+</span><span class="n">read_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.delim</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span><span class="w"> </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">read_counts</span><span class="p">)[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"gene_id"</span><span class="w">
+
+</span><span class="c1"># if gene name exists then take gene name, else take ensembl ID and make new name column</span><span class="w">
+</span><span class="n">read_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_counts</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">mutate</span><span class="p">(</span><span class="n">gene_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">gene_name</span><span class="p">),</span><span class="w"> </span><span class="n">gene_name</span><span class="p">,</span><span class="w"> </span><span class="n">gene_id</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># make duplicated gene names unique using "_"</span><span class="w">
+</span><span class="n">read_counts</span><span class="o">$</span><span class="n">gene_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">make.unique</span><span class="p">(</span><span class="n">read_counts</span><span class="o">$</span><span class="n">gene_name</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"_"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># make gene annotations dataframe</span><span class="w">
+</span><span class="n">gene_annotations</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_counts</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="n">select</span><span class="p">(</span><span class="n">gene_id</span><span class="p">,</span><span class="w"> </span><span class="n">gene_name</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># write CSV for output list</span><span class="w">
+</span><span class="n">write.csv</span><span class="p">(</span><span class="n">read_counts</span><span class="p">,</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"read_counts.csv"</span><span class="p">),</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># make rownames gene_id and remove ID and names column before making deseq object</span><span class="w">
+</span><span class="n">rownames</span><span class="p">(</span><span class="n">read_counts</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_counts</span><span class="o">$</span><span class="n">gene_id</span><span class="w">
+</span><span class="n">read_counts</span><span class="p">[,</span><span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kc">NULL</span><span class="w">
+</span></code></pre></div></div>
+</br>
+<p>Run DESeq2</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Add sample group to metadata</span><span class="w">
+</span><span class="n">col_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">sapply</span><span class="p">(</span><span class="n">colnames</span><span class="p">(</span><span class="n">read_counts</span><span class="p">),</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="n">ifelse</span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"sox8_oe"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="s2">"Sox8_OE"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Control"</span><span class="p">)}))</span><span class="w">
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">col_data</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Group"</span><span class="w">
+
+</span><span class="c1"># Make deseq object and make Control group the reference level</span><span class="w">
+</span><span class="n">deseq</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">DESeqDataSetFromMatrix</span><span class="p">(</span><span class="n">read_counts</span><span class="p">,</span><span class="w"> </span><span class="n">design</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Group</span><span class="p">,</span><span class="w"> </span><span class="n">colData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">col_data</span><span class="p">)</span><span class="w">
+</span><span class="n">deseq</span><span class="o">$</span><span class="n">Group</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">droplevels</span><span class="p">(</span><span class="n">deseq</span><span class="o">$</span><span class="n">Group</span><span class="p">)</span><span class="w">
+</span><span class="n">deseq</span><span class="o">$</span><span class="n">Group</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">relevel</span><span class="p">(</span><span class="n">deseq</span><span class="o">$</span><span class="n">Group</span><span class="p">,</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Control"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># set plot colours</span><span class="w">
+</span><span class="n">plot_colours</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">Group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">Sox8_OE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#f55f20"</span><span class="p">,</span><span class="w"> </span><span class="n">Control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"#957dad"</span><span class="p">))</span><span class="w">
+
+
+</span><span class="c1"># Filter genes which have fewer than 10 readcounts</span><span class="w">
+</span><span class="n">deseq</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">deseq</span><span class="p">[</span><span class="n">rowSums</span><span class="p">(</span><span class="n">counts</span><span class="p">(</span><span class="n">deseq</span><span class="p">))</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="p">]</span><span class="w">
+
+</span><span class="c1"># Run deseq test - size factors for normalisation during this step are calculated using median of ratios method</span><span class="w">
+</span><span class="n">deseq</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">DESeq</span><span class="p">(</span><span class="n">deseq</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+</br>
+<p>Plot dispersion estimates</p>
+<details><summary>Code</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"dispersion_est.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
+</span><span class="n">plotDispEsts</span><span class="p">(</span><span class="n">deseq</span><span class="p">)</span><span class="w">
+</span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+</details>
+<p><img src="/assets/output/NF-downstream_analysis/sox8_dea/output/dispersion_est.png" alt="" /></p>
+</br>
+<p>We use the DESeq2 function lfcShrink in order to calculate more accurate log2FC estimates. This uses information across all genes to shrink LFC when a gene has low counts or high dispersion values.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Run lfcShrink</span><span class="w">
+</span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lfcShrink</span><span class="p">(</span><span class="n">deseq</span><span class="p">,</span><span class="w"> </span><span class="n">coef</span><span class="o">=</span><span class="s2">"Group_Sox8_OE_vs_Control"</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s2">"apeglm"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Add gene names to shrunken LFC dataframe</span><span class="w">
+</span><span class="n">res</span><span class="o">$</span><span class="n">gene_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_name</span><span class="p">[</span><span class="n">match</span><span class="p">(</span><span class="n">rownames</span><span class="p">(</span><span class="n">res</span><span class="p">),</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_id</span><span class="p">)]</span><span class="w">
+</span></code></pre></div></div>
+</br>
+<p>Plot MA with cutoff for significant genes = padj &lt; 0.05</p>
+<details><summary>Code</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"MA_plot.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
+</span><span class="n">DESeq2</span><span class="o">::</span><span class="n">plotMA</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">)</span><span class="w">
+</span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+</details>
+<p><img src="/assets/output/NF-downstream_analysis/sox8_dea/output/MA_plot.png" alt="" /></p>
+</br>
+<p>Plot volcano plot with padj &lt; 0.05 and abs(fold change) &gt; 1.5</p>
+<details><summary>Code</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">volc_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">res</span><span class="p">[,</span><span class="m">-6</span><span class="p">])</span><span class="w">
+
+</span><span class="c1"># add gene name to volcano data</span><span class="w">
+</span><span class="n">volc_dat</span><span class="o">$</span><span class="n">gene</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_name</span><span class="p">[</span><span class="n">match</span><span class="p">(</span><span class="n">rownames</span><span class="p">(</span><span class="n">volc_dat</span><span class="p">),</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_id</span><span class="p">)]</span><span class="w">
+
+</span><span class="c1"># label significance</span><span class="w">
+</span><span class="n">volc_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">volc_dat</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">filter</span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">padj</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">sig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">((</span><span class="n">padj</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'TRUE'</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s1">'upregulated'</span><span class="p">,</span><span class="w">
+                         </span><span class="p">(</span><span class="n">padj</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">-1.5</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'TRUE'</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s1">'downregulated'</span><span class="p">,</span><span class="w">
+                         </span><span class="p">(</span><span class="n">padj</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">log2FoldChange</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'TRUE'</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s1">'not sig'</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">arrange</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">padj</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># label outliers with triangles for volcano plot</span><span class="w">
+</span><span class="n">volc_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">volc_dat</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">log2FoldChange</span><span class="p">)</span><span class="o">&gt;</span><span class="m">7.5</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="o">-</span><span class="n">log10</span><span class="p">(</span><span class="n">padj</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="s2">"triangle"</span><span class="p">,</span><span class="w"> </span><span class="s2">"circle"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">7.5</span><span class="p">,</span><span class="w"> </span><span class="m">7.5</span><span class="p">,</span><span class="w"> </span><span class="n">log2FoldChange</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">-7.5</span><span class="p">,</span><span class="w"> </span><span class="m">-7.5</span><span class="p">,</span><span class="w"> </span><span class="n">log2FoldChange</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="s1">'-log10(padj)'</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="o">-</span><span class="n">log10</span><span class="p">(</span><span class="n">padj</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">log10</span><span class="p">(</span><span class="n">padj</span><span class="p">)))</span><span class="w">
+
+
+</span><span class="c1"># select genes to add as labels on volcano plot</span><span class="w">
+</span><span class="n">otic_genes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"SOHO-1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"LMX1A"</span><span class="p">,</span><span class="w"> </span><span class="s2">"SOX8"</span><span class="p">,</span><span class="w"> </span><span class="s2">"HOMER2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"DLX3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ZNF385C"</span><span class="p">,</span><span class="w"> </span><span class="s2">"GATA6"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Six2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"JUN"</span><span class="p">,</span><span class="w"> </span><span class="s2">"PROX1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"HMX1"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">downreg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">volc_dat</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">dplyr</span><span class="o">::</span><span class="n">filter</span><span class="p">(</span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">dplyr</span><span class="o">::</span><span class="n">arrange</span><span class="p">(</span><span class="n">padj</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">dplyr</span><span class="o">::</span><span class="n">mutate</span><span class="p">(</span><span class="n">gene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="n">gene</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">dplyr</span><span class="o">::</span><span class="n">filter</span><span class="p">(</span><span class="o">!</span><span class="n">stringr</span><span class="o">::</span><span class="n">str_detect</span><span class="p">(</span><span class="n">gene</span><span class="p">,</span><span class="w"> </span><span class="s2">"ENS"</span><span class="p">))</span><span class="w">
+</span><span class="n">downreg</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">downreg</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">,</span><span class="s2">"gene"</span><span class="p">]</span><span class="w">
+
+</span><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"volcano.png"</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">16</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">500</span><span class="p">)</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">volc_dat</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">log2FoldChange</span><span class="p">,</span><span class="w"> </span><span class="n">`-log10(padj)`</span><span class="p">,</span><span class="w"> </span><span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gene</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_point</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sig</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sig</span><span class="p">),</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"not sig"</span><span class="p">,</span><span class="w"> </span><span class="s2">"downregulated"</span><span class="p">,</span><span class="w"> </span><span class="s2">"upregulated"</span><span class="p">),</span><span class="w">
+                    </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alpha</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">plot_colours</span><span class="o">$</span><span class="n">Group</span><span class="p">[</span><span class="m">2</span><span class="p">],</span><span class="w"> </span><span class="s2">"#c1c1c1"</span><span class="p">,</span><span class="w"> </span><span class="n">plot_colours</span><span class="o">$</span><span class="n">Group</span><span class="p">[</span><span class="m">1</span><span class="p">]),</span><span class="w"> </span><span class="m">0.3</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"not sig"</span><span class="p">,</span><span class="w"> </span><span class="s2">"downregulated"</span><span class="p">,</span><span class="w"> </span><span class="s2">"upregulated"</span><span class="p">),</span><span class="w">
+                     </span><span class="n">values</span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">plot_colours</span><span class="o">$</span><span class="n">Group</span><span class="p">[</span><span class="m">2</span><span class="p">],</span><span class="w"> </span><span class="s2">"#c1c1c1"</span><span class="p">,</span><span class="w"> </span><span class="n">plot_colours</span><span class="o">$</span><span class="n">Group</span><span class="p">[</span><span class="m">1</span><span class="p">]))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="n">panel.grid.major</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w"> </span><span class="n">panel.grid.minor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+        </span><span class="n">panel.background</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w"> </span><span class="n">axis.line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_line</span><span class="p">(</span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"black"</span><span class="p">),</span><span class="w">
+        </span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"none"</span><span class="p">,</span><span class="w"> </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">())</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_text_repel</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">subset</span><span class="p">(</span><span class="n">volc_dat</span><span class="p">,</span><span class="w"> </span><span class="n">gene</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">otic_genes</span><span class="p">,</span><span class="w"> </span><span class="n">downreg</span><span class="p">,</span><span class="w"> </span><span class="s2">"SNAI1"</span><span class="p">)),</span><span class="w"> </span><span class="n">min.segment.length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">segment.size</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">segment.color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"black"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">xlab</span><span class="p">(</span><span class="s1">'log2FC (Sox8_OE - Control)'</span><span class="p">)</span><span class="w">
+</span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+</details>
+</br>
+<p><img src="/assets/output/NF-downstream_analysis/sox8_dea/output/volcano.png" alt="" /></p>
+</br>
+<p>Generate csv for raw counts, normalised counts, and differential expression output</p>
+<details><summary>Code</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># raw counts dataframe</span><span class="w">
+</span><span class="n">raw_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">counts</span><span class="p">(</span><span class="n">deseq</span><span class="p">))</span><span class="w">
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">raw_counts</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"counts_"</span><span class="p">,</span><span class="w"> </span><span class="n">colnames</span><span class="p">(</span><span class="n">raw_counts</span><span class="p">))</span><span class="w">
+</span><span class="n">raw_counts</span><span class="o">$</span><span class="n">gene_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">raw_counts</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># normalised counts dataframe</span><span class="w">
+</span><span class="n">norm_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">counts</span><span class="p">(</span><span class="n">deseq</span><span class="p">,</span><span class="w"> </span><span class="n">normalized</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">))</span><span class="w">
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">norm_counts</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"norm_size.adj_"</span><span class="p">,</span><span class="w"> </span><span class="n">colnames</span><span class="p">(</span><span class="n">norm_counts</span><span class="p">))</span><span class="w">
+</span><span class="n">norm_counts</span><span class="o">$</span><span class="n">gene_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">norm_counts</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># differential expression statistics dataframe</span><span class="w">
+</span><span class="n">DE_res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w">
+</span><span class="n">DE_res</span><span class="o">$</span><span class="n">gene_id</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">DE_res</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># merge raw_counts, norm_counts and DE_res together into a single dataframe</span><span class="w">
+</span><span class="n">all_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">merge</span><span class="p">(</span><span class="n">raw_counts</span><span class="p">,</span><span class="w"> </span><span class="n">norm_counts</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'gene_id'</span><span class="p">)</span><span class="w">
+</span><span class="n">all_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">merge</span><span class="p">(</span><span class="n">all_dat</span><span class="p">,</span><span class="w"> </span><span class="n">DE_res</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'gene_id'</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># move position of gene names column</span><span class="w">
+</span><span class="n">all_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_dat</span><span class="p">[,</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="p">(</span><span class="n">all_dat</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="o">:</span><span class="p">{</span><span class="n">ncol</span><span class="p">(</span><span class="n">all_dat</span><span class="p">)</span><span class="m">-1</span><span class="p">})]</span><span class="w">
+
+</span><span class="c1"># Find which genes are up and downregulated following differential expression analysis</span><span class="w">
+</span><span class="n">res_up</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_dat</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">all_dat</span><span class="o">$</span><span class="n">padj</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">all_dat</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1.5</span><span class="p">),</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="n">res_up</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_up</span><span class="p">[</span><span class="n">order</span><span class="p">(</span><span class="o">-</span><span class="n">res_up</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">),]</span><span class="w">
+
+</span><span class="n">res_down</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_dat</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">all_dat</span><span class="o">$</span><span class="n">padj</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">all_dat</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">-1.5</span><span class="p">),</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="n">res_down</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_down</span><span class="p">[</span><span class="n">order</span><span class="p">(</span><span class="n">res_down</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">),]</span><span class="w">
+
+</span><span class="n">nrow</span><span class="p">(</span><span class="n">res_up</span><span class="p">)</span><span class="w">
+</span><span class="n">nrow</span><span class="p">(</span><span class="n">res_down</span><span class="p">)</span><span class="w">
+</span><span class="c1"># 511 genes DE with padj 0.05 &amp; abs(logFC) &gt; 1.5 (399 upregulated, 112 downregulated)</span><span class="w">
+
+</span><span class="c1"># Write DE data as a csv</span><span class="w">
+</span><span class="n">res_de</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rbind</span><span class="p">(</span><span class="n">res_up</span><span class="p">,</span><span class="w"> </span><span class="n">res_down</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">arrange</span><span class="p">(</span><span class="o">-</span><span class="n">log2FoldChange</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Write all data as a csv</span><span class="w">
+</span><span class="n">cat</span><span class="p">(</span><span class="s2">"This table shows the differential expression results for genes with absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05 when comparing Sox8 overexpression and control samples (Sox8 - Control)
+Reads are aligned to Galgal6 \n
+Statistics:
+Normalised count: read counts adjusted for library size
+pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
+padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n"</span><span class="p">,</span><span class="w">
+    </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Supplementary_1.csv"</span><span class="p">))</span><span class="w">
+</span><span class="n">write.table</span><span class="p">(</span><span class="n">res_de</span><span class="p">,</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Supplementary_1.csv"</span><span class="p">),</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NA'</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s2">","</span><span class="p">)</span><span class="w">
+
+
+</span><span class="c1"># non-DE genes</span><span class="w">
+</span><span class="n">res_remain</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_dat</span><span class="p">[</span><span class="o">!</span><span class="n">rownames</span><span class="p">(</span><span class="n">all_dat</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">res_up</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">rownames</span><span class="p">(</span><span class="n">all_dat</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">res_down</span><span class="p">),]</span><span class="w">
+</span><span class="n">res_remain</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_remain</span><span class="p">[</span><span class="n">order</span><span class="p">(</span><span class="o">-</span><span class="n">res_remain</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">),]</span><span class="w">
+
+</span><span class="c1"># Make a single dataframe with ordered rows</span><span class="w">
+</span><span class="n">all_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rbind</span><span class="p">(</span><span class="n">res_up</span><span class="p">,</span><span class="w"> </span><span class="n">res_down</span><span class="p">,</span><span class="w"> </span><span class="n">res_remain</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Write all data as a csv</span><span class="w">
+</span><span class="n">cat</span><span class="p">(</span><span class="s2">"This table shows the differential expression results for all genes when comparing Sox8 overexpression and control samples (Sox8 - Control)
+Reads are aligned to Galgal6 \n
+Statistics:
+Normalised count: read counts adjusted for library size
+pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
+padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n"</span><span class="p">,</span><span class="w">
+    </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Supplementary_2.csv"</span><span class="p">))</span><span class="w">
+</span><span class="n">write.table</span><span class="p">(</span><span class="n">all_dat</span><span class="p">,</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Supplementary_2.csv"</span><span class="p">),</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NA'</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s2">","</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+</details>
+</br>
+</br>
+<p>Plot sample-sample distances, PC plot and correlogram to show relationship between samples</p>
+<details><summary>Code</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># To prevent the highest expressed genes from dominating when clustering we need to rlog (regularised log) transform the data</span><span class="w">
+</span><span class="n">rld</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rlog</span><span class="p">(</span><span class="n">deseq</span><span class="p">,</span><span class="w"> </span><span class="n">blind</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Plot sample correlogram</span><span class="w">
+</span><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"SampleCorrelogram.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">17</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">17</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
+</span><span class="n">corrgram</span><span class="o">::</span><span class="n">corrgram</span><span class="p">(</span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)),</span><span class="w"> </span><span class="n">order</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">lower.panel</span><span class="o">=</span><span class="n">corrgram</span><span class="o">::</span><span class="n">panel.cor</span><span class="p">,</span><span class="w">
+                   </span><span class="n">upper.panel</span><span class="o">=</span><span class="n">corrgram</span><span class="o">::</span><span class="n">panel.pts</span><span class="p">,</span><span class="w"> </span><span class="n">text.panel</span><span class="o">=</span><span class="n">corrgram</span><span class="o">::</span><span class="n">panel.txt</span><span class="p">,</span><span class="w">
+                   </span><span class="n">main</span><span class="o">=</span><span class="s2">"Correlogram of rlog sample expression"</span><span class="p">,</span><span class="w"> </span><span class="n">cor.method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'pearson'</span><span class="p">)</span><span class="w">
+</span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
+
+
+</span><span class="c1"># Plot sample distance heatmap</span><span class="w">
+</span><span class="n">sample_dists</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="n">t</span><span class="p">(</span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)))</span><span class="w">
+
+</span><span class="n">sampleDistMatrix</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.matrix</span><span class="p">(</span><span class="n">sample_dists</span><span class="p">)</span><span class="w">
+</span><span class="n">rownames</span><span class="p">(</span><span class="n">sampleDistMatrix</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste</span><span class="p">(</span><span class="n">colnames</span><span class="p">(</span><span class="n">rld</span><span class="p">))</span><span class="w">
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">sampleDistMatrix</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste</span><span class="p">(</span><span class="n">colnames</span><span class="p">(</span><span class="n">rld</span><span class="p">))</span><span class="w">
+</span><span class="n">colours</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="n">rev</span><span class="p">(</span><span class="n">brewer.pal</span><span class="p">(</span><span class="m">9</span><span class="p">,</span><span class="w"> </span><span class="s2">"Blues"</span><span class="p">)))(</span><span class="m">255</span><span class="p">)</span><span class="w">
+
+</span><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"SampleDist.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
+</span><span class="n">pheatmap</span><span class="p">(</span><span class="n">sampleDistMatrix</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colours</span><span class="p">)</span><span class="w">
+</span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
+
+</span><span class="c1"># Plot sample PCA</span><span class="w">
+</span><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"SamplePCA.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
+</span><span class="n">plotPCA</span><span class="p">(</span><span class="n">rld</span><span class="p">,</span><span class="w"> </span><span class="n">intgroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Group"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">plot_colours</span><span class="o">$</span><span class="n">Group</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="n">aspect.ratio</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w">
+        </span><span class="n">panel.background</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_rect</span><span class="p">(</span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"black"</span><span class="p">))</span><span class="w">
+</span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
+
+</span></code></pre></div></div>
+</br>
+</details>
+</br>
+<div class="tab">
+  <button class="tablinks" style="display: block;" onclick="openTab(event, 'Sample Correlogram')">Sample Correlogram</button>
+  <button class="tablinks" onclick="openTab(event, 'Sample-Sample Distance')">Sample-Sample Distance</button>
+  <button class="tablinks" onclick="openTab(event, 'Sample PCA')">Sample PCA</button>
+</div>
+<div id="Sample Correlogram" class="tabcontent">
+  <img src="/assets/output/NF-downstream_analysis/sox8_dea/output/SampleCorrelogram.png">
+</div>
+<div id="Sample-Sample Distance" class="tabcontent">
+  <img src="/assets/output/NF-downstream_analysis/sox8_dea/output/SampleDist.png">
+</div>
+<div id="Sample PCA" class="tabcontent">
+  <img src="/assets/output/NF-downstream_analysis/sox8_dea/output/SamplePCA.png">
+</div>
+</br>
+</br>
+<p>Subset differentially expressed genes (adjusted p-value &lt; 0.05, absolute log2FC &gt; 1.5)</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res_sub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">padj</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1.5</span><span class="p">),</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="n">res_sub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_sub</span><span class="p">[</span><span class="n">order</span><span class="p">(</span><span class="o">-</span><span class="n">res_sub</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">),]</span><span class="w">
+</span></code></pre></div></div>
+</br>
+<p>Plot heatmap of differentially expressed genes</p>
+<details><summary>Code</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"sox8_oe_hm.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">21</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
+</span><span class="n">pheatmap</span><span class="p">(</span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)[</span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub</span><span class="p">),],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"#191d73"</span><span class="p">,</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="s2">"#ed7901"</span><span class="p">))(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">),</span><span class="w"> </span><span class="n">cluster_rows</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">show_rownames</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w">
+         </span><span class="n">show_colnames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">cluster_cols</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">annotation_col</span><span class="o">=</span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">colData</span><span class="p">(</span><span class="n">deseq</span><span class="p">)[</span><span class="s2">"Group"</span><span class="p">]),</span><span class="w">
+         </span><span class="n">annotation_colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_colours</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"row"</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">cellheight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span><span class="p">,</span><span class="w"> </span><span class="n">cellwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">75</span><span class="p">)</span><span class="w">
+</span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
+
+</span></code></pre></div></div>
+</details>
+<p><img src="/assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_hm.png" alt="" /></p>
+</br>
+<p>Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981')</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Get biomart GO annotations for TFs</span><span class="w">
+</span><span class="n">ensembl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">useMart</span><span class="p">(</span><span class="s2">"ensembl"</span><span class="p">,</span><span class="n">dataset</span><span class="o">=</span><span class="s2">"ggallus_gene_ensembl"</span><span class="p">)</span><span class="w">
+</span><span class="n">TF_subset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getBM</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s2">"ensembl_gene_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"go_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"name_1006"</span><span class="p">,</span><span class="w"> </span><span class="s2">"namespace_1003"</span><span class="p">),</span><span class="w">
+                   </span><span class="n">filters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'ensembl_gene_id'</span><span class="p">,</span><span class="w">
+                   </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub</span><span class="p">),</span><span class="w">
+                   </span><span class="n">mart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ensembl</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># subset genes based on transcription factor GO terms</span><span class="w">
+</span><span class="n">TF_subset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">TF_subset</span><span class="o">$</span><span class="n">ensembl_gene_id</span><span class="p">[</span><span class="n">TF_subset</span><span class="o">$</span><span class="n">go_id</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s1">'GO:0003700'</span><span class="p">,</span><span class="w"> </span><span class="s1">'GO:0043565'</span><span class="p">,</span><span class="w"> </span><span class="s1">'GO:0000981'</span><span class="p">)]</span><span class="w">
+
+</span><span class="n">res_sub_TF</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_sub</span><span class="p">[</span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">TF_subset</span><span class="p">,]</span><span class="w">
+</span></code></pre></div></div>
+</br>
+<p>Generate csv for raw counts, normalised counts, and differential expression output for transcription factors</p>
+<details><summary>Code</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># subset TFs from all_dat</span><span class="w">
+</span><span class="n">all_dat_TF</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_dat</span><span class="p">[</span><span class="n">all_dat</span><span class="o">$</span><span class="n">gene_id</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub_TF</span><span class="p">),]</span><span class="w">
+
+</span><span class="n">cat</span><span class="p">(</span><span class="s2">"This table shows differentially expressed (absolute FC &gt; 1.5 and padj (FDR) &lt; 0.05) transcription factors between Sox8 overexpression and control samples (Sox8 - Control)
+Reads are aligned to Galgal6 \n
+Statistics:
+Normalised count: read counts adjusted for library size
+pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
+padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n"</span><span class="p">,</span><span class="w">
+    </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Supplementary_3.csv"</span><span class="p">))</span><span class="w">
+</span><span class="n">write.table</span><span class="p">(</span><span class="n">all_dat_TF</span><span class="p">,</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Supplementary_3.csv"</span><span class="p">),</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NA'</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s2">","</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+</details>
+</br>
+<p>Plot heatmap for differentially expressed transcription factors</p>
+<details><summary>Code</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rld.plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)</span><span class="w">
+</span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_name</span><span class="p">[</span><span class="n">match</span><span class="p">(</span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">),</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_id</span><span class="p">)]</span><span class="w">
+
+</span><span class="c1"># plot DE TFs</span><span class="w">
+</span><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"sox8_oe_TFs_hm.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
+</span><span class="n">pheatmap</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">[</span><span class="n">res_sub_TF</span><span class="o">$</span><span class="n">gene_name</span><span class="p">,],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"#191d73"</span><span class="p">,</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="s2">"#ed7901"</span><span class="p">))(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">),</span><span class="w"> </span><span class="n">cluster_rows</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">show_rownames</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w">
+</span><span class="n">show_colnames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">cluster_cols</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w">
+</span><span class="n">annotation_col</span><span class="o">=</span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">col_data</span><span class="p">[</span><span class="s2">"Group"</span><span class="p">]),</span><span class="w"> </span><span class="n">annotation_colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_colours</span><span class="p">,</span><span class="w">
+</span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"row"</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Sox8OE enriched TFs (logFC &gt; 1.5, padj = 0.05)"</span><span class="p">,</span><span class="w"> </span><span class="n">border_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w">
+</span><span class="n">cellheight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">cellwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">75</span><span class="p">)</span><span class="w">
+</span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+</details>
+<p><img src="/assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_TFs_hm.png" alt="" /></p>
+
+</div>
+</div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script src="/public/js/script.js"></script>
+  </body>
+</html>

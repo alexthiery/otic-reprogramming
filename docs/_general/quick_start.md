@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Quick Start
-order: 2
+order: 1
 ---
 
 <br/>
@@ -208,7 +208,7 @@ nextflow run nf-core/rnaseq \
 
 ### Smartseq2 single cell RNAseq alignment
 
-Our Smartseq2 single cell RNAseq data was aligned using a custom DSL2 Nextflow pipeline. Details of the pipeline processes can be found [here]({{ site.baseurl }}{% link _docs/smartseq2_alignment.md %}).
+Our Smartseq2 single cell RNAseq data was aligned using a custom DSL2 Nextflow pipeline. Details of the pipeline processes can be found [here]({{ site.baseurl }}{% link _general/smartseq2_alignment.md %}).
 
 As with the nf-core pipelines above, our custom smartseq2 alignment pipeline passes the sample fastqs via a samplesheet csv. An example samplesheet can be found [here](https://github.com/alexthiery/otic-reprogramming/blob/master/NF-smartseq2_alignment/crick_samplesheet.csv).
 

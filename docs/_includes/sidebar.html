@@ -46,39 +46,35 @@
     <p>{{ site.description }}</p>
   </div>
 
+  <!-- sidebar tabs -->
 
-<!-- sidebar tabs -->
-  <nav class="sidebar-nav">
-    <a class="sidebar-nav-item{% if page.url == site.baseurl %} active{% endif %}" href="{{ site.baseurl }}/">Home</a>
-
-    {% assign pages_list = site.docs | sort: 'order' %}
-    {% for page in pages_list %}
-      {% if page.title != null %}
-        {% if page.layout == "page" %}
-          <a class="sidebar-nav-item" href="{{ site.baseurl }}{{page.url}}">{{ page.title }}</a>
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-
-
-    <!-- <ul>
-      {% assign grouped = site.docs | group_by: 'category' %}
-      {% for group in grouped %}
-        <li class="nav-item top-level {% if group.name == page.category %}current{% endif %}">
-          {% assign items = group.items | sort: 'order' %}
-          <a href="{{ site.baseurl }}{{ items.first.url }}">{{ group.name }}</a>
-          <ul>
-            {% for item in items %}
-              <li class="nav-item {% if item.url == page.url %}current{% endif %}"><a href="{{ site.baseurl }}{{ item.url }}">{{ item.title }}</a></li>
-            {% endfor %}
-          </ul>
-        </li>
+  {% assign pages_list = site.general | sort: 'order' %} {% for page in
+  pages_list %} {% if page.title != null %} {% if page.layout == "page" %}
+  <a class="sidebar-nav-item" href="{{ site.baseurl }}{{page.url}}"
+    >{{ page.title }}</a
+  >
+  {% endif %} {% endif %} {% endfor %} {% assign grouped = site.downstream |
+  group_by: 'category' %} {% for group in grouped %}
+  <li class="sidebar-nav-item">
+    {% assign items = group.items | sort: 'order' %}
+    <a href="{{ site.baseurl }}{{ items.first.url }}">{{ group.name }}</a>
+    <ul>
+      {% for item in items %}
+      <li class="sidebar-nav-sub-item">
+        <a href="{{ site.baseurl }}{{ item.url }}">{{ item.title }}</a>
+      </li>
       {% endfor %}
-    </ul> -->
+    </ul>
+  </li>
+  {% endfor %}
 
-    <!-- <a class="sidebar-nav-item" href="{{ site.baseurl }}/_docs/getting_started.md">Getting Started</a> -->
-    <a class="sidebar-nav-item" href="{{ site.github.repo }}">GitHub repository</a>
-    <a class="sidebar-nav-item" href="{{ site.github.repo }}/archive/master.zip">Download</a>
+  <!-- <a class="sidebar-nav-item" href="{{ site.baseurl }}/_docs/getting_started.md">Getting Started</a> -->
+  <a class="sidebar-nav-item" href="{{ site.github.repo }}"
+    >GitHub repository</a
+  >
+  <a class="sidebar-nav-item" href="{{ site.github.repo }}/archive/master.zip"
+    >Download</a
+  >
 
   <div class="sidebar-item">
     <p>&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p>

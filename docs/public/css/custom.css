@@ -90,3 +90,25 @@ details > summary {
   cursor: pointer;
   list-style: none;
 }
+
+.sidebar-nav-sub-item {
+  display: none;
+}
+
+li.sidebar-nav-item:hover,
+li.sidebar-nav-item:focus {
+  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  margin-bottom: 0rem;
+}
+
+li.sidebar-nav-item:hover .sidebar-nav-sub-item {
+  display: block;
+}
+/* 
+.sidebar-nav-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+} */
