@@ -22,7 +22,11 @@ In order to reproduce our analysis, you will need to:
 
 ---
 
+<br/>
+
 ## Download data<a name="download_data"></a>
+
+<br/>
 
 To download the Galgal6 genome from Ensembl, run:
 
@@ -40,9 +44,13 @@ Once the genome files have been downloaded, they need to be unzipped before runn
 
 **ADD SEQUENCING DATA DOWNLOAD PATHS**
 
+---
+
 <br/>
 
 ## Nextflow configuration file<a name="config"></a>
+
+<br/>
 
 Configuration properties and file paths are passed to Nextflow via configuration files.
 
@@ -92,7 +100,11 @@ After you have saved your custom configuration file, you are ready to align the 
 
 When running the nf-core alignments, the pipeline may be interupted as the relevant docker images are downloaded. If this happens, simply re-run the shell script and the pipeline will continue from where it ended.
 
+<br/>
+
 ### ChIPseq alignment
+
+<br/>
 
 Our ChIPseq data was aligned using the nf-core ChIPseq [v1.2.0](https://nf-co.re/ChIPseq/1.2.0/usage) Nextflow pipeline.
 
@@ -122,6 +134,8 @@ nextflow run nf-core/chipseq \
 
 ### ATACseq alignment
 
+<br/>
+
 Our ATACseq data was aligned using the nf-core ATACseq [v1.2.0](https://nf-co.re/ATACseq/1.2.0/usage) Nextflow pipeline.
 
 Sample fastq paths are provided via a samplesheet csv. The template csv used to run this analysis can be found [here](https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ATAC_alignment/crick_samplesheet.csv).
@@ -149,6 +163,8 @@ nextflow run nf-core/atacseq \
 <br/>
 
 ### Bulk RNAseq alignment
+
+<br/>
 
 Our bulk RNAseq data were aligned using the nf-core RNAseq [v2.0](https://nf-co.re/RNAseq/2.0/usage) Nextflow pipeline.
 
@@ -210,6 +226,8 @@ nextflow run nf-core/rnaseq \
 
 ### Smartseq2 single cell RNAseq alignment
 
+<br/>
+
 Our Smartseq2 single cell RNAseq data was aligned using a custom DSL2 Nextflow pipeline. Details of the pipeline processes can be found [here]({{ site.baseurl }}{% link _general/smartseq2_alignment.md %}).
 
 As with the nf-core pipelines above, our custom smartseq2 alignment pipeline passes the sample fastqs via a samplesheet csv. An example samplesheet can be found [here](https://github.com/alexthiery/otic-reprogramming/blob/master/NF-smartseq2_alignment/crick_samplesheet.csv).
@@ -233,6 +251,8 @@ nextflow run ./NF-smartseq2_alignment/main.nf \
 <br/>
 
 ### Downstream analysis<a name="downstream"></a>
+
+<br/>
 
 We have built a custom Nextflow pipeline to integrate the outputs from the separate alignments.
 

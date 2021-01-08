@@ -183,7 +183,9 @@
 </ul>
 <p><strong>Important!!!</strong> All shell scripts are to be executed from the base directory of the project!</p>
 <hr />
+<br/>
 <h2 id="download-dataa-namedownloaddataa">Download data<a name="download_data"></a></h2>
+<br/>
 <p>To download the Galgal6 genome from Ensembl, run:</p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync <span class="nt">-av</span> rsync://ftp.ensembl.org/ensembl/pub/release-97/fasta/gallus_gallus/dna/Gallus_gallus.GRCg6a.dna.toplevel.fa.gz &lt;LOCAL_PATH&gt;
 </code></pre></div></div>
@@ -192,8 +194,10 @@
 </code></pre></div></div>
 <p>Once the genome files have been downloaded, they need to be unzipped before running the alignment.</p>
 <p><strong>ADD SEQUENCING DATA DOWNLOAD PATHS</strong></p>
+<hr />
 <br/>
 <h2 id="nextflow-configuration-filea-nameconfiga">Nextflow configuration file<a name="config"></a></h2>
+<br/>
 <p>Configuration properties and file paths are passed to Nextflow via configuration files.</p>
 <p>In order to re-run the alignments and downstream analysis for this project, you will need to create a custom configuration file which contains:</p>
 <ul>
@@ -231,7 +235,9 @@ params <span class="o">{</span>
 <br/>
 <h2 id="sequence-alignmentsa-namealigna">Sequence alignments<a name="align"></a></h2>
 <p>When running the nf-core alignments, the pipeline may be interupted as the relevant docker images are downloaded. If this happens, simply re-run the shell script and the pipeline will continue from where it ended.</p>
+<br/>
 <h3 id="chipseq-alignment">ChIPseq alignment</h3>
+<br/>
 <p>Our ChIPseq data was aligned using the nf-core ChIPseq <a href="https://nf-co.re/ChIPseq/1.2.0/usage">v1.2.0</a> Nextflow pipeline.</p>
 <p>Sample fastq paths are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ChIP_alignment/crick_samplesheet.csv">here</a>.</p>
 <p>After saving the required files, you can run the alignment with the following shell script.</p>
@@ -252,6 +258,7 @@ nextflow run nf-core/chipseq <span class="se">\</span>
 <hr />
 <br/>
 <h3 id="atacseq-alignment">ATACseq alignment</h3>
+<br/>
 <p>Our ATACseq data was aligned using the nf-core ATACseq <a href="https://nf-co.re/ATACseq/1.2.0/usage">v1.2.0</a> Nextflow pipeline.</p>
 <p>Sample fastq paths are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ATAC_alignment/crick_samplesheet.csv">here</a>.</p>
 <p>After saving the required files, you can run the alignment with the following shell script.</p>
@@ -272,6 +279,7 @@ nextflow run nf-core/atacseq <span class="se">\</span>
 <hr />
 <br/>
 <h3 id="bulk-rnaseq-alignment">Bulk RNAseq alignment</h3>
+<br/>
 <p>Our bulk RNAseq data were aligned using the nf-core RNAseq <a href="https://nf-co.re/RNAseq/2.0/usage">v2.0</a> Nextflow pipeline.</p>
 <p>We need to align two separate bulk RNAseq datasets.</p>
 <br/>
@@ -312,6 +320,7 @@ nextflow run nf-core/rnaseq <span class="se">\</span>
 <hr />
 <br/>
 <h3 id="smartseq2-single-cell-rnaseq-alignment">Smartseq2 single cell RNAseq alignment</h3>
+<br/>
 <p>Our Smartseq2 single cell RNAseq data was aligned using a custom DSL2 Nextflow pipeline. Details of the pipeline processes can be found <a href="https://alexthiery.github.io/otic-reprogramming/general/smartseq2_alignment/">here</a>.</p>
 <p>As with the nf-core pipelines above, our custom smartseq2 alignment pipeline passes the sample fastqs via a samplesheet csv. An example samplesheet can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-smartseq2_alignment/crick_samplesheet.csv">here</a>.</p>
 <p>As we have individual fastq files for each cell, it would be cumbersome to list each file individually. Instead we can pass an entire sample fastq directory which is then enumerated by a custom Nextflow process. For this to work, only the paths in column 2 ($data1) in the samplesheet csv should be edited.</p>
@@ -327,6 +336,7 @@ nextflow run ./NF-smartseq2_alignment/main.nf <span class="se">\</span>
 <hr />
 <br/>
 <h3 id="downstream-analysisa-namedownstreama">Downstream analysis<a name="downstream"></a></h3>
+<br/>
 <p>We have built a custom Nextflow pipeline to integrate the outputs from the separate alignments.</p>
 <p>After aligning the data, you will need to create a samplesheet csv containing the paths to all of the alignment output folders. You can find an example of this <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-downstream_analysis/crick_samplesheet.csv">here</a>.</p>
 <p>To run the integrated downstream analysis execute the following shell script.</p>
