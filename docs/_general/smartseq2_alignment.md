@@ -1,5 +1,9 @@
 ---
 layout: page
-title: Smartseq2 Alignment
+label: SmartSeq2 alignment
 order: 2
 ---
+
+## Custom SmartSeq2 alignment Nextflow pipeline
+
+</br>

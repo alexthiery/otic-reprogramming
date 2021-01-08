@@ -1,9 +1,13 @@
 ---
 layout: page
-title: Sox8 DEA
+label: Sox8 DEA
 category: Downstream analysis
 order: 4
 ---
+
+## Sox8 over-expression differential expression analysis
+
+</br>
 
 Automatic switch for running pipeline through Nextflow or interactively in Rstudio
 

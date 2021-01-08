@@ -1,9 +1,13 @@
 ---
 layout: page
-title: SmartSeq2 analysis
+label: SmartSeq2 scRNAseq
 category: Downstream analysis
 order: 3
 ---
+
+## SmartSeq2 scRNAseq analysis
+
+</br>
 
 Automatic switch for running pipeline through Nextflow or interactively in Rstudio
 

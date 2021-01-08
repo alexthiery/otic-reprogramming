@@ -1,8 +1,10 @@
 ---
 layout: page
-title: Quick Start
+label: Quick start
 order: 1
 ---
+
+## Quick start
 
 <br/>
 
@@ -247,3 +249,5 @@ nextflow run ./NF-downstream_analysis/main.nf \
   --outdir output/NF-downstream_analysis \
   -resume
 ```
+
+If you would like to interactively carry out downstream anlysis click [here]({{site.baseurl}}/downstream/downstream_intro).

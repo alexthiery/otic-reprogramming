@@ -48,14 +48,14 @@
 
   <!-- sidebar tabs -->
 
-  <a class="sidebar-nav-item" href="{{ site.url }}">Home</a>
+  <a class="sidebar-nav-item" href="{{ site.baseurl }}/">Home</a>
 
   <!-- add tabs automatically from downstream and general collections-->
 
   {% assign pages_list = site.general | sort: 'order' %} {% for page in
-  pages_list %} {% if page.title != null %} {% if page.layout == "page" %}
+  pages_list %} {% if page.label != null %} {% if page.layout == "page" %}
   <a class="sidebar-nav-item" href="{{ site.baseurl }}{{page.url}}"
-    >{{ page.title }}</a
+    >{{ page.label }}</a
   >
   {% endif %} {% endif %} {% endfor %} {% assign grouped = site.downstream |
   group_by: 'category' %} {% for group in grouped %}
@@ -65,7 +65,7 @@
     <ul>
       {% for item in items %}
       <li class="sidebar-nav-sub-item">
-        <a href="{{ site.baseurl }}{{ item.url }}">{{ item.title }}</a>
+        <a href="{{ site.baseurl }}{{ item.url }}">{{ item.label }}</a>
       </li>
       {% endfor %}
     </ul>

@@ -11,7 +11,7 @@
   />
 
   <title>
-     SmartSeq2 analysis &middot; Otic reprogramming 
+     Smartseq2_downstream &middot; Otic reprogramming 
   </title>
 
   
@@ -99,17 +99,17 @@
 
   <!-- sidebar tabs -->
 
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming">Home</a>
+  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/">Home</a>
 
   <!-- add tabs automatically from downstream and general collections-->
 
      
   <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/general/quick_start/"
-    >Quick Start</a
+    >Quick start</a
   >
       
   <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/general/smartseq2_alignment/"
-    >Smartseq2 Alignment</a
+    >SmartSeq2 alignment</a
   >
       
   <li class="sidebar-nav-item">
@@ -126,7 +126,7 @@
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/smartseq2_downstream/">SmartSeq2 analysis</a>
+        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/smartseq2_downstream/">SmartSeq2 scRNAseq</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
@@ -167,8 +167,11 @@
       </div>
 
       <div class="container content"><div class="page">
-  <h1 class="page-title">SmartSeq2 analysis</h1>
-  <p>Automatic switch for running pipeline through Nextflow or interactively in Rstudio</p>
+  <!-- hide auto title generation -->
+  <!-- <h1 class="page-title">Smartseq2_downstream</h1> -->
+  <h2 id="smartseq2-scrnaseq-analysis">SmartSeq2 scRNAseq analysis</h2>
+</br>
+<p>Automatic switch for running pipeline through Nextflow or interactively in Rstudio</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">getopt</span><span class="p">)</span><span class="w">
 </span><span class="n">spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="w">
   </span><span class="s1">'runtype'</span><span class="p">,</span><span class="w"> </span><span class="s1">'l'</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="s2">"character"</span><span class="p">,</span><span class="w">

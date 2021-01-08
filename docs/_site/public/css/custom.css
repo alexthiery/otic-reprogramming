@@ -106,9 +106,3 @@ li.sidebar-nav-item:focus {
 li.sidebar-nav-item:hover .sidebar-nav-sub-item {
   display: block;
 }
-/* 
-.sidebar-nav-item {
-  display: block;
-  padding: 0.5rem 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-} */

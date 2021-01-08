@@ -1,9 +1,13 @@
 ---
 layout: page
-title: Lmx1a DEA
+label: Lmx1a DEA
 category: Downstream analysis
 order: 2
 ---
+
+## Lmx1a_E1 vs Sox3U3 differential expression analysis
+
+</br>
 
 Automatic switch for running pipeline through Nextflow or interactively in Rstudio
 
