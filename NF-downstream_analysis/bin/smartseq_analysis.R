@@ -164,6 +164,8 @@ m$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_
 
 
 #' # Transcriptomic features
+
+# change plot folder
 curr_plot_folder = paste0(plot_path, "all_cells/")
 dir.create(curr_plot_folder)
 
@@ -223,13 +225,16 @@ bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "Pax3", "SALL1", "ETS1", "TWIST1
 
 m2$dR$genemodules = Filter(function(x){any(bait_genes %in% x)}, m2$topCorr_DR$genemodules)
 
-
-# cluster into 5 clusters 
-clust.colors <- c('#da70d6', '#c71585', '#b0c4de', '#afeeee', '#5f9ea0')
-#' Plot final clustering of all cells
+# cluster into 5 clusters
 m2$identifyCellClusters(method='hclust', clust_name="Mansel", used_genes="dR.genemodules", data_status='Normalized', numclusters=5)
 
+# set cluster colours
+clust.colors <- c('#da70d6', '#c71585', '#b0c4de', '#afeeee', '#5f9ea0')
+
+# read in GFP counts
 gfp_counts = read.table(file=paste0(gfp_counts, 'gfpData.csv'), header=TRUE, check.names=FALSE)
+
+#' Plot final clustering of all cells
 
 m2$plotGeneModules(
   basename='AllCellsManualGMselection',
@@ -389,8 +394,8 @@ graphics.off()
 curr_plot_folder = paste0(plot_path, "oep_subset/")
 dir.create(curr_plot_folder)
 
-#' Blue cell cluster is composed of non-oep derived populations (it is also mostly comprising PAX2 negative)
-#' We exclude these cells from the analysis (cluster ids, red: 1, blue: 2, green: 3, purple: 4...)
+# Clusters 3-5 are composed of non-oep derived populations (they are also mostly PAX2 negative)
+# We exclude these cells from the subsequent analysis
 m_oep = m2$copy()
 m_oep$excludeCellFromClusterIds(cluster_ids=c(3:5), used_clusters='Mansel', data_status='Normalized')
 
@@ -435,9 +440,6 @@ m_oep$plotGeneModules(
   extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
 )
 
-# add gene modules txt
-m_oep$writeGeneModules(folder_path = curr_plot_folder, basename='OEP_GMselection', gms='topCorr_DR.genemodules')
-
 #' Manual feature selection
 bait_genes = c("HOMER2", "LMX1A", "SOHO-1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
 
@@ -465,22 +467,9 @@ m_oep$plotGeneModules(
   extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
 )
 
-m_oep$plotGeneModules(
-  curr_plot_folder = curr_plot_folder,
-  basename='OEP_GMselection_nolab',
-  displayed.gms = 'topCorr_DR.genemodules.selected',
-  displayed.geneset='',
-  use.dendrogram='Mansel',
-  file_settings=list(list(type='pdf', width=10, height=5)),
-  data_status='Normalized',
-  gene_transformations=c('log', 'logscaled'),
-  extra_colors=cbind(
-    m_oep$cellClusters$Mansel$cell_ids %>% clust.colors[.]
-  ),
-  display.legend = FALSE,
-  pretty.params=list("size_factor"=100, "ngenes_per_lines" = 6, "side.height.fraction"=0.5),
-  extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage_cols))
-)
+# add gene modules txt
+m_oep$writeGeneModules(folder_path = curr_plot_folder, basename='OEP_GMselection', gms='topCorr_DR.genemodules')
+
 
 ########################################################################################################################
 # OEP tSNE plots
