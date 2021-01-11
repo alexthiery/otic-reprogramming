@@ -78,9 +78,18 @@ h6 {
  * Center the page content.
  */
 
-@media (min-width: 60em) {
+/* max-width can be set to different values depending on the display size! */
+.container {
+  max-width: 28rem;
+}
+@media (min-width: 1250px) {
   .container {
-    max-width: 55rem;
+    max-width: 48rem;
+  }
+}
+@media (min-width: 2500px) {
+  .container {
+    max-width: 58rem;
   }
 }
 
