@@ -3,11 +3,11 @@ title: Otic reprogramming
 tagline: "Buzzi et al. 2021"
 description: 'Documentation for the Buzzi et al. 2021 <a href="https://github.com/alexthiery/otic-reprogramming" target="_blank">Github repository</a>.'
 
-# url: "http://localhost:3000"
-# baseurl: ""
+url: "http://localhost:3000"
+baseurl: ""
 
-url: "https://alexthiery.github.io/otic-reprogramming"
-baseurl: "https://alexthiery.github.io/otic-reprogramming"
+# url: "https://alexthiery.github.io/otic-reprogramming"
+# baseurl: "https://alexthiery.github.io/otic-reprogramming"
 
 permalink: pretty
 repository: alexthiery/otic-reprogramming.github.io
@@ -23,7 +23,7 @@ author:
 
 lab:
   homepage: https://www.kcl.ac.uk/people/andrea-streit
-  publication: http://orcid.org/0000-0002-5814-4977
+  publication: https://github.com/alexthiery/otic-reprogramming
 
   # Dependencies
 markdown: CommonMarkGhPages

@@ -848,3 +848,73 @@ seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 15, width = 22, res = 4
 </div>
 
 </details>
+
+---
+
+</br>
+
+### Pseudotime using [Monocle2](http://cole-trapnell-lab.github.io/monocle-release/docs/)
+
+<details><summary>Expand</summary>
+<p>
+
+In order to study the process of differentiation from OEP to Otic and Epibranchial lineages, we order the cells in pseudotime using our subset gene modules identified as important for this process.
+
+```R
+curr_plot_folder = paste0(plot_path, "monocle_plots/")
+dir.create(curr_plot_folder)
+
+# gene modules for biological process of interest
+monocle.input_dims = unlist(m_oep$topCorr_DR$genemodules.selected)
+
+# input Antler data into Monocle
+df_pheno = pData(m_oep$expressionSet)
+df_feature = cbind(fData(m_oep$expressionSet), 'gene_short_name'=fData(m_oep$expressionSet)$current_gene_names) # "gene_short_name" may be required by monocle
+rownames(df_feature) <- df_feature$gene_short_name
+
+HSMM <- monocle::newCellDataSet(
+  as.matrix(m_oep$getReadcounts(data_status='Normalized')),
+  phenoData = new("AnnotatedDataFrame", data = df_pheno),
+  featureData = new('AnnotatedDataFrame', data = df_feature),
+  lowerDetectionLimit = .1,
+  expressionFamily=VGAM::tobit()
+)
+
+# Dimensionality reduction and order cells along pseudotime from earliest "State" (ie DDRTree branch)
+HSMM <- estimateSizeFactors(HSMM)
+HSMM <- setOrderingFilter(HSMM, monocle.input_dims)
+HSMM <- reduceDimension(HSMM, max_components = 2, method = 'DDRTree')
+HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
+```
+
+Plot cell stage over projected pseudotime coordinates
+
+```R
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'), height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = stage_cols) +
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Developmental stage') +
+  theme(plot.title = element_text(hjust = 0.5))
+graphics.off()
+```
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Monocle_DDRTree_samples')">Pseudotime: developmental stage</button>
+  <button class="tablinks" onclick="openTab(event, 'Monocle_DDRTree_Clusters')">Pseudotime: clusters</button>
+
+</div>
+
+<div id="Monocle_DDRTree_samples" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_samples.png">
+</div>
+<div id="Monocle_DDRTree_Clusters" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_Clusters.png">
+</div>
+
+</br>
+
+</details>
