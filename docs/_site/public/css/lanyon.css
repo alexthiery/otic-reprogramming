@@ -78,17 +78,9 @@ h6 {
  * Center the page content.
  */
 
-.container {
-  max-width: 28rem;
-}
-@media (min-width: 38em) {
+@media (min-width: 60em) {
   .container {
-    max-width: 32rem;
-  }
-}
-@media (min-width: 56em) {
-  .container {
-    max-width: 38rem;
+    max-width: 55rem;
   }
 }
 
@@ -556,4 +548,11 @@ a.pagination-item:hover {
 /* Only one tweak for a reverse layout */
 .layout-reverse.sidebar-overlay #sidebar-checkbox:checked ~ .sidebar {
   box-shadow: -0.25rem 0 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* scrollable code blocks */
+pre.highlight {
+  word-wrap: normal;
+  overflow-x: auto;
+  white-space: pre;
 }

@@ -880,41 +880,765 @@ HSMM <- monocle::newCellDataSet(
   expressionFamily=VGAM::tobit()
 )
 
-# Dimensionality reduction and order cells along pseudotime from earliest "State" (ie DDRTree branch)
+# Dimensionality reduction and order cells along pseudotime
 HSMM <- estimateSizeFactors(HSMM)
 HSMM <- setOrderingFilter(HSMM, monocle.input_dims)
 HSMM <- reduceDimension(HSMM, max_components = 2, method = 'DDRTree')
+HSMM <- orderCells(HSMM)
+
+# Root cells to earliest "State" (ie DDRTree branch) - which is stage 8
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 ```
 
-Plot cell stage over projected pseudotime coordinates
+Plot gradient gene expression on Monocle embeddings
 
 ```R
-png(paste0(curr_plot_folder, 'Monocle_DDRTree_samples.png'), height = 15, width = 15, family = 'Arial', units = 'cm', res = 400)
+curr_plot_folder = paste0(plot_path, "monocle_plots/gradient_plots/")
+dir.create(curr_plot_folder)
+
+for(gn in gene_list){
+  png(paste0(curr_plot_folder, "monocle_gradient_", gn, '.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
+  print(ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                          'colour_by' = as.integer(1+100*log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]) / max(log10(1+m_oep$getReadcounts(data_status='Normalized')[gn,]))),
+                          check.names = FALSE),
+               aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+          geom_point() +
+          scale_color_gradient(low = "grey", high = "darkmagenta") +
+          theme_classic() +
+          theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+          ggtitle(gn) +
+          theme(plot.title = element_text(hjust = 0.5)))
+  graphics.off()
+}
+```
+
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_GOI.zip">Download
+all Monocle gradient plots</a>
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'monocle_SOX8')">Sox2</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_PAX2')">Pax2</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_TFAP2E')">TFAP2E</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_SIX1')">Six1</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_ZBTB16')">ZBTB16</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_FOXG1')">FOXG1</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_PDLIM1')">PDLIM1</button>
+
+</div>
+
+<div id="monocle_SOX8" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SOX8.png">
+</div>
+
+<div id="monocle_PAX2" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PAX2.png">
+</div>
+
+<div id="monocle_TFAP2E" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_TFAP2E.png">
+</div>
+
+<div id="monocle_SIX1" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SIX1.png">
+</div>
+
+<div id="monocle_ZBTB16" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_ZBTB16.png">
+</div>
+
+<div id="monocle_FOXG1" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_FOXG1.png">
+</div>
+
+<div id="monocle_PDLIM1" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PDLIM1.png">
+</div>
+
+</br>
+
+Plot Monocle co-expression plots
+
+```R
+curr_plot_folder = paste0(plot_path, "monocle_plots/coexpression/")
+dir.create(curr_plot_folder)
+
+# plot gradient gene co-expression on monocle embeddings
+gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
+lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, monocle_obj = HSMM, gene1 = x[1], gene2 = x[2],
+                                                          plot_folder = curr_plot_folder, height = 15, width = 22, res = 400, units = 'cm', family = 'Arial')})
+```
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'monocle_FOXI3_LMX1A')">FOXI3/LMX1A</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_TFAP2E_LMX1A')">TFAP2E/LMX1A</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_FOXI3_SOX8')">FOXI3/SOX8</button>
+  <button class="tablinks" onclick="openTab(event, 'monocle_TFAP2E_SOX8')">TFAP2E/SOX8</button>
+
+</div>
+
+<div id="monocle_FOXI3_LMX1A" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/FOXI3_LMX1A_co-expression_monocle.png">
+</div>
+
+<div id="monocle_TFAP2E_LMX1A" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_LMX1A_co-expression_monocle.png">
+</div>
+
+<div id="monocle_FOXI3_SOX8" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/FOXI3_SOX8_co-expression_monocle.png">
+</div>
+
+<div id="monocle_TFAP2E_SOX8" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_SOX8_co-expression_monocle.png">
+</div>
+
+</br>
+
+Plot trajectories
+
+```R
+curr_plot_folder = paste0(plot_path, "monocle_plots/")
+
+p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples") +
+  scale_color_manual(values = c('#BBBDC1', '#6B98E9', '#05080D'), name = "cluster")
+p2 = plot_cell_trajectory(HSMM, color_by = "Pseudotime") +
+  scale_color_gradient(low = "#008ABF", high = "#E53F00")
+
+# Plot cell pseudotime
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_trajectories.png'), width=20, height=12, family = 'Arial', units = "cm", res = 400)
+gridExtra::grid.arrange(grobs=list(p1, p2), layout_matrix=matrix(seq(2), ncol=2, byrow=T))
+graphics.off()
+
+
+# Plot cell state
+png(paste0(curr_plot_folder, 'Monocle_DDRTree_State_facet.png'), width=12, height=12, family = 'Arial', units = "cm", res = 400)
+plot_cell_trajectory(HSMM, color_by = "State") +
+  scale_color_manual(values = c( '#48d1cc', '#f55f20', '#dda0dd'), name = "State")
+graphics.off()
+```
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Monocle_DDRTree_trajectories')">Cell pseudotime</button>
+  <button class="tablinks" onclick="openTab(event, 'Monocle_DDRTree_State_facet')">Cell state</button>
+
+</div>
+
+<div id="Monocle_DDRTree_trajectories" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_trajectories.png">
+</div>
+
+<div id="Monocle_DDRTree_State_facet" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_State_facet.png">
+</div>
+
+</br>
+
+Generate a monocle projection plot for each known gene
+
+```R
+curr_plot_folder = paste0(plot_path, "monocle_plots/all_monocle_projections/")
+dir.create(curr_plot_folder)
+
+genes_sel = sort(intersect(
+  getDispersedGenes(m_oep$getReadcounts('Normalized'), -1),
+  getHighGenes(m_oep$getReadcounts('Normalized'), mean_threshold=5)
+))
+
+gene_level = m_oep$getReadcounts("Normalized")[genes_sel %>% .[. %in% m_oep$getGeneNames()],]
+gene_level.2 = t(apply(log(.1+gene_level), 1, function(x){
+  pc_95 = quantile(x, .95)
+  if(pc_95==0){
+    pc_95=1
+  }
+  x <- x/pc_95
+  x[x>1] <- 1
+  as.integer(cut(x, breaks=10))
+}))
+
+for(n in rownames(gene_level.2)){
+  print(n)
+  pdf(paste0(curr_plot_folder, 'Monocle_DDRTree_projection_', n, '.pdf'))
+  plot(t(reducedDimS(HSMM)), pch=16, main=n, xlab="", ylab="", xaxt='n', yaxt='n', asp=1,
+       col=colorRampPalette(c("#0464DF", "#FFE800"))(n = 10)[gene_level.2[n,]]
+  )
+  graphics.off()
+}
+
+system(paste0("zip -rj ", plot_path, "monocle_plots/all_monocle_projections.zip ", curr_plot_folder))
+unlink(curr_plot_folder, recursive=TRUE, force=TRUE)
+```
+
+<a href="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/all_monocle_projections.zip">Download Monocle plots for all known genes</a>
+
+</br>
+
+Plot dotplot for genes along Monocle branches
+
+```R
+curr_plot_folder = paste0(plot_path, "monocle_plots/")
+
+# get cell branch information for dotplot
+cell_branch_data = pData(HSMM)[, "State", drop=F] %>%
+  tibble::rownames_to_column('cellname') %>%
+  dplyr::rename(branch = State) %>%
+  dplyr::mutate(celltype = case_when(
+    branch == "1" ~ "Epib",
+    branch == "2" ~ "Otic",
+    branch == "3" ~ 'OEP'
+  ))
+
+# gather data for dotplot
+dotplot_data <- data.frame(t(m_oep$getReadcounts('Normalized')[gene_list, ]), check.names=F) %>%
+  tibble::rownames_to_column('cellname') %>%
+  tidyr::gather(genename, value, -cellname) %>%
+  dplyr::left_join(cell_branch_data, by="cellname") %>%
+  dplyr::group_by(genename, celltype) %>%
+  # calculate percentage of cells in each cluster expressing gene
+  dplyr::mutate('Proportion of Cells Expressing' = sum(value > 0)/n()) %>%
+  # scale data
+  dplyr::group_by(genename) %>%
+  dplyr::mutate(value = scale(value)) %>%
+  # calculate mean expression
+  dplyr::group_by(genename, celltype) %>%
+  dplyr::mutate('Scaled Average Expression' = mean(value)) %>%
+  dplyr::distinct(genename, celltype, .keep_all=TRUE) %>%
+  dplyr::ungroup()
+
+# order genes for dotplot based on divergent expression in otic and NC lineages
+gene_order <- dotplot_data %>%
+  select(genename, celltype, `Scaled Average Expression`) %>%
+  filter(celltype %in% c('Otic', 'Epib')) %>%
+  tidyr::pivot_wider(names_from = celltype,
+              values_from = `Scaled Average Expression`) %>%
+  dplyr::mutate(order = Otic-Epib) %>%
+  arrange(-order) %>%
+  dplyr::pull(genename)
+
+
+# add gene order to dotplot_data
+dotplot_data <- dotplot_data %>%
+  dplyr::mutate(genename = factor(genename, levels = gene_order))
+
+png(paste0(curr_plot_folder, "m_oep_dotplot.png"), width=24, height=10, family = 'Arial', units = "cm", res = 400)
+ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expressing`, color=`Scaled Average Expression`)) +
+  geom_count() +
+  scale_size_area(max_size=10) +
+  scale_x_discrete(position = "top") + xlab("") + ylab("") +
+  scale_color_gradient(low = "grey90", high = "blue") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0, size=14),
+        axis.text.y = element_text(colour =  c("#48d1cc", "#dda0dd", "#f55f20"), face = 'bold', size = 16),
+        legend.position="bottom", legend.box = "horizontal", plot.margin=unit(c(0,1,0,0),"cm"), legend.text=element_text(size=10), legend.title=element_text(size=12))
+graphics.off()
+```
+
+</br>
+
+Plotting the expression of candidate genes, we can easliy classify the Otic, Epibranchial and OEP branches.
+
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/m_oep_dotplot.png %})
+
+</details>
+
+---
+
+</br>
+
+### Co-expression analysis
+
+<details><summary>Expand</summary>
+<p>
+
+Here we calculate co-expression of key otic and epibranchial markers along each of the Monocle branches. We then test and find that the level of co-expression Otic/Epibranchial markers is higher in the OEP population relative to Otic and Epibranchial branches. This shows that individual OEP cells are co-expressing markers of both lineages - indicative of a bipotent progenenitor population.
+
+First we determine the list of genes used for coexpression analysis.
+
+```R
+otic = c("SOX10", "SOX8", "HOMER2", 'LMX1A')
+epi = c("NELL1", "FOXI3", "PDLIM1", "TFAP2E")
+
+```
+
+For each gene pair we calculate the proportion of cells which express both genes in each Monocle branch.
+
+```R
+# generate gene pairs for coexpression
+comb <- t(combn(c(otic, epi), 2))
+
+# use data cell branch data from dotplots
+coexpression_data = data.frame()
+for(pair in 1:nrow(comb)){
+  if(sum(as.character(comb[pair,]) %in% otic) == 2){comparison = "o-o"}else if(sum(as.character(comb[pair,]) %in% otic) == 1){comparison = "o-e"}else{comparison = "e-e"}
+  newdat = ldply(unique(cell_branch_data$celltype), function(y) {
+    c(sum(colSums(m_oep$getReadcounts(data_status='Normalized')[c(comb[pair,1], comb[pair,2]), cell_branch_data[cell_branch_data$celltype == y, 'cellname']] > 0) == 2)/sum(cell_branch_data$celltype == y),
+      comparison, y)
+  })
+  newdat[,1] <- as.numeric(newdat[,1])
+  coexpression_data = rbind(coexpression_data, newdat)
+}
+
+# rename dataframe columns
+colnames(coexpression_data) = c("value", "comparison", "branch")
+```
+
+We then carry out a non-parametric Kruskal Wallis test to compare the proportions of cells co-expressing pairs of genes in each Monocle branch.
+
+```R
+# test co-expression in OEP lineage and epibranchial/otic branches
+coexpression_stats <- coexpression_data %>%
+  mutate(branch = factor(branch, levels = c("OEP", "Epib", "Otic"))) %>%
+  group_split(comparison)
+
+names(coexpression_stats) <- lapply(coexpression_stats, function(x) as.character(unique(x[["comparison"]])))
+
+# Non parametric kruskal wallis test
+lapply(coexpression_stats, function(x) kruskal.test(value ~ branch, data = x))
+
+# Wilcoxon rank sum test
+lapply(coexpression_stats, function(x) filter(x, branch == 'OEP' | branch == "Otic") %>% wilcox.test(value ~ branch, data = .))
+lapply(coexpression_stats, function(x) filter(x, branch == 'OEP' | branch == "Epib") %>% wilcox.test(value ~ branch, data = .))
+```
+
+We calculate the average proportion of cells co-expressing pairs of genes and plot the output.
+
+```R
+# calculate mean value per group and SD for plotting bar plot
+plot_dat <- coexpression_data %>%
+  dplyr::group_by(branch, comparison) %>%
+  dplyr::summarise(
+    "Proportion of Cells Co-expressing" = mean(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE)
+  ) %>%
+  dplyr::ungroup() %>%
+  group_split(comparison)
+
+# rename dataframes split by comparison
+names(plot_dat) <- lapply(plot_dat, function(x) as.character(unique(x[["comparison"]])))
+
+# bar plots
+oe_plot <- ggplot(plot_dat$`o-e`, aes(x=branch,y=`Proportion of Cells Co-expressing`, fill = branch)) +
+  geom_bar(stat='identity') +
+  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epib" = "#48d1cc", "OEP" = "#dda0dd")) +
+  geom_errorbar(aes(ymin=`Proportion of Cells Co-expressing`-sd, ymax=`Proportion of Cells Co-expressing`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "**",
+              y_position = 0.83, tip_length = 0.02, vjust=0.4) +
+  geom_signif(comparisons=list(c("OEP", "Epib")), annotations = "***",
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(axis.title.x=element_blank(),
+        legend.position="none") +
+  ggtitle("Epib-Otic") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ee_plot <- ggplot(plot_dat$`e-e`, aes(x=branch,y=`Proportion of Cells Co-expressing`, fill = branch)) +
+  geom_bar(stat='identity') +
+  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epib" = "#48d1cc", "OEP" = "#dda0dd")) +
+  geom_errorbar(aes(ymin=`Proportion of Cells Co-expressing`-sd, ymax=`Proportion of Cells Co-expressing`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "**",
+              y_position = 0.83, tip_length = 0.02, vjust=0.4) +
+  geom_signif(comparisons=list(c("OEP", "Epib")), annotations = "*",
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(axis.title.y =element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y = element_blank(),
+        axis.title.x=element_blank(),
+        legend.position="none") +
+  ggtitle("Epib-Epib") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+oo_plot <- ggplot(plot_dat$`o-o`, aes(x=branch,y=`Proportion of Cells Co-expressing`, fill = branch)) +
+  geom_bar(stat='identity') +
+  scale_fill_manual("legend", values = c("Otic" = "#f55f20", "Epib" = "#48d1cc", "OEP" = "#dda0dd")) +
+  geom_errorbar(aes(ymin=`Proportion of Cells Co-expressing`-sd, ymax=`Proportion of Cells Co-expressing`+sd), width=.2,
+                position=position_dodge(.9)) +
+  geom_signif(comparisons=list(c("OEP", "Otic")), annotations = "ns",
+              y_position = 0.83, tip_length = 0.02, vjust=0.4) +
+  geom_signif(comparisons=list(c("OEP", "Epib")), annotations = "**",
+              y_position = 0.8, tip_length = 0.02, vjust=0.4) +
+  ylim(c(0, 0.85)) +
+  theme_classic() +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.line.y=element_blank(),
+        axis.title.x=element_blank(),
+        legend.position="none") +
+  ggtitle("Otic-Otic") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+png(paste0(curr_plot_folder, "coexpression_test.png"), width=20, height=12, family = 'Arial', units = "cm", res = 400)
+plot_grid(oe_plot, ee_plot, oo_plot, align = "hv", nrow = 1, rel_widths = c(1,1,1))
+graphics.off()
+```
+
+From these three plots we can see that the co-expression of Epibranchial and Otic genes is significantly higher in the OEP branch relative to Otic and Epibranchial branches. This is not the case with the co-expression of pairs of Otic genes or pairs of Epibranchial genes.
+
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression_test.png %})
+
+</details>
+
+---
+
+</br>
+
+### Branched expression analysis modeling (BEAM)
+
+<details><summary>Expand</summary>
+<p>
+
+BEAM is used to identify genes with branch dependent expression.
+
+Select genes with high expression and dispersion, and then use BEAM QC to filter and plot.
+
+```R
+
+genes_sel = intersect(
+  getDispersedGenes(m_oep$getReadcounts('Normalized'), -1),
+  getHighGenes(m_oep$getReadcounts('Normalized'), mean_threshold=5)
+)
+
+branch_point_id = 1
+BEAM_res <- BEAM(HSMM[genes_sel, ], branch_point = branch_point_id, cores = m_oep$num_cores)
+
+BEAM_res <- BEAM_res[order(BEAM_res$qval),]
+BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
+
+png(paste0(curr_plot_folder, 'Monocle_Beam.png'), width=20, height=100, family = 'Arial', units = "cm", res = 400)
+beam_hm = plot_genes_branched_heatmap(HSMM[row.names(subset(BEAM_res, qval < .05)),],
+                                      branch_point = branch_point_id,
+                                      num_clusters = 20,
+                                      cores = ncores,
+                                      use_gene_short_name = T,
+                                      show_rownames = T,
+                                      return_heatmap=T,
+                                      branch_colors=c('#dd70dd', '#48d1cc', '#f55f20'),
+                                      branch_labels=c("Epib", 'Otic'))
+graphics.off()
+
+# save beam score to file
+write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(curr_plot_folder, 'beam_scores.csv'), row.names=F)
+```
+
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam.png %})
+
+</br>
+
+Plot BEAM for original favourite genes
+
+```R
+png(paste0(curr_plot_folder, 'Monocle_Beam_knownGenes.png'), width=20, height=25, family = 'Arial', units = "cm", res = 400)
+beam_hm = plot_genes_branched_heatmap(HSMM[m_oep$favorite_genes,],
+                                      branch_point = branch_point_id,
+                                      cores = 1,
+                                      use_gene_short_name = T,
+                                      show_rownames = T,
+                                      return_heatmap=T,
+                                      branch_colors=c('#dd70dd', '#48d1cc', '#f55f20'),
+                                      branch_labels=c("Epib", 'Otic'))
+graphics.off()
+```
+
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam_knownGenes.png %})
+
+</br>
+
+Plot BEAM for selected markers
+
+```R
+beam_gene_list = c(gene_list, 'SOX13', 'TFAP2A', 'GATA3', 'EPHA4', 'DLX5', 'PRDM1', 'PRDM12', 'EYA1', 'EYA2', 'ETV4')
+
+png(paste0(curr_plot_folder, 'Monocle_Beam_selGenes.png'), width=16, height=10, family = 'Arial', units = "cm", res = 400)
+beam_hm = plot_genes_branched_heatmap(HSMM[beam_gene_list,],
+                                      branch_point = branch_point_id,
+                                      cluster_rows=FALSE,
+                                      num_clusters = 4,
+                                      cores = 1,
+                                      use_gene_short_name = T,
+                                      show_rownames = T,
+                                      return_heatmap=T,
+                                      branch_colors=c('#dd70dd', '#48d1cc', '#f55f20'),
+                                      branch_labels=c("Epib", 'Otic'))
+graphics.off()
+```
+
+![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam_selGenes.png %})
+
+</details>
+
+---
+
+</br>
+
+### RNA velocity
+
+<details><summary>Expand</summary>
+<p>
+
+Read in splice counts (loom data) and filter cells and genes remaining in OEP subset.
+
+```R
+curr_plot_folder = paste0(plot_path, "velocyto/")
+dir.create(curr_plot_folder)
+
+# read in loom data, with ensembl ID as rownames instead of gene name
+velocyto_dat <- custom_read_loom(list.files(velocyto_input, pattern = '*.loom', full.names = T))
+
+# change cell names in velocyto dat to match antler cell names
+velocyto_dat <- lapply(velocyto_dat, function(x) {
+  colnames(x) <- gsub(".*:", "", colnames(x))
+  colnames(x) <- gsub("\\..*", "", colnames(x))
+  colnames(x) <- unname(sapply(colnames(x), function(y) ifelse(
+    grepl("ss8-TSS", y),
+    sapply(strsplit(y, split = "_"), function(z){paste0(z[[2]], z[[3]])}),
+    strsplit(y, split = "_")[[1]][[3]])))
+  x
+})
+
+# get gene annotations from antler object
+antler.gene.names <- m_oep$expressionSet@featureData@data
+
+# keep only cells in m_oep
+m_oep_velocyto_dat <- lapply(velocyto_dat,function(x) {
+  x[,colnames(x) %in% names(m_oep$cellClusters$Mansel$cell_ids)]
+})
+
+# keep only genes in cleaned antler dataset and rename genes based on antler names
+m_oep_velocyto_dat <- lapply(m_oep_velocyto_dat, function(x){
+  x <- x[rownames(x) %in% fData(m_oep$expressionSet)$ensembl_gene_id,]
+  rownames(x) <- fData(m_oep$expressionSet)$current_gene_names[match(rownames(x), fData(m_oep$expressionSet)$ensembl_gene_id)]
+  x
+})
+```
+
+Extract count matrices for spliced, unspliced and spanning reads, and calculate RNA velocity
+
+```R
+# exonic read (spliced) expression matrix
+emat <- m_oep_velocyto_dat$spliced
+# intronic read (unspliced) expression matrix
+nmat <- m_oep_velocyto_dat$unspliced
+# spanning read (intron+exon) expression matrix
+smat <- m_oep_velocyto_dat$spanning
+
+# calculate cell velocity
+rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, diagonal.quantiles = TRUE, fit.quantile = 0.05, n.cores = ncores)
+```
+
+Plot RNA velocity on tSNE embeddings for cell clusters
+
+```R
+# get tsne embeddings for m_oep cells
+tsne.embeddings = tsne_embeddings(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, perplexity=perp, pca=FALSE, eta=eta)
+
+# return velocity object to plot with ggplot
+vector_dat <- show.velocity.on.embedding.cor(tsne.embeddings, rvel, n=100, scale='sqrt',
+                               cex=1.5, arrow.scale=8, arrow.lwd=1.5, n.cores = ncores,
+                               show.grid.flow=TRUE, min.grid.cell.mass=0.5,grid.n=20, return.details = TRUE)
+
+# plot vector map on clusters
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_clusters_vector.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_segment(data = as.data.frame(vector_dat$garrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40")
+graphics.off()
+
+# plot cell arrows on clusters
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_clusters_arrows.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=m_oep$cellClusters[['Mansel']]$cell_ids, colours=clust.colors, perplexity=perp, eta=eta) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_segment(data = as.data.frame(vector_dat$arrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40")
+graphics.off()
+```
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'OEP_subset_velocity_clusters_arrows')">Cell clusters: cell arrows</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_subset_velocity_clusters_vector')">Cell clusters: vector map</button>
+</div>
+
+<div id="OEP_subset_velocity_clusters_arrows" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_arrows.png">
+</div>
+
+<div id="OEP_subset_velocity_clusters_vector" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_vector.png">
+</div>
+
+</br>
+
+Plot RNA velocity on tSNE embeddings for developmental stage
+
+```R
+
+# plot vector map on stage
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_stage_vector.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_segment(data = as.data.frame(vector_dat$garrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40")
+graphics.off()
+
+# plot cell arrows on stage
+png(paste0(curr_plot_folder, 'OEP_subset_velocity_stage_arrows.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
+tsne_plot(m_oep, m_oep$topCorr_DR$genemodules.selected, seed=seed, colour_by=pData(m_oep$expressionSet)$timepoint, colours = stage_cols, perplexity=perp, eta=eta) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_segment(data = as.data.frame(vector_dat$arrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40")
+graphics.off()
+
+```
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'OEP_subset_velocity_stage_arrows')">Developmental stage: cell arrows</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_subset_velocity_stage_vector')">Developmental stage: vector map</button>
+</div>
+
+<div id="OEP_subset_velocity_stage_arrows" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_arrows.png">
+</div>
+
+<div id="OEP_subset_velocity_stage_vector" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_vector.png">
+</div>
+
+</br>
+
+Plot RNA velocity on Monocle embeddings for cell clusters
+
+```R
+# return velocity object to plot with ggplot
+vector_dat <- show.velocity.on.embedding.cor(t(reducedDimS(HSMM)), rvel, n=100, scale='sqrt',
+                                             cex=1.5, arrow.scale=1, arrow.lwd=1.2, cell.border.alpha = 0, n.cores = ncores,
+                                             show.grid.flow=TRUE, min.grid.cell.mass=0.5,grid.n=20, return.details = TRUE)
+graphics.off()
+
+# plot vector map on clusters
+png(paste0(curr_plot_folder, 'Monocle_velocity_clusters_vector.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = clust.colors) +
+  geom_segment(data = as.data.frame(vector_dat$garrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40") +
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5))
+graphics.off()
+
+# plot cell arrows on clusters
+png(paste0(curr_plot_folder, 'Monocle_velocity_clusters_arrows.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(m_oep$cellClusters[['Mansel']]$cell_ids), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = clust.colors) +
+  geom_segment(data = as.data.frame(vector_dat$arrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40") +
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Clusters') +
+  theme(plot.title = element_text(hjust = 0.5))
+graphics.off()
+
+```
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Monocle_velocity_clusters_arrows')">Cell clusters: cell arrows</button>
+  <button class="tablinks" onclick="openTab(event, 'Monocle_velocity_clusters_vector')">Cell clusters: vector map</button>
+</div>
+
+<div id="Monocle_velocity_clusters_arrows" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_arrows.png">
+</div>
+
+<div id="Monocle_velocity_clusters_vector" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_vector.png">
+</div>
+
+</br>
+
+Plot RNA velocity on Monocle embeddings for developmental stage
+
+```R
+
+# plot vector map on stage
+png(paste0(curr_plot_folder, 'Monocle_velocity_stage_vector.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
 ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
                   'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
   geom_point() +
   scale_color_manual(values = stage_cols) +
+  geom_segment(data = as.data.frame(vector_dat$garrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40") +
   theme_classic() +
   theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
   ggtitle('Developmental stage') +
   theme(plot.title = element_text(hjust = 0.5))
 graphics.off()
+
+
+# plot cell arrows on stage
+png(paste0(curr_plot_folder, 'Monocle_velocity_stage_arrows.png'), height = 15, width = 15, family = 'Arial', units = "cm", res = 400)
+ggplot(data.frame('Component 1' = reducedDimS(HSMM)[1,], 'Component 2' = reducedDimS(HSMM)[2,],
+                  'colour_by' = as.factor(pData(m_oep$expressionSet)$timepoint), check.names = FALSE), aes(x=`Component 1`, y=`Component 2`, color=colour_by)) +
+  geom_point() +
+  scale_color_manual(values = stage_cols) +
+  geom_segment(data = as.data.frame(vector_dat$arrows),
+               aes(x = x0, xend = x1, y = y0, yend = y1),
+               size = 0.5,
+               arrow = arrow(length = unit(4, "points"), type = "open"),
+               colour = "grey40") +
+  theme_classic() +
+  theme(legend.position = "none", axis.ticks=element_blank(), axis.text = element_blank()) +
+  ggtitle('Developmental stage') +
+  theme(plot.title = element_text(hjust = 0.5))
+graphics.off()
+
 ```
 
 <div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'Monocle_DDRTree_samples')">Pseudotime: developmental stage</button>
-  <button class="tablinks" onclick="openTab(event, 'Monocle_DDRTree_Clusters')">Pseudotime: clusters</button>
-
+  <button class="tablinks" onclick="openTab(event, 'Monocle_velocity_stage_arrows')">Developmental stage: cell arrows</button>
+  <button class="tablinks" onclick="openTab(event, 'Monocle_velocity_stage_vector')">Developmental stage: vector map</button>
 </div>
 
-<div id="Monocle_DDRTree_samples" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_samples.png">
-</div>
-<div id="Monocle_DDRTree_Clusters" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_Clusters.png">
+<div id="Monocle_velocity_stage_arrows" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_arrows.png">
 </div>
 
-</br>
+<div id="Monocle_velocity_stage_vector" class="tabcontent">
+  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_vector.png">
+</div>
 
 </details>

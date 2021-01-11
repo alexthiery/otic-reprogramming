@@ -601,12 +601,13 @@ p1 = plot_cell_trajectory(HSMM, color_by = "cells_samples") +
 p2 = plot_cell_trajectory(HSMM, color_by = "Pseudotime") +
   scale_color_gradient(low = "#008ABF", high = "#E53F00")
 
+# Plot cell pseudotime
 png(paste0(curr_plot_folder, 'Monocle_DDRTree_trajectories.png'), width=20, height=12, family = 'Arial', units = "cm", res = 400)
 gridExtra::grid.arrange(grobs=list(p1, p2), layout_matrix=matrix(seq(2), ncol=2, byrow=T))
 graphics.off()
 
 
-#' State subplots
+# Plot cell state
 png(paste0(curr_plot_folder, 'Monocle_DDRTree_State_facet.png'), width=12, height=12, family = 'Arial', units = "cm", res = 400)
 plot_cell_trajectory(HSMM, color_by = "State") +
   scale_color_manual(values = c( '#48d1cc', '#f55f20', '#dda0dd'), name = "State")
@@ -614,7 +615,7 @@ graphics.off()
 
 
 ########################################################################
-#' Generate a monocle projection plot for each known genes
+#' Generate a monocle projection plot for each known gene
 
 curr_plot_folder = paste0(plot_path, "monocle_plots/all_monocle_projections/")
 dir.create(curr_plot_folder)
@@ -730,7 +731,7 @@ for(pair in 1:nrow(comb)){
 # rename dataframe columns
 colnames(coexpression_data) = c("value", "comparison", "branch")
 
-# t-test between co-expression in OEP lineage and epibranchial/otic branches
+# test co-expression in OEP lineage and epibranchial/otic branches
 coexpression_stats <- coexpression_data %>%
   mutate(branch = factor(branch, levels = c("OEP", "Epib", "Otic"))) %>%
   group_split(comparison)
