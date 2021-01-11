@@ -224,7 +224,7 @@ nextflow run nf-core/rnaseq \
 
 <br/>
 
-### Smartseq2 single cell RNAseq alignment
+### Smartseq2 single cell RNAseq alignment<a name="smartseq"></a>
 
 <br/>
 

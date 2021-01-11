@@ -269,7 +269,7 @@
 </span></code></pre></div></div>
 </br>
 <p>Plot dispersion estimates</p>
-<details><summary>Code</summary>
+<details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"dispersion_est.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">plotDispEsts</span><span class="p">(</span><span class="n">deseq</span><span class="p">)</span><span class="w">
@@ -287,7 +287,7 @@
 </span></code></pre></div></div>
 </br>
 <p>Plot MA with cutoff for significant genes = padj &lt; 0.05</p>
-<details><summary>Code</summary>
+<details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"MA_plot.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">DESeq2</span><span class="o">::</span><span class="n">plotMA</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">)</span><span class="w">
@@ -297,7 +297,7 @@
 <p><img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/MA_plot.png" alt="" /></p>
 </br>
 <p>Plot volcano plot with padj &lt; 0.05 and abs(fold change) &gt; 1.5</p>
-<details><summary>Code</summary>
+<details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">volc_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">res</span><span class="p">[,</span><span class="m">-6</span><span class="p">])</span><span class="w">
 
@@ -349,7 +349,7 @@
 <p><img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/volcano.png" alt="" /></p>
 </br>
 <p>Generate csv for raw counts, normalised counts, and differential expression output</p>
-<details><summary>Code</summary>
+<details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># raw counts dataframe</span><span class="w">
 </span><span class="n">raw_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">counts</span><span class="p">(</span><span class="n">deseq</span><span class="p">))</span><span class="w">
@@ -418,7 +418,7 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
 </br>
 </br>
 <p>Plot sample-sample distances, PC plot and correlogram to show relationship between samples</p>
-<details><summary>Code</summary>
+<details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># To prevent the highest expressed genes from dominating when clustering we need to rlog (regularised log) transform the data</span><span class="w">
 </span><span class="n">rld</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rlog</span><span class="p">(</span><span class="n">deseq</span><span class="p">,</span><span class="w"> </span><span class="n">blind</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
@@ -477,7 +477,7 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
 </span></code></pre></div></div>
 </br>
 <p>Plot heatmap of differentially expressed genes</p>
-<details><summary>Code</summary>
+<details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"sox8_oe_hm.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">21</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">pheatmap</span><span class="p">(</span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)[</span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub</span><span class="p">),],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"#191d73"</span><span class="p">,</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="s2">"#ed7901"</span><span class="p">))(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">),</span><span class="w"> </span><span class="n">cluster_rows</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">show_rownames</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w">
@@ -504,7 +504,7 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
 </span></code></pre></div></div>
 </br>
 <p>Generate csv for raw counts, normalised counts, and differential expression output for transcription factors</p>
-<details><summary>Code</summary>
+<details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># subset TFs from all_dat</span><span class="w">
 </span><span class="n">all_dat_TF</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_dat</span><span class="p">[</span><span class="n">all_dat</span><span class="o">$</span><span class="n">gene_id</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub_TF</span><span class="p">),]</span><span class="w">
@@ -521,7 +521,7 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
 </details>
 </br>
 <p>Plot heatmap for differentially expressed transcription factors</p>
-<details><summary>Code</summary>
+<details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rld.plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)</span><span class="w">
 </span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_name</span><span class="p">[</span><span class="n">match</span><span class="p">(</span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">),</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_id</span><span class="p">)]</span><span class="w">

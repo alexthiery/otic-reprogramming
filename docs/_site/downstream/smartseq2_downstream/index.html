@@ -172,7 +172,7 @@
   <h2 id="smartseq2-scrnaseq-analysis">SmartSeq2 scRNAseq analysis</h2>
 </br>
 <h3 id="load-packages-load-data-and-pre-qc">Load packages, load data and pre-QC</h3>
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 <p>Automatic switch for running pipeline through Nextflow or interactively in Rstudio</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">getopt</span><span class="p">)</span><span class="w">
@@ -332,7 +332,7 @@
 </br>
 <h3 id="data-pre-processing-and-qc">Data pre-processing and QC</h3>
 </br>
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 <p>Remove gene and cell outliers</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">#' Remove outliers genes and cells</span><span class="w">
@@ -388,7 +388,7 @@
 </br>
 <h3 id="transcriptomic-analysis-of-all-cells">Transcriptomic analysis of all cells</h3>
 </br>
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 <p>Generate gene-gene correlation matrix</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># change plot folder</span><span class="w">
@@ -648,7 +648,7 @@ gene module list</a></p>
 <hr />
 </br>
 <h3 id="transcriptomic-analysis-of-oep-cells">Transcriptomic analysis of OEP cells</h3>
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 <p>Clusters 3-5 are composed of non-oep derived populations (they are also mostly PAX2 negative)</p>
 <p>We exclude these cells from the subsequent analysis</p>
@@ -840,7 +840,7 @@ all tSNEs</a></p>
 <hr />
 </br>
 <h3 id="pseudotime-using-a-hrefhttpcole-trapnell-labgithubiomonocle-releasedocsmonocle2a">Pseudotime using <a href="http://cole-trapnell-lab.github.io/monocle-release/docs/">Monocle2</a></h3>
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 <p>In order to study the process of differentiation from OEP to Otic and Epibranchial lineages, we order the cells in pseudotime using our subset gene modules identified as important for this process.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"monocle_plots/"</span><span class="p">)</span><span class="w">
@@ -1080,7 +1080,7 @@ all Monocle gradient plots</a></p>
 <hr />
 </br>
 <h3 id="co-expression-analysis">Co-expression analysis</h3>
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 <p>Here we calculate co-expression of key otic and epibranchial markers along each of the Monocle branches. We then test and find that the level of co-expression Otic/Epibranchial markers is higher in the OEP population relative to Otic and Epibranchial branches. This shows that individual OEP cells are co-expressing markers of both lineages - indicative of a bipotent progenenitor population.</p>
 <p>First we determine the list of genes used for coexpression analysis.</p>
@@ -1204,7 +1204,7 @@ all Monocle gradient plots</a></p>
 <hr />
 </br>
 <h3 id="branched-expression-analysis-modeling-beam">Branched expression analysis modeling (BEAM)</h3>
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 <p>BEAM is used to identify genes with branch dependent expression.</p>
 <p>Select genes with high expression and dispersion, and then use BEAM QC to filter and plot.</p>
@@ -1272,7 +1272,7 @@ all Monocle gradient plots</a></p>
 <hr />
 </br>
 <h3 id="rna-velocity">RNA velocity</h3>
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 <p>Read in splice counts (loom data) and filter cells and genes remaining in OEP subset.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"velocyto/"</span><span class="p">)</span><span class="w">

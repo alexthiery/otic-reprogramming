@@ -82,12 +82,18 @@ details {
   font: 16px "Open Sans", Calibri, sans-serif;
 }
 
-details > summary {
+details > summary.box {
   padding: 2px 6px;
   width: 5.5em;
   background-color: rgba(237, 237, 237, 0.379);
   border: 1px solid #ccc;
   border-radius: 4px;
+  cursor: pointer;
+  list-style: none;
+}
+
+details > summary.simple {
+  padding: none;
   cursor: pointer;
   list-style: none;
 }

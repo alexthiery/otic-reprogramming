@@ -11,7 +11,7 @@ order: 3
 
 ### Load packages, load data and pre-QC
 
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 
 Automatic switch for running pipeline through Nextflow or interactively in Rstudio
@@ -205,7 +205,7 @@ m$favorite_genes <- unique(sort(apriori_genes))
 
 </br>
 
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 
 Remove gene and cell outliers
@@ -290,7 +290,7 @@ m$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_
 
 </br>
 
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 
 Generate gene-gene correlation matrix
@@ -611,7 +611,7 @@ graphics.off()
 
 ### Transcriptomic analysis of OEP cells
 
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 
 Clusters 3-5 are composed of non-oep derived populations (they are also mostly PAX2 negative)
@@ -855,7 +855,7 @@ seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 15, width = 22, res = 4
 
 ### Pseudotime using [Monocle2](http://cole-trapnell-lab.github.io/monocle-release/docs/)
 
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 
 In order to study the process of differentiation from OEP to Otic and Epibranchial lineages, we order the cells in pseudotime using our subset gene modules identified as important for this process.
@@ -1146,7 +1146,7 @@ Plotting the expression of candidate genes, we can easliy classify the Otic, Epi
 
 ### Co-expression analysis
 
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 
 Here we calculate co-expression of key otic and epibranchial markers along each of the Monocle branches. We then test and find that the level of co-expression Otic/Epibranchial markers is higher in the OEP population relative to Otic and Epibranchial branches. This shows that individual OEP cells are co-expressing markers of both lineages - indicative of a bipotent progenenitor population.
@@ -1290,7 +1290,7 @@ From these three plots we can see that the co-expression of Epibranchial and Oti
 
 ### Branched expression analysis modeling (BEAM)
 
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 
 BEAM is used to identify genes with branch dependent expression.
@@ -1378,7 +1378,7 @@ graphics.off()
 
 ### RNA velocity
 
-<details><summary>Expand</summary>
+<details><summary class="box">Expand</summary>
 <p>
 
 Read in splice counts (loom data) and filter cells and genes remaining in OEP subset.

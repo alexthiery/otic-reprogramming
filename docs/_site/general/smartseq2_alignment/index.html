@@ -169,7 +169,217 @@
       <div class="container content"><div class="page">
   <!-- hide auto title generation -->
   <!-- <h1 class="page-title">Smartseq2_alignment</h1> -->
-  <h2 id="custom-smartseq2-alignment-nextflow-pipeline">Custom SmartSeq2 alignment Nextflow pipeline</h2>
+  <h2 id="smartseq2-alignment">SmartSeq2 alignment</h2>
+</br>
+<p><strong>If you would like to re-run the alignment, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#smartseq">here</a>.</strong></p>
+<p>Our SmartSeq2 single cell RNAseq data is aligned using a custom Nextflow pipeline. This pipeline is built using <a href="https://www.nextflow.io/docs/latest/dsl2.html">Nextflow DSL2</a>, which allows for modularisation and re-usability of each tool.</p>
+<p>Each of the processes used in the pipeline can be found by following the going to the path in the <code>include {process} from &quot;&lt;PATH&gt;&quot;</code> statements in each of the workflows below.</p>
+</br>
+<hr />
+<h3 id="workflows">Workflows</h3>
+<p>Our custom pipeline integrates both standard alignment and RNA velocity (<a href="http://velocyto.org/">Velocyto</a>).</p>
+<p>For simplicity, the pipeline is split into four sub-workflows:</p>
+<ul>
+<li><a href="#GFP">Modify genome to add GFP sequence</a></li>
+<li><a href="#align">Align reads</a></li>
+<li><a href="#process_reads">Process readcounts for downstream</a></li>
+<li><a href="#velocyto">Run RNA velocity</a></li>
+</ul>
+</br>
+<p>The main workflow integrates each of these sub-workflows.</p>
+<details open><summary class="simple">Expand main workflow</summary>
+<p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="n">include</span> <span class="o">{</span><span class="n">add_gfp</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../workflows/add_gfp/main.nf"</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">smartseq2_align</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../workflows/scRNAseq_alignment/main.nf"</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">process_counts</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../workflows/process_counts/main.nf"</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">velocyto_smartseq2</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../workflows/velocyto_smartseq2/main.nf"</span>
+
+<span class="n">Channel</span>
+    <span class="o">.</span><span class="na">value</span><span class="o">(</span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">fasta</span><span class="o">,</span> <span class="nl">checkIfExists:</span> <span class="kc">true</span><span class="o">))</span>
+    <span class="o">.</span><span class="na">set</span> <span class="o">{</span><span class="n">ch_fasta</span><span class="o">}</span>
+
+<span class="n">Channel</span>
+    <span class="o">.</span><span class="na">value</span><span class="o">(</span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">gtf</span><span class="o">,</span> <span class="nl">checkIfExists:</span> <span class="kc">true</span><span class="o">))</span>
+    <span class="o">.</span><span class="na">set</span> <span class="o">{</span><span class="n">ch_gtf</span><span class="o">}</span>
+
+<span class="n">Channel</span>
+    <span class="o">.</span><span class="na">value</span><span class="o">(</span><span class="n">file</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">gfp_seq</span><span class="o">,</span> <span class="nl">checkIfExists:</span> <span class="kc">true</span><span class="o">))</span>
+    <span class="o">.</span><span class="na">set</span> <span class="o">{</span><span class="n">ch_gfp_seq</span><span class="o">}</span>
+
+<span class="n">workflow</span> <span class="o">{</span>
+    <span class="c1">// add gfp to genome and gtf</span>
+    <span class="n">add_gfp</span> <span class="o">(</span><span class="n">ch_fasta</span><span class="o">,</span> <span class="n">ch_gtf</span><span class="o">,</span> <span class="n">ch_gfp_seq</span><span class="o">)</span>
+
+    <span class="c1">// align using smartseq2 workflow</span>
+    <span class="n">smartseq2_align</span> <span class="o">(</span><span class="n">add_gfp</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">genome</span><span class="o">,</span> <span class="n">add_gfp</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">gtf</span><span class="o">,</span> <span class="n">params</span><span class="o">.</span><span class="na">input</span><span class="o">)</span>
+
+    <span class="c1">// merge and extract gfp counts</span>
+    <span class="n">process_counts</span> <span class="o">(</span><span class="n">smartseq2_align</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">htseq_count_files</span><span class="o">)</span>
+
+    <span class="c1">// run velocyto</span>
+    <span class="n">velocyto_smartseq2</span> <span class="o">(</span><span class="n">smartseq2_align</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">bam_files</span><span class="o">,</span> <span class="n">ch_gtf</span><span class="o">)</span>
+
+    <span class="c1">// view output</span>
+    <span class="n">process_counts</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">processed_counts</span> <span class="o">|</span> <span class="n">view</span>
+    <span class="n">velocyto_smartseq2</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">velocyto_counts</span> <span class="o">|</span> <span class="n">view</span>
+<span class="o">}</span>
+</code></pre></div></div>
+</details>
+<hr />
+</br>
+<p><strong><em>Modify genome to add GFP sequence</em></strong><a name="GFP"></a></p>
+<p>This sub-workdflow takes a GFP sequence from the base repository and appends the genome provided in order to determine the number of GFP reads downstream.</p>
+<details open><summary class="simple">Expand sub-workflow</summary>
+<p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="cm">/*------------------------------------------------------------------------------------*/</span>
+<span class="cm">/* Module inclusions
+--------------------------------------------------------------------------------------*/</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">add_genome_gfp</span><span class="o">;</span> <span class="n">add_gtf_gfp</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../modules/genome-tools/main.nf"</span>
+
+<span class="cm">/*------------------------------------------------------------------------------------*/</span>
+<span class="cm">/* Define sub workflow
+--------------------------------------------------------------------------------------*/</span>
+
+<span class="n">workflow</span> <span class="n">add_gfp</span> <span class="o">{</span>
+    <span class="nl">take:</span>
+        <span class="n">genome</span>
+        <span class="n">gtf</span>
+        <span class="n">gfp_seq</span>
+
+    <span class="nl">main:</span>
+        <span class="n">add_genome_gfp</span> <span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'add_genome_gfp'</span><span class="o">],</span> <span class="n">genome</span><span class="o">,</span> <span class="n">gfp_seq</span><span class="o">)</span>
+        <span class="n">add_gtf_gfp</span> <span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'add_gtf_gfp'</span><span class="o">],</span> <span class="n">gtf</span><span class="o">,</span> <span class="n">gfp_seq</span><span class="o">)</span>
+
+    <span class="nl">emit:</span>
+        <span class="n">genome</span> <span class="o">=</span> <span class="n">add_genome_gfp</span><span class="o">.</span><span class="na">out</span>
+        <span class="n">gtf</span> <span class="o">=</span> <span class="n">add_gtf_gfp</span><span class="o">.</span><span class="na">out</span>
+<span class="o">}</span>
+</code></pre></div></div>
+</details>
+<hr />
+</br>
+<p><strong><em>Align reads</em></strong><a name="align"></a></p>
+<details open><summary class="simple">Expand sub-workflow</summary>
+<p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="cm">/*------------------------------------------------------------------------------------*/</span>
+<span class="cm">/* Module inclusions
+--------------------------------------------------------------------------------------*/</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">smartseq2_fastq_metadata</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../luslab-nf-modules/tools/metadata/main.nf"</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">cutadapt</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../luslab-nf-modules/tools/cutadapt/main.nf"</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">hisat2_build</span><span class="o">;</span> <span class="n">hisat2_splice_sites</span><span class="o">;</span> <span class="n">hisat2_splice_align</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../luslab-nf-modules/tools/hisat2/main.nf"</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">samtools_view</span> <span class="k">as</span> <span class="n">samtools_view_a</span><span class="o">;</span><span class="n">samtools_view</span> <span class="k">as</span> <span class="n">samtools_view_b</span><span class="o">;</span> <span class="n">samtools_sort</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../luslab-nf-modules/tools/samtools/main.nf"</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">htseq_count</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../luslab-nf-modules/tools/htseq/main.nf"</span>
+
+<span class="cm">/*------------------------------------------------------------------------------------*/</span>
+<span class="cm">/* Define sub workflow
+--------------------------------------------------------------------------------------*/</span>
+
+<span class="n">workflow</span> <span class="n">smartseq2_align</span> <span class="o">{</span>
+    <span class="nl">take:</span>
+        <span class="n">genome</span>
+        <span class="n">gtf</span>
+        <span class="n">sample_csv</span>
+
+    <span class="nl">main:</span>
+        <span class="n">smartseq2_fastq_metadata</span> <span class="o">(</span><span class="n">sample_csv</span><span class="o">)</span>
+
+        <span class="n">cutadapt</span> <span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'cutadapt'</span><span class="o">],</span> <span class="n">smartseq2_fastq_metadata</span><span class="o">.</span><span class="na">out</span><span class="o">)</span>
+        <span class="n">hisat2_build</span> <span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'hisat2_build'</span><span class="o">],</span> <span class="n">genome</span> <span class="o">)</span>
+        <span class="n">hisat2_splice_sites</span> <span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'hisat2_splice_sites'</span><span class="o">],</span> <span class="n">gtf</span> <span class="o">)</span>
+        <span class="n">hisat2_splice_align</span> <span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'hisat2_splice_align'</span><span class="o">],</span> <span class="n">cutadapt</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">fastq</span><span class="o">,</span> <span class="n">hisat2_build</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">genome_index</span><span class="o">.</span><span class="na">collect</span><span class="o">(),</span> <span class="n">hisat2_splice_sites</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">splice_sites</span><span class="o">.</span><span class="na">collect</span><span class="o">()</span> <span class="o">)</span>
+
+        <span class="n">samtools_view_a</span> <span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'samtools_view_a'</span><span class="o">],</span> <span class="n">hisat2_splice_align</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">sam</span> <span class="o">)</span>
+        <span class="n">samtools_sort</span> <span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'samtools_sort'</span><span class="o">],</span> <span class="n">samtools_view_a</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">bam</span> <span class="o">)</span>
+        <span class="n">samtools_view_b</span> <span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'samtools_view_b'</span><span class="o">],</span> <span class="n">samtools_sort</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">bam</span> <span class="o">)</span>
+
+        <span class="n">htseq_count</span> <span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'htseq_count'</span><span class="o">],</span> <span class="n">samtools_view_b</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">bam</span><span class="o">,</span> <span class="n">gtf</span> <span class="o">)</span>
+
+    <span class="nl">emit:</span>
+        <span class="n">bam_files</span> <span class="o">=</span> <span class="n">samtools_sort</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">bam</span>
+        <span class="n">htseq_count_files</span> <span class="o">=</span> <span class="n">htseq_count</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">counts</span>
+<span class="o">}</span>
+</code></pre></div></div>
+</details>
+<hr />
+</br>
+<p><strong><em>Process read counts for input into Antler</em></strong><a name="process_reads"></a></p>
+<details open><summary class="simple">Expand sub-workflow</summary>
+<p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="cm">/*------------------------------------------------------------------------------------*/</span>
+<span class="cm">/* Module inclusions
+--------------------------------------------------------------------------------------*/</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">r_analysis</span> <span class="k">as</span> <span class="n">merge_counts</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../modules/r_analysis/main.nf"</span>
+
+
+<span class="cm">/*------------------------------------------------------------------------------------*/</span>
+<span class="cm">/* Define sub workflow
+--------------------------------------------------------------------------------------*/</span>
+
+<span class="n">workflow</span> <span class="n">process_counts</span> <span class="o">{</span>
+    <span class="nl">take:</span>
+        <span class="n">count_files</span>
+
+    <span class="nl">main:</span>
+        <span class="c1">// group counts into a single channel for merge cell counts</span>
+        <span class="n">ch_all_counts</span> <span class="o">=</span> <span class="n">count_files</span>
+            <span class="o">.</span><span class="na">map</span> <span class="o">{</span> <span class="o">[</span><span class="n">file</span><span class="o">(</span><span class="n">it</span><span class="o">[</span><span class="mi">1</span><span class="o">],</span> <span class="nl">checkIfExists:</span> <span class="kc">true</span><span class="o">)]</span> <span class="o">}</span>
+            <span class="o">.</span><span class="na">collect</span><span class="o">()</span>
+
+        <span class="c1">// merge cell counts into csv</span>
+        <span class="n">merge_counts</span> <span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'merge_counts'</span><span class="o">],</span> <span class="n">ch_all_counts</span><span class="o">)</span>
+
+    <span class="nl">emit:</span>
+        <span class="n">processed_counts</span> <span class="o">=</span> <span class="n">merge_counts</span><span class="o">.</span><span class="na">out</span>
+<span class="o">}</span>
+</code></pre></div></div>
+</details>
+<hr />
+</br>
+<p><strong><em>Run RNA velocity</em></strong><a name="velocyto"></a></p>
+<details open><summary class="simple">Expand sub-workflow</summary>
+<p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
+<span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
+
+<span class="cm">/*------------------------------------------------------------------------------------*/</span>
+<span class="cm">/* Module inclusions
+--------------------------------------------------------------------------------------*/</span>
+<span class="n">include</span> <span class="o">{</span><span class="n">velocyto_run_smartseq2</span><span class="o">}</span> <span class="n">from</span> <span class="s2">"$baseDir/../luslab-nf-modules/tools/velocyto/main.nf"</span>
+
+<span class="cm">/*------------------------------------------------------------------------------------*/</span>
+<span class="cm">/* Define sub workflow
+--------------------------------------------------------------------------------------*/</span>
+
+<span class="n">workflow</span> <span class="n">velocyto_smartseq2</span> <span class="o">{</span>
+    <span class="nl">take:</span>
+        <span class="n">bam_files</span>
+        <span class="n">gtf</span>
+
+    <span class="nl">main:</span>
+        <span class="c1">// group bams into a single channel for velocyto</span>
+        <span class="n">ch_velocyto_bam</span> <span class="o">=</span> <span class="n">bam_files</span>
+            <span class="o">.</span><span class="na">map</span> <span class="o">{</span> <span class="o">[[</span><span class="nl">sample_id:</span><span class="s2">"all_cells"</span><span class="o">],</span> <span class="n">file</span><span class="o">(</span><span class="n">it</span><span class="o">[</span><span class="mi">1</span><span class="o">],</span> <span class="nl">checkIfExists:</span> <span class="kc">true</span><span class="o">)]</span> <span class="o">}</span>
+            <span class="o">.</span><span class="na">groupTuple</span><span class="o">(</span><span class="nl">by:</span> <span class="mi">0</span><span class="o">)</span>
+
+        <span class="n">velocyto_run_smartseq2</span> <span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'velocyto_run_smartseq2'</span><span class="o">],</span> <span class="n">ch_velocyto_bam</span><span class="o">,</span> <span class="n">gtf</span> <span class="o">)</span>
+
+    <span class="nl">emit:</span>
+        <span class="n">velocyto_counts</span> <span class="o">=</span> <span class="n">velocyto_run_smartseq2</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">velocyto</span>
+<span class="o">}</span>
+</code></pre></div></div>
+</details>
 </br>
 
 </div>
