@@ -529,10 +529,13 @@ HSMM <- monocle::newCellDataSet(
   expressionFamily=VGAM::tobit()
 )
 
-# Dimensionality reduction and order cells along pseudotime from earliest "State" (ie DDRTree branch)
+# Dimensionality reduction and order cells along pseudotime
 HSMM <- estimateSizeFactors(HSMM)
 HSMM <- setOrderingFilter(HSMM, monocle.input_dims)
 HSMM <- reduceDimension(HSMM, max_components = 2, method = 'DDRTree')
+HSMM <- orderCells(HSMM)
+
+# Root cells to earliest "State" (ie DDRTree branch) - which is stage 8
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 
 #' Plot cell stage over projected coordinates
