@@ -27,8 +27,6 @@ lab:
 
   # Dependencies
 markdown: CommonMarkGhPages
-commonmark:
-  max_line_length: 100
 highlighter: rouge
 
 collections:

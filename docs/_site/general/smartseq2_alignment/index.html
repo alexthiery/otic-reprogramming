@@ -173,6 +173,7 @@
 </br>
 <p><strong>If you would like to re-run the alignment, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#smartseq">here</a>.</strong></p>
 <p>Our SmartSeq2 single cell RNAseq data is aligned using a custom Nextflow pipeline. This pipeline is built using <a href="https://www.nextflow.io/docs/latest/dsl2.html">Nextflow DSL2</a>, which allows for modularisation and re-usability of each tool.</p>
+<p>Each process is configured to run within a separate container, meaning that package versions are hard coded into the pipeline. In order to change these package versions, the container used will need to be changed within the individual process.</p>
 <p>Each of the processes used in the pipeline can be found by following the going to the path in the <code>include {process} from &quot;&lt;PATH&gt;&quot;</code> statements in each of the workflows below.</p>
 </br>
 <hr />
@@ -265,6 +266,7 @@
 <hr />
 </br>
 <p><strong><em>Align reads</em></strong><a name="align"></a></p>
+<p>First we trim adaptor sequences using Cutadapt v2.10. We then align reads to GalGal6 with HISAT2 v2.2.1. Samtools v1.10 is used to convert SAM to BAM, before finally obtaining gene counts with HTSeq v0.12.4.</p>
 <details open><summary class="simple">Expand sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
@@ -312,6 +314,7 @@
 <hr />
 </br>
 <p><strong><em>Process read counts for input into Antler</em></strong><a name="process_reads"></a></p>
+<p>The merge counts process is a custom R script which formats cell names and generates the phenoData.csv, assayData.csv and gfpData.csv required by our Antler downstream pipeline.</p>
 <details open><summary class="simple">Expand sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
@@ -345,9 +348,86 @@
 <span class="o">}</span>
 </code></pre></div></div>
 </details>
+</br>
+<details><summary class="simple">Expand merge_counts.R</summary>
+<p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env Rscript</span><span class="w">
+
+</span><span class="c1"># Define arguments for Rscript</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">getopt</span><span class="p">)</span><span class="w">
+</span><span class="n">spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="w">
+  </span><span class="s1">'runtype'</span><span class="p">,</span><span class="w"> </span><span class="s1">'l'</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="s2">"character"</span><span class="p">,</span><span class="w">
+  </span><span class="s1">'cores'</span><span class="w">   </span><span class="p">,</span><span class="w"> </span><span class="s1">'c'</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="s2">"integer"</span><span class="w">
+</span><span class="p">),</span><span class="w"> </span><span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">)</span><span class="w">
+</span><span class="n">opt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Set run location</span><span class="w">
+</span><span class="k">if</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">commandArgs</span><span class="p">(</span><span class="n">trailingOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">){</span><span class="w">
+  </span><span class="n">cat</span><span class="p">(</span><span class="s1">'No command line arguments provided, user defaults paths are set for running interactively in Rstudio on docker\n'</span><span class="p">)</span><span class="w">
+  </span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"user"</span><span class="w">
+</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="p">)){</span><span class="w">
+    </span><span class="n">stop</span><span class="p">(</span><span class="s2">"--runtype must be either 'user' or 'nextflow'"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="k">if</span><span class="p">(</span><span class="n">tolower</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"user"</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"nextflow"</span><span class="p">){</span><span class="w">
+    </span><span class="n">stop</span><span class="p">(</span><span class="s2">"--runtype must be either 'user' or 'nextflow'"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="c1"># Set paths and load data</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"user"</span><span class="p">){</span><span class="w">
+    </span><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./output/merge_counts/output/"</span><span class="w">
+    </span><span class="n">input_files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">list.files</span><span class="p">(</span><span class="s2">"./testData/process_counts/"</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*.txt"</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">)</span><span class="w">
+
+  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"nextflow"</span><span class="p">){</span><span class="w">
+    </span><span class="n">cat</span><span class="p">(</span><span class="s1">'pipeline running through nextflow\n'</span><span class="p">)</span><span class="w">
+
+    </span><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/"</span><span class="w">
+    </span><span class="n">input_files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">list.files</span><span class="p">(</span><span class="s2">"./"</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"*.txt"</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="n">dir.create</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="n">recursive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">)</span><span class="w">
+
+  </span><span class="n">library</span><span class="p">(</span><span class="n">plyr</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="n">assayData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">do.call</span><span class="p">(</span><span class="n">cbind</span><span class="p">,</span><span class="w"> </span><span class="n">lapply</span><span class="p">(</span><span class="n">input_files</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">f</span><span class="p">){</span><span class="w">
+	</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read.table</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="m">1</span><span class="p">)</span><span class="w">
+	</span><span class="n">df</span><span class="p">[</span><span class="n">seq</span><span class="p">(</span><span class="n">nrow</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="m">-5</span><span class="p">),,</span><span class="w"> </span><span class="n">drop</span><span class="o">=</span><span class="nb">F</span><span class="p">]</span><span class="w">
+</span><span class="p">}))</span><span class="w">
+
+</span><span class="c1"># ss11 ss15 WTCHG_528508_201189.txt -&gt; 201189</span><span class="w">
+</span><span class="c1"># ss89 TSS_P2_E2_13-1234.txt -&gt; P2E2</span><span class="w">
+</span><span class="n">phenoData</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">setNames</span><span class="p">(</span><span class="n">ldply</span><span class="p">(</span><span class="n">basename</span><span class="p">(</span><span class="n">input_files</span><span class="p">),</span><span class="w"> </span><span class="n">.fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"ss11"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nf">c</span><span class="p">(</span><span class="n">strsplit</span><span class="p">(</span><span class="n">tools</span><span class="o">::</span><span class="n">file_path_sans_ext</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">split</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"_"</span><span class="p">)[[</span><span class="m">1</span><span class="p">]][[</span><span class="m">3</span><span class="p">]],</span><span class="w"> </span><span class="m">11</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="s2">"sc"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"ss15"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nf">c</span><span class="p">(</span><span class="n">strsplit</span><span class="p">(</span><span class="n">tools</span><span class="o">::</span><span class="n">file_path_sans_ext</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">split</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"_"</span><span class="p">)[[</span><span class="m">1</span><span class="p">]][[</span><span class="m">3</span><span class="p">]],</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="s2">"sc"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">spl1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strsplit</span><span class="p">(</span><span class="n">tools</span><span class="o">::</span><span class="n">file_path_sans_ext</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">split</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"_"</span><span class="p">)[[</span><span class="m">1</span><span class="p">]]</span><span class="w">
+    </span><span class="nf">c</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">spl1</span><span class="p">[</span><span class="m">2</span><span class="p">],</span><span class="w"> </span><span class="n">strsplit</span><span class="p">(</span><span class="n">spl1</span><span class="p">[</span><span class="m">3</span><span class="p">],</span><span class="w"> </span><span class="n">split</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"-"</span><span class="p">)[[</span><span class="m">1</span><span class="p">]][</span><span class="m">1</span><span class="p">]),</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="s2">"sc"</span><span class="p">)</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}),</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"cell_ID"</span><span class="p">,</span><span class="w"> </span><span class="s2">"timepoint"</span><span class="p">,</span><span class="w"> </span><span class="s2">"replicate_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"treatment"</span><span class="p">))</span><span class="w">
+
+</span><span class="n">rownames</span><span class="p">(</span><span class="n">phenoData</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">phenoData</span><span class="o">$</span><span class="n">cell_ID</span><span class="w">
+</span><span class="n">phenoData</span><span class="o">$</span><span class="n">cell_ID</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kc">NULL</span><span class="w">
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">assayData</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">phenoData</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># make dataframe for gfp counts</span><span class="w">
+</span><span class="n">gfpData</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">assayData</span><span class="p">[</span><span class="s2">"GFP"</span><span class="p">,]</span><span class="w">
+
+</span><span class="c1"># remove gfp counts from assayData</span><span class="w">
+</span><span class="n">assayData</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">assayData</span><span class="p">[</span><span class="o">-</span><span class="n">which</span><span class="p">(</span><span class="n">rownames</span><span class="p">(</span><span class="n">assayData</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"GFP"</span><span class="p">),]</span><span class="w">
+
+</span><span class="n">write.table</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">gfpData</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">=</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s1">'gfpData.csv'</span><span class="p">),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">'\t'</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">quote</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">col.names</span><span class="o">=</span><span class="kc">NA</span><span class="p">)</span><span class="w">
+</span><span class="n">write.table</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">assayData</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">=</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s1">'assayData.csv'</span><span class="p">),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">'\t'</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">quote</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">col.names</span><span class="o">=</span><span class="kc">NA</span><span class="p">)</span><span class="w">
+</span><span class="n">write.table</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">phenoData</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">=</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s1">'phenoData.csv'</span><span class="p">),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">'\t'</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">quote</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">col.names</span><span class="o">=</span><span class="kc">NA</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+</details>
 <hr />
 </br>
 <p><strong><em>Run RNA velocity</em></strong><a name="velocyto"></a></p>
+<p>The RNA velocity sub-workflow takes the output BAM files from HISAT2 and groups all the cells into a single channel input. We then run Velocyto which generates a single Loom file output containing spliced, unspliced and spanning reads.</p>
 <details open><summary class="simple">Expand sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
