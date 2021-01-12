@@ -352,6 +352,7 @@
 
 </span><span class="n">m</span><span class="o">$</span><span class="n">excludeCellsFromIds</span><span class="p">(</span><span class="n">which</span><span class="p">(</span><span class="n">m</span><span class="o">$</span><span class="n">getCellsNames</span><span class="p">()</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">unlist</span><span class="p">(</span><span class="n">annotations</span><span class="p">)))</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>Remove cells with more than 6% of mitochondrial read counts</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span><span class="o">$</span><span class="n">removeGenesFromRatio</span><span class="p">(</span><span class="w">
   </span><span class="n">candidate_genes</span><span class="o">=</span><span class="n">grep</span><span class="p">(</span><span class="s1">'^MT-'</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="o">$</span><span class="n">getGeneNames</span><span class="p">(),</span><span class="w"> </span><span class="n">value</span><span class="o">=</span><span class="nb">T</span><span class="p">),</span><span class="w">
@@ -401,8 +402,9 @@
 </span><span class="c1"># see "matprod" in https://stat.ethz.ch/R-manual/R-devel/library/base/html/options.html</span><span class="w">
 </span><span class="n">corr.mat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fastCor</span><span class="p">(</span><span class="n">t</span><span class="p">(</span><span class="n">m</span><span class="o">$</span><span class="n">getReadcounts</span><span class="p">(</span><span class="n">data_status</span><span class="o">=</span><span class="s1">'Normalized'</span><span class="p">)),</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s2">"spearman"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p>Identification of modules of co-correlated genes</p>
-<p>This feature is the prime reason for using the Antler package. This enables us to heirarchically cluster genes based on gene-gene correlation providing sets of co-correlated genes. Poor quality clusters are then filtered unbiasedly through iterative filtering/clustering.</p>
+</br>
+<p><strong><em>Identification of modules of co-correlated genes</em></strong></p>
+<p>This feature is the prime reason for using the Antler package. Using the Antler package, we are able to cluster genes and identify sets of co-correlated genes termed <em>gene modules</em>. This works by heirarchically clustering a gene-gene correlation matrix, followed by iterative filtering of poor quality clusters.</p>
 <p>For further information on Antler gene module identification, click <a href="https://juliendelile.github.io/Antler/articles/Transcriptomic-summary.html#gene-modules-identification">here</a>.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cd">#' ## Gene modules identification</span><span class="w">
 </span><span class="n">m</span><span class="o">$</span><span class="n">identifyGeneModules</span><span class="p">(</span><span class="w">
@@ -425,6 +427,7 @@
 
 </span><span class="nf">names</span><span class="p">(</span><span class="n">m</span><span class="o">$</span><span class="n">topCorr_DR</span><span class="o">$</span><span class="n">genemodules</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"GM "</span><span class="p">,</span><span class="w"> </span><span class="n">seq</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">m</span><span class="o">$</span><span class="n">topCorr_DR</span><span class="o">$</span><span class="n">genemodules</span><span class="p">)))</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>Plot gene modules</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># identify cell clusters based on remaining genes</span><span class="w">
 </span><span class="n">m</span><span class="o">$</span><span class="n">identifyCellClusters</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">'hclust'</span><span class="p">,</span><span class="w"> </span><span class="n">used_genes</span><span class="o">=</span><span class="s2">"topCorr_DR.genemodules"</span><span class="p">,</span><span class="w"> </span><span class="n">data_status</span><span class="o">=</span><span class="s1">'Normalized'</span><span class="p">)</span><span class="w">
@@ -451,6 +454,7 @@ PDF</a></p>
 <p><a href="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_allGms_topCorr_DR.genemodules.txt" download>Download
 gene module list</a></p>
 <img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_topCorr_DR.genemodules_Normalized_logscaled.png">
+</br>
 </br>
 <p>Filter out cells with low summary counts</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="o">$</span><span class="n">copy</span><span class="p">()</span><span class="w">
@@ -507,6 +511,7 @@ PDF</a></p>
 gene module list</a></p>
 <img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCellsManualGMselection_dR.genemodules_Normalized_logscaled.png">
 </br>
+</br>
 <p>Plot tSNEs of cell clusters and developmental stage</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"all_cells/tsne/"</span><span class="p">)</span><span class="w">
 </span><span class="n">dir.create</span><span class="p">(</span><span class="n">curr_plot_folder</span><span class="p">)</span><span class="w">
@@ -536,6 +541,7 @@ gene module list</a></p>
 <div id="allcells_stage_TSNE" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_stage_TSNE.png">
 </div>
+</br>
 </br>
 <p>Plot tSNEs of genes of interest</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gene_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s1">'SOX2'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SOX10'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SOX8'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PAX7'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PAX2'</span><span class="p">,</span><span class="w"> </span><span class="s1">'LMX1A'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SOX21'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SIX1'</span><span class="p">)</span><span class="w">
@@ -595,6 +601,7 @@ gene module list</a></p>
 <div id="all_GFP" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/GFP_TSNE.png">
 </div>
+</br>
 </br>
 <p>Plot dotplot for genes of interest</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"all_cells/"</span><span class="p">)</span><span class="w">
@@ -666,6 +673,7 @@ gene module list</a></p>
 </span><span class="n">m_oep</span><span class="o">$</span><span class="n">excludeUnexpressedGenes</span><span class="p">(</span><span class="n">min.cells</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">data_status</span><span class="o">=</span><span class="s2">"Normalized"</span><span class="p">,</span><span class="w"> </span><span class="n">verbose</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
 </span><span class="n">m_oep</span><span class="o">$</span><span class="n">removeLowlyExpressedGenes</span><span class="p">(</span><span class="n">expression_threshold</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">selection_theshold</span><span class="o">=</span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">data_status</span><span class="o">=</span><span class="s1">'Normalized'</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>Calculate and plot gene modules for OEPs</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
 </span><span class="c1"># "fastCor" uses the tcrossprod function which by default relies on BLAS to speed up computation. This produces inconsistent result in precision depending on the version of BLAS being used.</span><span class="w">
@@ -709,6 +717,8 @@ PDF</a></p>
 <p><a href="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules.txt" download>Download
 gene module list</a></p>
 <img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules_Normalized_logscaled.png">
+</br>
+</br>
 <p>Select gene modules based on the presence of genes known to be involved in otic and epibranchial differentiation and re-cluster cells</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bait_genes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"HOMER2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"LMX1A"</span><span class="p">,</span><span class="w"> </span><span class="s2">"SOHO-1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"SOX10"</span><span class="p">,</span><span class="w"> </span><span class="s2">"VGLL2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"FOXI3"</span><span class="p">,</span><span class="w"> </span><span class="s1">'ZNF385C'</span><span class="p">,</span><span class="w"> </span><span class="s1">'NELL1'</span><span class="p">,</span><span class="w"> </span><span class="s2">"CXCL14"</span><span class="p">,</span><span class="w"> </span><span class="s2">"EYA4"</span><span class="p">)</span><span class="w">
 
@@ -745,6 +755,7 @@ PDF</a></p>
 gene module list</a></p>
 <img class="myImages width_90" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.selected_Normalized_logscaled.png">
 </br>
+</br>
 <p>Plot tSNEs of cell clusters and developmental stage</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s1">'oep_subset/tsne/'</span><span class="p">)</span><span class="w">
 </span><span class="n">dir.create</span><span class="p">(</span><span class="n">curr_plot_folder</span><span class="p">)</span><span class="w">
@@ -772,6 +783,7 @@ gene module list</a></p>
 <div id="oep_stage_TSNE" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_stage_TSNE.png">
 </div>
+</br>
 </br>
 <p>Plot expression of bait genes plus genes from bulk RNAseq and literature on tsne</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gene_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">bait_genes</span><span class="p">,</span><span class="w"> </span><span class="s1">'SOX8'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PAX2'</span><span class="p">,</span><span class="w"> </span><span class="s1">'TFAP2E'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SIX1'</span><span class="p">,</span><span class="w"> </span><span class="s1">'ZBTB16'</span><span class="p">,</span><span class="w"> </span><span class="s1">'FOXG1'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PDLIM1'</span><span class="p">)</span><span class="w">
@@ -817,6 +829,7 @@ all tSNEs</a></p>
 <div id="oep_PDLIM1" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PDLIM1_TSNE.png">
 </div>
+</br>
 </br>
 <p>Plot tSNE co-expression plots</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gene_pairs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"FOXI3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"LMX1A"</span><span class="p">),</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"TFAP2E"</span><span class="p">,</span><span class="w"> </span><span class="s2">"LMX1A"</span><span class="p">),</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"FOXI3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"SOX8"</span><span class="p">),</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"TFAP2E"</span><span class="p">,</span><span class="w"> </span><span class="s2">"SOX8"</span><span class="p">))</span><span class="w">
@@ -878,6 +891,7 @@ all tSNEs</a></p>
 </span><span class="c1"># Root cells to earliest "State" (ie DDRTree branch) - which is stage 8</span><span class="w">
 </span><span class="n">HSMM</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">orderCells</span><span class="p">(</span><span class="n">HSMM</span><span class="p">,</span><span class="w"> </span><span class="n">root_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">which.max</span><span class="p">(</span><span class="n">table</span><span class="p">(</span><span class="n">pData</span><span class="p">(</span><span class="n">HSMM</span><span class="p">)</span><span class="o">$</span><span class="n">State</span><span class="p">,</span><span class="w"> </span><span class="n">pData</span><span class="p">(</span><span class="n">HSMM</span><span class="p">)</span><span class="o">$</span><span class="n">timepoint</span><span class="p">)[,</span><span class="w"> </span><span class="s2">"8"</span><span class="p">]))</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>Plot gradient gene expression on Monocle embeddings</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"monocle_plots/gradient_plots/"</span><span class="p">)</span><span class="w">
 </span><span class="n">dir.create</span><span class="p">(</span><span class="n">curr_plot_folder</span><span class="p">)</span><span class="w">
@@ -931,6 +945,7 @@ all Monocle gradient plots</a></p>
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PDLIM1.png">
 </div>
 </br>
+</br>
 <p>Plot Monocle co-expression plots</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"monocle_plots/coexpression/"</span><span class="p">)</span><span class="w">
 </span><span class="n">dir.create</span><span class="p">(</span><span class="n">curr_plot_folder</span><span class="p">)</span><span class="w">
@@ -959,6 +974,7 @@ all Monocle gradient plots</a></p>
 <div id="monocle_TFAP2E_SOX8" class="tabcontent">
   <img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_SOX8_co-expression_monocle.png">
 </div>
+</br>
 </br>
 <p>Plot trajectories</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"monocle_plots/"</span><span class="p">)</span><span class="w">
@@ -991,6 +1007,7 @@ all Monocle gradient plots</a></p>
 <div id="Monocle_DDRTree_State_facet" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_State_facet.png">
 </div>
+</br>
 </br>
 <p>Generate a monocle projection plot for each known gene</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"monocle_plots/all_monocle_projections/"</span><span class="p">)</span><span class="w">
@@ -1025,6 +1042,7 @@ all Monocle gradient plots</a></p>
 </span><span class="n">unlink</span><span class="p">(</span><span class="n">curr_plot_folder</span><span class="p">,</span><span class="w"> </span><span class="n">recursive</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">force</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 <p><a href="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/all_monocle_projections.zip" download>Download Monocle plots for all known genes</a></p>
+</br>
 </br>
 <p>Plot dotplot for genes along Monocle branches</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"monocle_plots/"</span><span class="p">)</span><span class="w">
@@ -1084,6 +1102,7 @@ all Monocle gradient plots</a></p>
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 </br>
+</br>
 <p>Plotting the expression of candidate genes, we can easliy classify the Otic, Epibranchial and OEP branches.</p>
 <img class="myImages width_80" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/m_oep_dotplot.png">
 </details>
@@ -1098,6 +1117,7 @@ all Monocle gradient plots</a></p>
 </span><span class="n">epi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"NELL1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"FOXI3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"PDLIM1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"TFAP2E"</span><span class="p">)</span><span class="w">
 
 </span></code></pre></div></div>
+</br>
 <p>For each gene pair we calculate the proportion of cells which express both genes in each Monocle branch.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># generate gene pairs for coexpression</span><span class="w">
 </span><span class="n">comb</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">t</span><span class="p">(</span><span class="n">combn</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">otic</span><span class="p">,</span><span class="w"> </span><span class="n">epi</span><span class="p">),</span><span class="w"> </span><span class="m">2</span><span class="p">))</span><span class="w">
@@ -1117,6 +1137,7 @@ all Monocle gradient plots</a></p>
 </span><span class="c1"># rename dataframe columns</span><span class="w">
 </span><span class="n">colnames</span><span class="p">(</span><span class="n">coexpression_data</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span><span class="w"> </span><span class="s2">"comparison"</span><span class="p">,</span><span class="w"> </span><span class="s2">"branch"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>We then carry out a non-parametric Kruskal Wallis test to compare the proportions of cells co-expressing pairs of genes in each Monocle branch.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># test co-expression in OEP lineage and epibranchial/otic branches</span><span class="w">
 </span><span class="n">coexpression_stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">coexpression_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
@@ -1132,6 +1153,7 @@ all Monocle gradient plots</a></p>
 </span><span class="n">lapply</span><span class="p">(</span><span class="n">coexpression_stats</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'OEP'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Otic"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">wilcox.test</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">branch</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.</span><span class="p">))</span><span class="w">
 </span><span class="n">lapply</span><span class="p">(</span><span class="n">coexpression_stats</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'OEP'</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"Epib"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">wilcox.test</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">branch</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">.</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>We calculate the average proportion of cells co-expressing pairs of genes and plot the output.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># calculate mean value per group and SD for plotting bar plot</span><span class="w">
 </span><span class="n">plot_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">coexpression_data</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
@@ -1247,6 +1269,7 @@ all Monocle gradient plots</a></p>
 </span></code></pre></div></div>
 <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam.png" width="40%">
 </br>
+</br>
 <p>Plot BEAM for original favourite genes</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">curr_plot_folder</span><span class="p">,</span><span class="w"> </span><span class="s1">'Monocle_Beam_knownGenes.png'</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">beam_hm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_genes_branched_heatmap</span><span class="p">(</span><span class="n">HSMM</span><span class="p">[</span><span class="n">m_oep</span><span class="o">$</span><span class="n">favorite_genes</span><span class="p">,],</span><span class="w">
@@ -1260,6 +1283,7 @@ all Monocle gradient plots</a></p>
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 <img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam_knownGenes.png">
+</br>
 </br>
 <p>Plot BEAM for selected markers</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">beam_gene_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">gene_list</span><span class="p">,</span><span class="w"> </span><span class="s1">'SOX13'</span><span class="p">,</span><span class="w"> </span><span class="s1">'TFAP2A'</span><span class="p">,</span><span class="w"> </span><span class="s1">'GATA3'</span><span class="p">,</span><span class="w"> </span><span class="s1">'EPHA4'</span><span class="p">,</span><span class="w"> </span><span class="s1">'DLX5'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PRDM1'</span><span class="p">,</span><span class="w"> </span><span class="s1">'PRDM12'</span><span class="p">,</span><span class="w"> </span><span class="s1">'EYA1'</span><span class="p">,</span><span class="w"> </span><span class="s1">'EYA2'</span><span class="p">,</span><span class="w"> </span><span class="s1">'ETV4'</span><span class="p">)</span><span class="w">
@@ -1317,6 +1341,7 @@ all Monocle gradient plots</a></p>
   </span><span class="n">x</span><span class="w">
 </span><span class="p">})</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>Extract count matrices for spliced, unspliced and spanning reads, and calculate RNA velocity</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># exonic read (spliced) expression matrix</span><span class="w">
 </span><span class="n">emat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">m_oep_velocyto_dat</span><span class="o">$</span><span class="n">spliced</span><span class="w">
@@ -1328,6 +1353,7 @@ all Monocle gradient plots</a></p>
 </span><span class="c1"># calculate cell velocity</span><span class="w">
 </span><span class="n">rvel</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gene.relative.velocity.estimates</span><span class="p">(</span><span class="n">emat</span><span class="p">,</span><span class="n">nmat</span><span class="p">,</span><span class="n">smat</span><span class="o">=</span><span class="n">smat</span><span class="p">,</span><span class="w"> </span><span class="n">kCells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="n">diagonal.quantiles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">fit.quantile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">,</span><span class="w"> </span><span class="n">n.cores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ncores</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>Plot RNA velocity on tSNE embeddings for cell clusters</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># get tsne embeddings for m_oep cells</span><span class="w">
 </span><span class="n">tsne.embeddings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tsne_embeddings</span><span class="p">(</span><span class="n">m_oep</span><span class="p">,</span><span class="w"> </span><span class="n">m_oep</span><span class="o">$</span><span class="n">topCorr_DR</span><span class="o">$</span><span class="n">genemodules.selected</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span><span class="w"> </span><span class="n">perplexity</span><span class="o">=</span><span class="n">perp</span><span class="p">,</span><span class="w"> </span><span class="n">pca</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">)</span><span class="w">
@@ -1373,6 +1399,7 @@ all Monocle gradient plots</a></p>
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_vector.png">
 </div>
 </br>
+</br>
 <p>Plot RNA velocity on tSNE embeddings for developmental stage</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
 </span><span class="c1"># plot vector map on stage</span><span class="w">
@@ -1411,6 +1438,7 @@ all Monocle gradient plots</a></p>
 <div id="OEP_subset_velocity_stage_vector" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_vector.png">
 </div>
+</br>
 </br>
 <p>Plot RNA velocity on Monocle embeddings for cell clusters</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># return velocity object to plot with ggplot</span><span class="w">
@@ -1465,6 +1493,7 @@ all Monocle gradient plots</a></p>
 <div id="Monocle_velocity_clusters_vector" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_vector.png">
 </div>
+</br>
 </br>
 <p>Plot RNA velocity on Monocle embeddings for developmental stage</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">

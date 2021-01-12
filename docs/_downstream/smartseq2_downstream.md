@@ -234,6 +234,8 @@ annotations = list(
 m$excludeCellsFromIds(which(m$getCellsNames() %in% unlist(annotations)))
 ```
 
+</br>
+
 Remove cells with more than 6% of mitochondrial read counts
 
 ```R
@@ -309,9 +311,11 @@ dir.create(curr_plot_folder)
 corr.mat = fastCor(t(m$getReadcounts(data_status='Normalized')), method="spearman")
 ```
 
-Identification of modules of co-correlated genes
+</br>
 
-This feature is the prime reason for using the Antler package. This enables us to heirarchically cluster genes based on gene-gene correlation providing sets of co-correlated genes. Poor quality clusters are then filtered unbiasedly through iterative filtering/clustering.
+**_Identification of modules of co-correlated genes_**
+
+This feature is the prime reason for using the Antler package. Using the Antler package, we are able to cluster genes and identify sets of co-correlated genes termed _gene modules_. This works by heirarchically clustering a gene-gene correlation matrix, followed by iterative filtering of poor quality clusters.
 
 For further information on Antler gene module identification, click [here](https://juliendelile.github.io/Antler/articles/Transcriptomic-summary.html#gene-modules-identification).
 
@@ -337,6 +341,8 @@ m$identifyGeneModules(
 
 names(m$topCorr_DR$genemodules) <- paste0("GM ", seq(length(m$topCorr_DR$genemodules)))
 ```
+
+</br>
 
 Plot gene modules
 
@@ -369,6 +375,8 @@ PDF</a>
 gene module list</a>
 
 <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_topCorr_DR.genemodules_Normalized_logscaled.png">
+
+</br>
 
 </br>
 
@@ -442,6 +450,8 @@ gene module list</a>
 
 </br>
 
+</br>
+
 Plot tSNEs of cell clusters and developmental stage
 
 ```R
@@ -477,6 +487,8 @@ graphics.off()
 <div id="allcells_stage_TSNE" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_stage_TSNE.png">
 </div>
+
+</br>
 
 </br>
 
@@ -551,6 +563,8 @@ graphics.off()
 <div id="all_GFP" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/GFP_TSNE.png">
 </div>
+
+</br>
 
 </br>
 
@@ -637,6 +651,8 @@ m_oep$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRU
 m_oep$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_status='Normalized')
 ```
 
+</br>
+
 Calculate and plot gene modules for OEPs
 
 ```R
@@ -686,6 +702,10 @@ gene module list</a>
 
 <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules_Normalized_logscaled.png">
 
+</br>
+
+</br>
+
 Select gene modules based on the presence of genes known to be involved in otic and epibranchial differentiation and re-cluster cells
 
 ```R
@@ -729,6 +749,8 @@ gene module list</a>
 
 </br>
 
+</br>
+
 Plot tSNEs of cell clusters and developmental stage
 
 ```R
@@ -762,6 +784,8 @@ graphics.off()
 <div id="oep_stage_TSNE" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_stage_TSNE.png">
 </div>
+
+</br>
 
 </br>
 
@@ -821,6 +845,8 @@ all tSNEs</a>
 <div id="oep_PDLIM1" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PDLIM1_TSNE.png">
 </div>
+
+</br>
 
 </br>
 
@@ -901,6 +927,8 @@ HSMM <- orderCells(HSMM)
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 ```
 
+</br>
+
 Plot gradient gene expression on Monocle embeddings
 
 ```R
@@ -968,6 +996,8 @@ all Monocle gradient plots</a>
 
 </br>
 
+</br>
+
 Plot Monocle co-expression plots
 
 ```R
@@ -1004,6 +1034,8 @@ lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_D
 <div id="monocle_TFAP2E_SOX8" class="tabcontent">
   <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_SOX8_co-expression_monocle.png">
 </div>
+
+</br>
 
 </br>
 
@@ -1048,6 +1080,8 @@ graphics.off()
 
 </br>
 
+</br>
+
 Generate a monocle projection plot for each known gene
 
 ```R
@@ -1084,6 +1118,8 @@ unlink(curr_plot_folder, recursive=TRUE, force=TRUE)
 ```
 
 <a href="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/all_monocle_projections.zip" download>Download Monocle plots for all known genes</a>
+
+</br>
 
 </br>
 
@@ -1149,6 +1185,8 @@ graphics.off()
 
 </br>
 
+</br>
+
 Plotting the expression of candidate genes, we can easliy classify the Otic, Epibranchial and OEP branches.
 
 <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/m_oep_dotplot.png">
@@ -1174,6 +1212,8 @@ epi = c("NELL1", "FOXI3", "PDLIM1", "TFAP2E")
 
 ```
 
+</br>
+
 For each gene pair we calculate the proportion of cells which express both genes in each Monocle branch.
 
 ```R
@@ -1196,6 +1236,8 @@ for(pair in 1:nrow(comb)){
 colnames(coexpression_data) = c("value", "comparison", "branch")
 ```
 
+</br>
+
 We then carry out a non-parametric Kruskal Wallis test to compare the proportions of cells co-expressing pairs of genes in each Monocle branch.
 
 ```R
@@ -1213,6 +1255,8 @@ lapply(coexpression_stats, function(x) kruskal.test(value ~ branch, data = x))
 lapply(coexpression_stats, function(x) filter(x, branch == 'OEP' | branch == "Otic") %>% wilcox.test(value ~ branch, data = .))
 lapply(coexpression_stats, function(x) filter(x, branch == 'OEP' | branch == "Epib") %>% wilcox.test(value ~ branch, data = .))
 ```
+
+</br>
 
 We calculate the average proportion of cells co-expressing pairs of genes and plot the output.
 
@@ -1345,6 +1389,8 @@ write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(curr_plot_folder, 'beam_scor
 
 </br>
 
+</br>
+
 Plot BEAM for original favourite genes
 
 ```R
@@ -1361,6 +1407,8 @@ graphics.off()
 ```
 
 <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam_knownGenes.png">
+
+</br>
 
 </br>
 
@@ -1432,6 +1480,8 @@ m_oep_velocyto_dat <- lapply(m_oep_velocyto_dat, function(x){
 })
 ```
 
+</br>
+
 Extract count matrices for spliced, unspliced and spanning reads, and calculate RNA velocity
 
 ```R
@@ -1445,6 +1495,8 @@ smat <- m_oep_velocyto_dat$spanning
 # calculate cell velocity
 rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, diagonal.quantiles = TRUE, fit.quantile = 0.05, n.cores = ncores)
 ```
+
+</br>
 
 Plot RNA velocity on tSNE embeddings for cell clusters
 
@@ -1499,6 +1551,8 @@ graphics.off()
 
 </br>
 
+</br>
+
 Plot RNA velocity on tSNE embeddings for developmental stage
 
 ```R
@@ -1543,6 +1597,8 @@ graphics.off()
 <div id="OEP_subset_velocity_stage_vector" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_vector.png">
 </div>
+
+</br>
 
 </br>
 
@@ -1605,6 +1661,8 @@ graphics.off()
 <div id="Monocle_velocity_clusters_vector" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_vector.png">
 </div>
+
+</br>
 
 </br>
 
