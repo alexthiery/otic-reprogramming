@@ -37,3 +37,7 @@ collections:
   general:
     output: true
     permalink: /general/:path/
+
+  home:
+    output: true
+    permalink: /home/:path/
