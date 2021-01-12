@@ -191,7 +191,7 @@
 <li><a href="#enhancer_profile">Plotting putative enhancer profile</a></li>
 <li><a href="#motif_enrichment">Motif enrichment analysis from Homer output</a></li>
 </ul>
-<details open><summary class="simple">Expand enhancer discovery sub-workflow</summary>
+<details open><summary class="simple">Collapse enhancer discovery sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
@@ -263,7 +263,7 @@
 </details>
 <hr />
 <br/>
-<h2 id="plotting-peak-annotation-frequencya-nameannotationfrequencya">Plotting peak annotation frequency<a name="annotation_frequency"></a></h2>
+<h3 id="plotting-peak-annotation-frequencya-nameannotationfrequencya">Plotting peak annotation frequency<a name="annotation_frequency"></a></h3>
 </br>
 <details><summary class="box">Code</summary>
 <p>
@@ -298,10 +298,10 @@
 </span></code></pre></div></div>
 </details>
 </br>
-<img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/peak_annotations_frequency/output/peak_annotation_frequency.png" width="60%">
+<img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/peak_annotations_frequency/output/peak_annotation_frequency.png">
 <hr />
 <br/>
-<h2 id="functional-enrichment-analysisa-namefunctionalenrichmenta">Functional enrichment analysis<a name="functional_enrichment"></a></h2>
+<h3 id="functional-enrichment-analysisa-namefunctionalenrichmenta">Functional enrichment analysis<a name="functional_enrichment"></a></h3>
 </br>
 <details><summary class="box">Code</summary>
 <p>
@@ -348,10 +348,10 @@
 </span></code></pre></div></div>
 </details>
 </br>
-<img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/functional_enrichment_analysis/output/functional_enrichment.png" width="80%">
+<img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/functional_enrichment_analysis/output/functional_enrichment.png">
 <hr />
 <br/>
-<h2 id="plotting-putative-enhancer-profilea-nameenhancerprofilea">Plotting putative enhancer profile<a name="enhancer_profile"></a></h2>
+<h3 id="plotting-putative-enhancer-profilea-nameenhancerprofilea">Plotting putative enhancer profile<a name="enhancer_profile"></a></h3>
 </br>
 <details><summary class="box">Code</summary>
 <p>
@@ -409,15 +409,16 @@
   <button class="tablinks" onclick="openTab(event, 'enhancer_profile')">Enhancer profile</button>
   <button class="tablinks" onclick="openTab(event, 'enhancer_heatmap')">Enhancer heatmap</button>
 </div>
+<br/>
 <div id="enhancer_profile" class="tabcontent">
-  <img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/metaprofile.png" width="80%">
+  <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/metaprofile.png">
 </div>
 <div id="enhancer_heatmap" class="tabcontent">
-  <img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/heatmap.png" width="80%">
+  <img class="myImages" id="myImg"  src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/heatmap.png">
 </div>
 <hr />
 <br/>
-<h2 id="motif-enrichment-analysis-from-homer-outputa-namemotifenrichmenta">Motif enrichment analysis from Homer output<a name="motif_enrichment"></a></h2>
+<h3 id="motif-enrichment-analysis-from-homer-outputa-namemotifenrichmenta">Motif enrichment analysis from Homer output<a name="motif_enrichment"></a></h3>
 </br>
 <details><summary class="box">Code</summary>
 <p>
@@ -484,7 +485,16 @@
 </span></code></pre></div></div>
 </details>
 </br>
-<img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png" width="65%">
+<img class="myImages width_40" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png">
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <!-- The Close Button -->
+<p><span class="close">×</span></p>
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
 
 </div>
 </div>

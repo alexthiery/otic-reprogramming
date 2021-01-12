@@ -194,3 +194,26 @@ li.sidebar-nav-item:hover .sidebar-nav-sub-item {
     width: 100%;
   }
 }
+
+.myImages {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 65%;
+}
+
+.width_40 {
+  width: 40%;
+}
+
+.width_50 {
+  width: 50%;
+}
+
+.width_80 {
+  width: 80%;
+}
+
+.width_90 {
+  width: 90%;
+}

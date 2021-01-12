@@ -134,6 +134,8 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
   <button class="tablinks" onclick="openTab(event, 'Genes per cell-pre')">Genes per cell</button>
 </div>
 
+</br>
+
 <div id="Cells per stage-pre" class="tabcontent">
   <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/preQC_statistics_cellNumber_timepoint_by_timepoint.png">
 </div>
@@ -232,6 +234,8 @@ annotations = list(
 m$excludeCellsFromIds(which(m$getCellsNames() %in% unlist(annotations)))
 ```
 
+</br>
+
 Remove cells with more than 6% of mitochondrial read counts
 
 ```R
@@ -255,6 +259,8 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
   <button class="tablinks" onclick="openTab(event, 'Readcounts per cell-post')">Readcounts per cell</button>
   <button class="tablinks" onclick="openTab(event, 'Genes per cell-post')">Genes per cell</button>
 </div>
+
+</br>
 
 <div id="Cells per stage-post" class="tabcontent">
   <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/postQC_statistics_cellNumber_timepoint_by_timepoint.png">
@@ -305,9 +311,11 @@ dir.create(curr_plot_folder)
 corr.mat = fastCor(t(m$getReadcounts(data_status='Normalized')), method="spearman")
 ```
 
-Identification of modules of co-correlated genes
+</br>
 
-This feature is the prime reason for using the Antler package. This enables us to heirarchically cluster genes based on gene-gene correlation providing sets of co-correlated genes. Poor quality clusters are then filtered unbiasedly through iterative filtering/clustering.
+**_Identification of modules of co-correlated genes_**
+
+This feature is the prime reason for using the Antler package. Using the Antler package, we are able to cluster genes and identify sets of co-correlated genes termed _gene modules_. This works by heirarchically clustering a gene-gene correlation matrix, followed by iterative filtering of poor quality clusters.
 
 For further information on Antler gene module identification, click [here](https://juliendelile.github.io/Antler/articles/Transcriptomic-summary.html#gene-modules-identification).
 
@@ -333,6 +341,8 @@ m$identifyGeneModules(
 
 names(m$topCorr_DR$genemodules) <- paste0("GM ", seq(length(m$topCorr_DR$genemodules)))
 ```
+
+</br>
 
 Plot gene modules
 
@@ -364,7 +374,9 @@ PDF</a>
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_allGms_topCorr_DR.genemodules.txt" download>Download
 gene module list</a>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_topCorr_DR.genemodules_Normalized_logscaled.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_topCorr_DR.genemodules_Normalized_logscaled.png">
+
+</br>
 
 </br>
 
@@ -434,7 +446,9 @@ PDF</a>
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_baitGMs_dR.genemodules" download>Download
 gene module list</a>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCellsManualGMselection_dR.genemodules_Normalized_logscaled.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCellsManualGMselection_dR.genemodules_Normalized_logscaled.png">
+
+</br>
 
 </br>
 
@@ -464,13 +478,17 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'allcells_stage_TSNE')">Developmental stage tSNE</button>
 </div>
 
+</br>
+
 <div id="allcells_clusters_TSNE" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_clusters_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_clusters_TSNE.png">
 </div>
 
 <div id="allcells_stage_TSNE" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_stage_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_stage_TSNE.png">
 </div>
+
+</br>
 
 </br>
 
@@ -506,44 +524,47 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'all_SOX21')">Sox21</button>
   <button class="tablinks" onclick="openTab(event, 'all_SIX1')">Six1</button>
   <button class="tablinks" onclick="openTab(event, 'all_GFP')">GFP</button>
-
 </div>
 
+</br>
+
 <div id="all_SOX2" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX2_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX2_TSNE.png">
 </div>
 
 <div id="all_SOX10" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX10_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX10_TSNE.png">
 </div>
 
 <div id="all_SOX8" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX8_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX8_TSNE.png">
 </div>
 
 <div id="all_PAX7" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/PAX7_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/PAX7_TSNE.png">
 </div>
 
 <div id="all_PAX2" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/PAX2_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/PAX2_TSNE.png">
 </div>
 
 <div id="all_LMX1A" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/LMX1A_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/LMX1A_TSNE.png">
 </div>
 
 <div id="all_SOX21" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX21_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX21_TSNE.png">
 </div>
 
 <div id="all_SIX1" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SIX1_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SIX1_TSNE.png">
 </div>
 
 <div id="all_GFP" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/GFP_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/GFP_TSNE.png">
 </div>
+
+</br>
 
 </br>
 
@@ -601,7 +622,7 @@ ggplot(dotplot_data, aes(x=genename, y=celltype, size=`Proportion of Cells Expre
 graphics.off()
 ```
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/all_cells_dotplot.png %})
+<img class="myImages width_90" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/all_cells_dotplot.png">
 
 </details>
 
@@ -629,6 +650,8 @@ m_oep$excludeCellFromClusterIds(cluster_ids=c(3:5), used_clusters='Mansel', data
 m_oep$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
 m_oep$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_status='Normalized')
 ```
+
+</br>
 
 Calculate and plot gene modules for OEPs
 
@@ -677,7 +700,11 @@ PDF</a>
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules.txt" download>Download
 gene module list</a>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules_Normalized_logscaled.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules_Normalized_logscaled.png">
+
+</br>
+
+</br>
 
 Select gene modules based on the presence of genes known to be involved in otic and epibranchial differentiation and re-cluster cells
 
@@ -718,7 +745,9 @@ PDF</a>
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.txt" download>Download
 gene module list</a>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.selected_Normalized_logscaled.png %})
+<img class="myImages width_90" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.selected_Normalized_logscaled.png">
+
+</br>
 
 </br>
 
@@ -746,13 +775,17 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'oep_stage_TSNE')">Developmental stage tSNE</button>
 </div>
 
+</br>
+
 <div id="oep_clusters_TSNE" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_clusters_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_clusters_TSNE.png">
 </div>
 
 <div id="oep_stage_TSNE" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_stage_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_stage_TSNE.png">
 </div>
+
+</br>
 
 </br>
 
@@ -781,36 +814,39 @@ all tSNEs</a>
   <button class="tablinks" onclick="openTab(event, 'oep_ZBTB16')">ZBTB16</button>
   <button class="tablinks" onclick="openTab(event, 'oep_FOXG1')">FOXG1</button>
   <button class="tablinks" onclick="openTab(event, 'oep_PDLIM1')">PDLIM1</button>
-
 </div>
 
+</br>
+
 <div id="oep_SOX8" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/SOX8_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/SOX8_TSNE.png">
 </div>
 
 <div id="oep_PAX2" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PAX2_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PAX2_TSNE.png">
 </div>
 
 <div id="oep_TFAP2E" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/TFAP2E_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/TFAP2E_TSNE.png">
 </div>
 
 <div id="oep_SIX1" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/SIX1_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/SIX1_TSNE.png">
 </div>
 
 <div id="oep_ZBTB16" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/ZBTB16_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/ZBTB16_TSNE.png">
 </div>
 
 <div id="oep_FOXG1" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXG1_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXG1_TSNE.png">
 </div>
 
 <div id="oep_PDLIM1" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PDLIM1_TSNE.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PDLIM1_TSNE.png">
 </div>
+
+</br>
 
 </br>
 
@@ -828,8 +864,9 @@ seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 15, width = 22, res = 4
   <button class="tablinks" onclick="openTab(event, 'TFAP2E_LMX1A')">TFAP2E/LMX1A</button>
   <button class="tablinks" onclick="openTab(event, 'FOXI3_SOX8')">FOXI3/SOX8</button>
   <button class="tablinks" onclick="openTab(event, 'TFAP2E_SOX8')">TFAP2E/SOX8</button>
-
 </div>
+
+</br>
 
 <div id="FOXI3_LMX1A" class="tabcontent">
   <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXI3_LMX1A_co-expression_TSNE.png">
@@ -890,6 +927,8 @@ HSMM <- orderCells(HSMM)
 HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(HSMM)$timepoint)[, "8"]))
 ```
 
+</br>
+
 Plot gradient gene expression on Monocle embeddings
 
 ```R
@@ -923,36 +962,39 @@ all Monocle gradient plots</a>
   <button class="tablinks" onclick="openTab(event, 'monocle_ZBTB16')">ZBTB16</button>
   <button class="tablinks" onclick="openTab(event, 'monocle_FOXG1')">FOXG1</button>
   <button class="tablinks" onclick="openTab(event, 'monocle_PDLIM1')">PDLIM1</button>
-
 </div>
 
+</br>
+
 <div id="monocle_SOX8" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SOX8.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SOX8.png">
 </div>
 
 <div id="monocle_PAX2" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PAX2.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PAX2.png">
 </div>
 
 <div id="monocle_TFAP2E" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_TFAP2E.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_TFAP2E.png">
 </div>
 
 <div id="monocle_SIX1" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SIX1.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SIX1.png">
 </div>
 
 <div id="monocle_ZBTB16" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_ZBTB16.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_ZBTB16.png">
 </div>
 
 <div id="monocle_FOXG1" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_FOXG1.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_FOXG1.png">
 </div>
 
 <div id="monocle_PDLIM1" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PDLIM1.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PDLIM1.png">
 </div>
+
+</br>
 
 </br>
 
@@ -973,8 +1015,9 @@ lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_D
   <button class="tablinks" onclick="openTab(event, 'monocle_TFAP2E_LMX1A')">TFAP2E/LMX1A</button>
   <button class="tablinks" onclick="openTab(event, 'monocle_FOXI3_SOX8')">FOXI3/SOX8</button>
   <button class="tablinks" onclick="openTab(event, 'monocle_TFAP2E_SOX8')">TFAP2E/SOX8</button>
-
 </div>
+
+</br>
 
 <div id="monocle_FOXI3_LMX1A" class="tabcontent">
   <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/FOXI3_LMX1A_co-expression_monocle.png">
@@ -991,6 +1034,8 @@ lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_D
 <div id="monocle_TFAP2E_SOX8" class="tabcontent">
   <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_SOX8_co-expression_monocle.png">
 </div>
+
+</br>
 
 </br>
 
@@ -1023,13 +1068,17 @@ graphics.off()
 
 </div>
 
+</br>
+
 <div id="Monocle_DDRTree_trajectories" class="tabcontent">
   <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_trajectories.png">
 </div>
 
 <div id="Monocle_DDRTree_State_facet" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_State_facet.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_State_facet.png">
 </div>
+
+</br>
 
 </br>
 
@@ -1069,6 +1118,8 @@ unlink(curr_plot_folder, recursive=TRUE, force=TRUE)
 ```
 
 <a href="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/all_monocle_projections.zip" download>Download Monocle plots for all known genes</a>
+
+</br>
 
 </br>
 
@@ -1134,9 +1185,11 @@ graphics.off()
 
 </br>
 
+</br>
+
 Plotting the expression of candidate genes, we can easliy classify the Otic, Epibranchial and OEP branches.
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/m_oep_dotplot.png %})
+<img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/m_oep_dotplot.png">
 
 </details>
 
@@ -1158,6 +1211,8 @@ otic = c("SOX10", "SOX8", "HOMER2", 'LMX1A')
 epi = c("NELL1", "FOXI3", "PDLIM1", "TFAP2E")
 
 ```
+
+</br>
 
 For each gene pair we calculate the proportion of cells which express both genes in each Monocle branch.
 
@@ -1181,6 +1236,8 @@ for(pair in 1:nrow(comb)){
 colnames(coexpression_data) = c("value", "comparison", "branch")
 ```
 
+</br>
+
 We then carry out a non-parametric Kruskal Wallis test to compare the proportions of cells co-expressing pairs of genes in each Monocle branch.
 
 ```R
@@ -1198,6 +1255,8 @@ lapply(coexpression_stats, function(x) kruskal.test(value ~ branch, data = x))
 lapply(coexpression_stats, function(x) filter(x, branch == 'OEP' | branch == "Otic") %>% wilcox.test(value ~ branch, data = .))
 lapply(coexpression_stats, function(x) filter(x, branch == 'OEP' | branch == "Epib") %>% wilcox.test(value ~ branch, data = .))
 ```
+
+</br>
 
 We calculate the average proportion of cells co-expressing pairs of genes and plot the output.
 
@@ -1280,7 +1339,7 @@ graphics.off()
 
 From these three plots we can see that the co-expression of Epibranchial and Otic genes is significantly higher in the OEP branch relative to Otic and Epibranchial branches. This is not the case with the co-expression of pairs of Otic genes or pairs of Epibranchial genes.
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression_test.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression_test.png">
 
 </details>
 
@@ -1326,7 +1385,9 @@ graphics.off()
 write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(curr_plot_folder, 'beam_scores.csv'), row.names=F)
 ```
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam.png %})
+<img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam.png" width="40%">
+
+</br>
 
 </br>
 
@@ -1345,7 +1406,9 @@ beam_hm = plot_genes_branched_heatmap(HSMM[m_oep$favorite_genes,],
 graphics.off()
 ```
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam_knownGenes.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam_knownGenes.png">
+
+</br>
 
 </br>
 
@@ -1368,7 +1431,7 @@ beam_hm = plot_genes_branched_heatmap(HSMM[beam_gene_list,],
 graphics.off()
 ```
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam_selGenes.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/beam/Monocle_Beam_selGenes.png">
 
 </details>
 
@@ -1417,6 +1480,8 @@ m_oep_velocyto_dat <- lapply(m_oep_velocyto_dat, function(x){
 })
 ```
 
+</br>
+
 Extract count matrices for spliced, unspliced and spanning reads, and calculate RNA velocity
 
 ```R
@@ -1430,6 +1495,8 @@ smat <- m_oep_velocyto_dat$spanning
 # calculate cell velocity
 rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, diagonal.quantiles = TRUE, fit.quantile = 0.05, n.cores = ncores)
 ```
+
+</br>
 
 Plot RNA velocity on tSNE embeddings for cell clusters
 
@@ -1472,13 +1539,17 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'OEP_subset_velocity_clusters_vector')">Cell clusters: vector map</button>
 </div>
 
+</br>
+
 <div id="OEP_subset_velocity_clusters_arrows" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_arrows.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_arrows.png">
 </div>
 
 <div id="OEP_subset_velocity_clusters_vector" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_vector.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_vector.png">
 </div>
+
+</br>
 
 </br>
 
@@ -1517,13 +1588,17 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'OEP_subset_velocity_stage_vector')">Developmental stage: vector map</button>
 </div>
 
+</br>
+
 <div id="OEP_subset_velocity_stage_arrows" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_arrows.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_arrows.png">
 </div>
 
 <div id="OEP_subset_velocity_stage_vector" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_vector.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_vector.png">
 </div>
+
+</br>
 
 </br>
 
@@ -1577,13 +1652,17 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'Monocle_velocity_clusters_vector')">Cell clusters: vector map</button>
 </div>
 
+</br>
+
 <div id="Monocle_velocity_clusters_arrows" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_arrows.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_arrows.png">
 </div>
 
 <div id="Monocle_velocity_clusters_vector" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_vector.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_vector.png">
 </div>
+
+</br>
 
 </br>
 
@@ -1633,12 +1712,14 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'Monocle_velocity_stage_vector')">Developmental stage: vector map</button>
 </div>
 
+</br>
+
 <div id="Monocle_velocity_stage_arrows" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_arrows.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_arrows.png">
 </div>
 
 <div id="Monocle_velocity_stage_vector" class="tabcontent">
-  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_vector.png">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_vector.png">
 </div>
 
 </details>

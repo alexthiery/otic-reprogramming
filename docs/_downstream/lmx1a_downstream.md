@@ -133,7 +133,7 @@ graphics.off()
 
 </details>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/dispersion_est.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/dispersion_est.png">
 
 </br>
 
@@ -162,7 +162,7 @@ graphics.off()
 
 </details>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/MA_plot.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/MA_plot.png">
 
 </br>
 
@@ -218,7 +218,7 @@ graphics.off()
 
 </br>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/volcano.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/volcano.png">
 
 </br>
 
@@ -296,6 +296,14 @@ write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, ro
 
 </br>
 
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_1.csv" download>Download
+differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05)</a>
+
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_2.csv" download>Download
+differential expression results for all genes</a>
+
+</br>
+
 </br>
 
 Plot sample-sample distances, PC plot and correlogram to show relationship between samples
@@ -347,16 +355,18 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'Sample PCA')">Sample PCA</button>
 </div>
 
+</br>
+
 <div id="Sample Correlogram" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleCorrelogram.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleCorrelogram.png">
 </div>
 
 <div id="Sample-Sample Distance" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleDist.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleDist.png">
 </div>
 
 <div id="Sample PCA" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SamplePCA.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/SamplePCA.png">
 </div>
 
 </br>
@@ -389,7 +399,7 @@ graphics.off()
 
 </details>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_hm.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_hm.png">
 
 </br>
 
@@ -434,6 +444,11 @@ write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE,
 
 </br>
 
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_3.csv" download>Download TF
+differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05)</a>
+
+</br>
+
 Plot heatmap for differentially expressed transcription factors
 
 <details><summary class="box">Code</summary>
@@ -454,4 +469,18 @@ graphics.off()
 
 </details>
 
-![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_TFs_hm.png %})
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_TFs_hm.png">
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+
+<span class="close">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
