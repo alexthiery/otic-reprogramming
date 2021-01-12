@@ -10,7 +10,7 @@ url: "https://alexthiery.github.io/otic-reprogramming"
 baseurl: "https://alexthiery.github.io/otic-reprogramming"
 
 permalink: pretty
-repository: alexthiery/otic-reprogramming.github.io
+repository: alexthiery/otic-reprogramming
 
 github:
   repo: https://github.com/alexthiery/otic-reprogramming
