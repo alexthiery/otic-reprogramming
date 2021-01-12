@@ -358,10 +358,10 @@ m$plotGeneModules(
 m$writeGeneModules(basename='AllCells_allGms', gms='topCorr_DR.genemodules', folder_path = curr_plot_folder)
 ```
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_topCorr_DR.genemodules_Normalized_logscaled.pdf">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_topCorr_DR.genemodules_Normalized_logscaled.pdf" download>Download
 PDF</a>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_allGms_topCorr_DR.genemodules.txt">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_allGms_topCorr_DR.genemodules.txt" download>Download
 gene module list</a>
 
 ![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_topCorr_DR.genemodules_Normalized_logscaled.png %})
@@ -428,10 +428,10 @@ extra_legend=list("text"=c('ss8-9', 'ss11-12', 'ss14-15'), "colors"=unname(stage
 m2$writeGeneModules(basename='AllCells_baitGMs', gms='dR.genemodules', folder_path = curr_plot_folder)
 ```
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCellsManualGMselection_dR.genemodules_Normalized_logscaled.pdf">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCellsManualGMselection_dR.genemodules_Normalized_logscaled.pdf" download>Download
 PDF</a>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_baitGMs_dR.genemodules">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_baitGMs_dR.genemodules" download>Download
 gene module list</a>
 
 ![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCellsManualGMselection_dR.genemodules_Normalized_logscaled.png %})
@@ -671,10 +671,10 @@ m_oep$plotGeneModules(
 )
 ```
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules_Normalized_logscaled.pdf">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules_Normalized_logscaled.pdf" download>Download
 PDF</a>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules.txt">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules.txt" download>Download
 gene module list</a>
 
 ![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_allGms_topCorr_DR.genemodules_Normalized_logscaled.png %})
@@ -712,10 +712,10 @@ m_oep$plotGeneModules(
 m_oep$writeGeneModules(folder_path = curr_plot_folder, basename='OEP_GMselection', gms='topCorr_DR.genemodules')
 ```
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.selected_Normalized_logscaled.pdf">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.selected_Normalized_logscaled.pdf" download>Download
 PDF</a>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.txt">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.txt" download>Download
 gene module list</a>
 
 ![]({{ site.baseurl }}{% link /assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/OEP_GMselection_topCorr_DR.genemodules.selected_Normalized_logscaled.png %})
@@ -770,7 +770,7 @@ graphics.off()
 }
 ```
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/oep_GOI_tSNEs.zip">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/oep_GOI_tSNEs.zip" download>Download
 all tSNEs</a>
 
 <div class="tab">
@@ -912,7 +912,7 @@ for(gn in gene_list){
 }
 ```
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_GOI.zip">Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_GOI.zip" download>Download
 all Monocle gradient plots</a>
 
 <div class="tab">
@@ -1068,7 +1068,7 @@ system(paste0("zip -rj ", plot_path, "monocle_plots/all_monocle_projections.zip 
 unlink(curr_plot_folder, recursive=TRUE, force=TRUE)
 ```
 
-<a href="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/all_monocle_projections.zip">Download Monocle plots for all known genes</a>
+<a href="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/all_monocle_projections.zip" download>Download Monocle plots for all known genes</a>
 
 </br>
 

@@ -175,8 +175,8 @@
 <p>Our SmartSeq2 single cell RNAseq data is aligned using a custom Nextflow pipeline. This pipeline is built using <a href="https://www.nextflow.io/docs/latest/dsl2.html">Nextflow DSL2</a>, which allows for modularisation and re-usability of each tool.</p>
 <p>Each process is configured to run within a separate container, meaning that package versions are hard coded into the pipeline. In order to change these package versions, the container used will need to be changed within the individual process.</p>
 <p>Each of the processes used in the pipeline can be found by following the going to the path in the <code>include {process} from &quot;&lt;PATH&gt;&quot;</code> statements in each of the workflows below.</p>
-</br>
 <hr />
+</br>
 <h3 id="workflows">Workflows</h3>
 <p>Our custom pipeline integrates both standard alignment and RNA velocity (<a href="http://velocyto.org/">Velocyto</a>).</p>
 <p>For simplicity, the pipeline is split into four sub-workflows:</p>

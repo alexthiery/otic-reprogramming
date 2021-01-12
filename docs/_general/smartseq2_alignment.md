@@ -16,9 +16,9 @@ Each process is configured to run within a separate container, meaning that pack
 
 Each of the processes used in the pipeline can be found by following the going to the path in the `include {process} from "<PATH>"` statements in each of the workflows below.
 
-</br>
-
 ---
+
+</br>
 
 ### Workflows
 
