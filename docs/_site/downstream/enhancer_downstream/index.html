@@ -15,14 +15,14 @@
   </title>
 
   
-  <link rel="canonical" href="https://alexthiery.github.io/otic-reprogramming/https://alexthiery.github.io/otic-reprogramming/downstream/enhancer_downstream/" />
+  <link rel="canonical" href="http://0.0.0.0:4000/downstream/enhancer_downstream/" />
   
 
   <!-- CSS -->
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/poole.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/syntax.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/custom.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/lanyon.css" />
+  <link rel="stylesheet" href="/public/css/poole.css" />
+  <link rel="stylesheet" href="/public/css/syntax.css" />
+  <link rel="stylesheet" href="/public/css/custom.css" />
+  <link rel="stylesheet" href="/public/css/lanyon.css" />
   <link
     rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400"
@@ -34,7 +34,7 @@
     href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
   />
 
-  <link rel="shortcut icon" href="https://alexthiery.github.io/otic-reprogramming/public/favicon.ico" />
+  <link rel="shortcut icon" href="/public/favicon.ico" />
 
   <i class="fas fa-egg"></i>
 
@@ -43,7 +43,7 @@
     rel="alternate"
     type="application/rss+xml"
     title="RSS"
-    href="https://alexthiery.github.io/otic-reprogramming/https://alexthiery.github.io/otic-reprogramming/atom.xml"
+    href="http://0.0.0.0:4000/atom.xml"
   />
 </head>
 
@@ -58,7 +58,7 @@
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <img src="https://alexthiery.github.io/otic-reprogramming/assets/sidebar_icon.png" />
+    <img src="/assets/sidebar_icon.png" />
   </div>
 
   <div id="contact-list" style="text-align: center">
@@ -99,42 +99,42 @@
 
   <!-- sidebar tabs -->
 
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/">Home</a>
+  <a class="sidebar-nav-item" href="/">Home</a>
 
   <!-- add tabs automatically from downstream and general collections-->
 
      
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/general/quick_start/"
+  <a class="sidebar-nav-item" href="/general/quick_start/"
     >Quick start</a
   >
       
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/general/smartseq2_alignment/"
+  <a class="sidebar-nav-item" href="/general/smartseq2_alignment/"
     >SmartSeq2 alignment</a
   >
       
   <li class="sidebar-nav-item">
     
-    <a href="https://alexthiery.github.io/otic-reprogramming/downstream/downstream_intro/">Downstream analysis</a>
+    <a href="/downstream/downstream_intro/">Downstream analysis</a>
     <ul>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/downstream_intro/">Intro</a>
+        <a href="/downstream/downstream_intro/">Intro</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/lmx1a_downstream/">Lmx1a DEA</a>
+        <a href="/downstream/lmx1a_downstream/">Lmx1a DEA</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/smartseq2_downstream/">SmartSeq2 scRNAseq</a>
+        <a href="/downstream/smartseq2_downstream/">SmartSeq2 scRNAseq</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/sox8_downstream/">Sox8 DEA</a>
+        <a href="/downstream/sox8_downstream/">Sox8 DEA</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/enhancer_downstream/">Enhancer discovery</a>
+        <a href="/downstream/enhancer_downstream/">Enhancer discovery</a>
       </li>
       
     </ul>
@@ -160,7 +160,7 @@
       <div class="masthead">
         <div class="container">
           <h3 class="masthead-title">
-            <a href="https://alexthiery.github.io/otic-reprogramming/" title="Home">Otic reprogramming</a>
+            <a href="/" title="Home">Otic reprogramming</a>
             <small>Buzzi et al. 2021</small>
           </h3>
         </div>
@@ -171,7 +171,7 @@
   <!-- <h1 class="page-title">Enhancer_downstream</h1> -->
   <h2 id="enhancer-discovery">Enhancer discovery</h2>
 </br>
-<p>Our enhancer discovery pipeline integrates ChIP (H3K27Ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. <strong>If you would like to re-run the downstream analysis pipeline, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#downstream">here</a>.</strong></p>
+<p>Our enhancer discovery pipeline integrates ChIP (H3K27Ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. <strong>If you would like to re-run the downstream analysis pipeline, follow the instructions <a href="/general/quick_start#downstream">here</a>.</strong></p>
 <hr />
 </br>
 <h3 id="sub-workflow">Sub-workflow</h3>
@@ -181,8 +181,8 @@
 <li>Next, we use Bedtools to subset ATAC+H3K27Ac-H3K27me3 peaks.</li>
 <li>Finally, we annotate the remaining peaks to the nearest protein coding gene before removing peaks which fall within promoter or exonic regions, as they are unlikely to be active enhancers.</li>
 </ul>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers.bed" download>Download putative enhancer co-ordinates</a></p>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers_annotated.txt download">Download annotated putative enhancers</a></p>
+<p><a href="/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers.bed" download>Download putative enhancer co-ordinates</a></p>
+<p><a href="/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers_annotated.txt download">Download annotated putative enhancers</a></p>
 </br>
 <p>The sub-workflow also integrates custom R scripts for:</p>
 <ul>
@@ -298,7 +298,7 @@
 </span></code></pre></div></div>
 </details>
 </br>
-<img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/peak_annotations_frequency/output/peak_annotation_frequency.png" width="60%">
+<img src="/assets/output/NF-downstream_analysis/enhancer_analysis/peak_annotations_frequency/output/peak_annotation_frequency.png" width="60%">
 <hr />
 <br/>
 <h2 id="functional-enrichment-analysisa-namefunctionalenrichmenta">Functional enrichment analysis<a name="functional_enrichment"></a></h2>
@@ -348,7 +348,7 @@
 </span></code></pre></div></div>
 </details>
 </br>
-<img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/functional_enrichment_analysis/output/functional_enrichment.png" width="80%">
+<img src="/assets/output/NF-downstream_analysis/enhancer_analysis/functional_enrichment_analysis/output/functional_enrichment.png" width="80%">
 <hr />
 <br/>
 <h2 id="plotting-putative-enhancer-profilea-nameenhancerprofilea">Plotting putative enhancer profile<a name="enhancer_profile"></a></h2>
@@ -410,10 +410,10 @@
   <button class="tablinks" onclick="openTab(event, 'enhancer_heatmap')">Enhancer heatmap</button>
 </div>
 <div id="enhancer_profile" class="tabcontent">
-  <img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/metaprofile.png" width="80%">
+  <img src="/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/metaprofile.png" width="80%">
 </div>
 <div id="enhancer_heatmap" class="tabcontent">
-  <img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/heatmap.png" width="80%">
+  <img src="/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/heatmap.png" width="80%">
 </div>
 <hr />
 <br/>
@@ -484,7 +484,7 @@
 </span></code></pre></div></div>
 </details>
 </br>
-<img src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png" width="65%">
+<img src="/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png" width="65%">
 
 </div>
 </div>
@@ -492,6 +492,6 @@
 
     <label for="sidebar-checkbox" class="sidebar-toggle"></label>
 
-    <script src="https://alexthiery.github.io/otic-reprogramming/public/js/script.js"></script>
+    <script src="/public/js/script.js"></script>
   </body>
 </html>
