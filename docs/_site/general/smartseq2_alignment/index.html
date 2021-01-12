@@ -188,7 +188,7 @@
 </ul>
 </br>
 <p>The main workflow integrates each of these sub-workflows.</p>
-<details open><summary class="simple">Expand main workflow</summary>
+<details open><summary class="simple">Collapse main workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
@@ -233,7 +233,7 @@
 </br>
 <p><strong><em>Modify genome to add GFP sequence</em></strong><a name="GFP"></a></p>
 <p>This sub-workdflow takes a GFP sequence from the base repository and appends the genome provided in order to determine the number of GFP reads downstream.</p>
-<details open><summary class="simple">Expand sub-workflow</summary>
+<details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
@@ -267,7 +267,7 @@
 </br>
 <p><strong><em>Align reads</em></strong><a name="align"></a></p>
 <p>First we trim adaptor sequences using Cutadapt v2.10. We then align reads to GalGal6 with HISAT2 v2.2.1. Samtools v1.10 is used to convert SAM to BAM, before finally obtaining gene counts with HTSeq v0.12.4.</p>
-<details open><summary class="simple">Expand sub-workflow</summary>
+<details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
@@ -315,7 +315,7 @@
 </br>
 <p><strong><em>Process read counts for input into Antler</em></strong><a name="process_reads"></a></p>
 <p>The merge counts process is a custom R script which formats cell names and generates the phenoData.csv, assayData.csv and gfpData.csv required by our Antler downstream pipeline.</p>
-<details open><summary class="simple">Expand sub-workflow</summary>
+<details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
@@ -349,7 +349,7 @@
 </code></pre></div></div>
 </details>
 </br>
-<details><summary class="simple">Expand merge_counts.R</summary>
+<details><summary class="simple">Collapse merge_counts.R</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env Rscript</span><span class="w">
 
@@ -428,7 +428,7 @@
 </br>
 <p><strong><em>Run RNA velocity</em></strong><a name="velocyto"></a></p>
 <p>The RNA velocity sub-workflow takes the output BAM files from HISAT2 and groups all the cells into a single channel input. We then run Velocyto which generates a single Loom file output containing spliced, unspliced and spanning reads.</p>
-<details open><summary class="simple">Expand sub-workflow</summary>
+<details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>

@@ -35,7 +35,7 @@ For simplicity, the pipeline is split into four sub-workflows:
 
 The main workflow integrates each of these sub-workflows.
 
-<details open><summary class="simple">Expand main workflow</summary>
+<details open><summary class="simple">Collapse main workflow</summary>
 <p>
 
 ```groovy
@@ -88,7 +88,7 @@ workflow {
 
 This sub-workdflow takes a GFP sequence from the base repository and appends the genome provided in order to determine the number of GFP reads downstream.
 
-<details open><summary class="simple">Expand sub-workflow</summary>
+<details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 
 ```groovy
@@ -130,7 +130,7 @@ workflow add_gfp {
 
 First we trim adaptor sequences using Cutadapt v2.10. We then align reads to GalGal6 with HISAT2 v2.2.1. Samtools v1.10 is used to convert SAM to BAM, before finally obtaining gene counts with HTSeq v0.12.4.
 
-<details open><summary class="simple">Expand sub-workflow</summary>
+<details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 
 ```groovy
@@ -186,7 +186,7 @@ workflow smartseq2_align {
 
 The merge counts process is a custom R script which formats cell names and generates the phenoData.csv, assayData.csv and gfpData.csv required by our Antler downstream pipeline.
 
-<details open><summary class="simple">Expand sub-workflow</summary>
+<details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 
 ```groovy
@@ -225,7 +225,7 @@ workflow process_counts {
 
 </br>
 
-<details><summary class="simple">Expand merge_counts.R</summary>
+<details><summary class="simple">Collapse merge_counts.R</summary>
 <p>
 
 ```R
@@ -312,7 +312,7 @@ write.table(x=phenoData, file=paste0(output_path, 'phenoData.csv'), sep='\t', ro
 
 The RNA velocity sub-workflow takes the output BAM files from HISAT2 and groups all the cells into a single channel input. We then run Velocyto which generates a single Loom file output containing spliced, unspliced and spanning reads.
 
-<details open><summary class="simple">Expand sub-workflow</summary>
+<details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 
 ```groovy

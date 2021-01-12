@@ -135,15 +135,15 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
 </div>
 
 <div id="Cells per stage-pre" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/preQC_statistics_cellNumber_timepoint_by_timepoint.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/preQC_statistics_cellNumber_timepoint_by_timepoint.png">
 </div>
 
 <div id="Readcounts per cell-pre" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/preQC_statistics_counts_timepoint_by_timepoint.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/preQC_statistics_counts_timepoint_by_timepoint.png">
 </div>
 
 <div id="Genes per cell-pre" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/preQC_statistics_geneCounts_timepoint_by_timepoint.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/preQC_statistics_geneCounts_timepoint_by_timepoint.png">
 </div>
 
 </br>
@@ -257,15 +257,15 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
 </div>
 
 <div id="Cells per stage-post" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/postQC_statistics_cellNumber_timepoint_by_timepoint.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/postQC_statistics_cellNumber_timepoint_by_timepoint.png">
 </div>
 
 <div id="Readcounts per cell-post" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/postQC_statistics_counts_timepoint_by_timepoint.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/postQC_statistics_counts_timepoint_by_timepoint.png">
 </div>
 
 <div id="Genes per cell-post" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/postQC_statistics_geneCounts_timepoint_by_timepoint.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/postQC_statistics_geneCounts_timepoint_by_timepoint.png">
 </div>
 
 </br>
@@ -465,11 +465,11 @@ graphics.off()
 </div>
 
 <div id="allcells_clusters_TSNE" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_clusters_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_clusters_TSNE.png">
 </div>
 
 <div id="allcells_stage_TSNE" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_stage_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/allcells_stage_TSNE.png">
 </div>
 
 </br>
@@ -510,39 +510,39 @@ graphics.off()
 </div>
 
 <div id="all_SOX2" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX2_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX2_TSNE.png">
 </div>
 
 <div id="all_SOX10" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX10_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX10_TSNE.png">
 </div>
 
 <div id="all_SOX8" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX8_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX8_TSNE.png">
 </div>
 
 <div id="all_PAX7" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/PAX7_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/PAX7_TSNE.png">
 </div>
 
 <div id="all_PAX2" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/PAX2_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/PAX2_TSNE.png">
 </div>
 
 <div id="all_LMX1A" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/LMX1A_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/LMX1A_TSNE.png">
 </div>
 
 <div id="all_SOX21" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX21_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX21_TSNE.png">
 </div>
 
 <div id="all_SIX1" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SIX1_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SIX1_TSNE.png">
 </div>
 
 <div id="all_GFP" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/GFP_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/GFP_TSNE.png">
 </div>
 
 </br>
@@ -747,11 +747,11 @@ graphics.off()
 </div>
 
 <div id="oep_clusters_TSNE" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_clusters_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_clusters_TSNE.png">
 </div>
 
 <div id="oep_stage_TSNE" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_stage_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/OEP_stage_TSNE.png">
 </div>
 
 </br>
@@ -785,31 +785,31 @@ all tSNEs</a>
 </div>
 
 <div id="oep_SOX8" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/SOX8_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/SOX8_TSNE.png">
 </div>
 
 <div id="oep_PAX2" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PAX2_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PAX2_TSNE.png">
 </div>
 
 <div id="oep_TFAP2E" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/TFAP2E_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/TFAP2E_TSNE.png">
 </div>
 
 <div id="oep_SIX1" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/SIX1_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/SIX1_TSNE.png">
 </div>
 
 <div id="oep_ZBTB16" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/ZBTB16_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/ZBTB16_TSNE.png">
 </div>
 
 <div id="oep_FOXG1" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXG1_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXG1_TSNE.png">
 </div>
 
 <div id="oep_PDLIM1" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PDLIM1_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/PDLIM1_TSNE.png">
 </div>
 
 </br>
@@ -832,19 +832,19 @@ seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 15, width = 22, res = 4
 </div>
 
 <div id="FOXI3_LMX1A" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXI3_LMX1A_co-expression_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXI3_LMX1A_co-expression_TSNE.png">
 </div>
 
 <div id="TFAP2E_LMX1A" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/TFAP2E_LMX1A_co-expression_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/TFAP2E_LMX1A_co-expression_TSNE.png">
 </div>
 
 <div id="FOXI3_SOX8" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXI3_SOX8_co-expression_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/FOXI3_SOX8_co-expression_TSNE.png">
 </div>
 
 <div id="TFAP2E_SOX8" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/TFAP2E_SOX8_co-expression_TSNE.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/tsne/TFAP2E_SOX8_co-expression_TSNE.png">
 </div>
 
 </details>
@@ -927,31 +927,31 @@ all Monocle gradient plots</a>
 </div>
 
 <div id="monocle_SOX8" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SOX8.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SOX8.png">
 </div>
 
 <div id="monocle_PAX2" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PAX2.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PAX2.png">
 </div>
 
 <div id="monocle_TFAP2E" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_TFAP2E.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_TFAP2E.png">
 </div>
 
 <div id="monocle_SIX1" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SIX1.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_SIX1.png">
 </div>
 
 <div id="monocle_ZBTB16" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_ZBTB16.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_ZBTB16.png">
 </div>
 
 <div id="monocle_FOXG1" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_FOXG1.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_FOXG1.png">
 </div>
 
 <div id="monocle_PDLIM1" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PDLIM1.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/gradient_plots/monocle_gradient_PDLIM1.png">
 </div>
 
 </br>
@@ -977,19 +977,19 @@ lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_D
 </div>
 
 <div id="monocle_FOXI3_LMX1A" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/FOXI3_LMX1A_co-expression_monocle.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/FOXI3_LMX1A_co-expression_monocle.png">
 </div>
 
 <div id="monocle_TFAP2E_LMX1A" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_LMX1A_co-expression_monocle.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_LMX1A_co-expression_monocle.png">
 </div>
 
 <div id="monocle_FOXI3_SOX8" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/FOXI3_SOX8_co-expression_monocle.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/FOXI3_SOX8_co-expression_monocle.png">
 </div>
 
 <div id="monocle_TFAP2E_SOX8" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_SOX8_co-expression_monocle.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/coexpression/TFAP2E_SOX8_co-expression_monocle.png">
 </div>
 
 </br>
@@ -1024,11 +1024,11 @@ graphics.off()
 </div>
 
 <div id="Monocle_DDRTree_trajectories" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_trajectories.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_trajectories.png">
 </div>
 
 <div id="Monocle_DDRTree_State_facet" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_State_facet.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/monocle_plots/Monocle_DDRTree_State_facet.png">
 </div>
 
 </br>
@@ -1473,11 +1473,11 @@ graphics.off()
 </div>
 
 <div id="OEP_subset_velocity_clusters_arrows" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_arrows.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_arrows.png">
 </div>
 
 <div id="OEP_subset_velocity_clusters_vector" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_vector.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_clusters_vector.png">
 </div>
 
 </br>
@@ -1518,11 +1518,11 @@ graphics.off()
 </div>
 
 <div id="OEP_subset_velocity_stage_arrows" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_arrows.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_arrows.png">
 </div>
 
 <div id="OEP_subset_velocity_stage_vector" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_vector.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/OEP_subset_velocity_stage_vector.png">
 </div>
 
 </br>
@@ -1578,11 +1578,11 @@ graphics.off()
 </div>
 
 <div id="Monocle_velocity_clusters_arrows" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_arrows.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_arrows.png">
 </div>
 
 <div id="Monocle_velocity_clusters_vector" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_vector.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_clusters_vector.png">
 </div>
 
 </br>
@@ -1634,11 +1634,25 @@ graphics.off()
 </div>
 
 <div id="Monocle_velocity_stage_arrows" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_arrows.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_arrows.png">
 </div>
 
 <div id="Monocle_velocity_stage_vector" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_vector.png">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_vector.png">
 </div>
 
 </details>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+
+<span class="close">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
