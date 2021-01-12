@@ -468,7 +468,7 @@ m_oep$plotGeneModules(
 )
 
 # add gene modules txt
-m_oep$writeGeneModules(folder_path = curr_plot_folder, basename='OEP_GMselection', gms='topCorr_DR.genemodules')
+m_oep$writeGeneModules(folder_path = curr_plot_folder, basename='OEP_GMselection', gms='topCorr_DR.genemodules.selected')
 
 
 ########################################################################################################################

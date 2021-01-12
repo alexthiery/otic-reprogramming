@@ -443,7 +443,7 @@ m2$writeGeneModules(basename='AllCells_baitGMs', gms='dR.genemodules', folder_pa
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCellsManualGMselection_dR.genemodules_Normalized_logscaled.pdf" download>Download
 PDF</a>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_baitGMs_dR.genemodules" download>Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCells_baitGMs_dR.genemodules.txt" download>Download
 gene module list</a>
 
 <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/AllCellsManualGMselection_dR.genemodules_Normalized_logscaled.png">
