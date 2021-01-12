@@ -36,7 +36,7 @@ The sub-workflow also integrates custom R scripts for:
 - [Plotting putative enhancer profile](#enhancer_profile)
 - [Motif enrichment analysis from Homer output](#motif_enrichment)
 
-<details open><summary class="simple">Expand enhancer discovery sub-workflow</summary>
+<details open><summary class="simple">Collapse enhancer discovery sub-workflow</summary>
 <p>
 
 ```groovy
@@ -114,7 +114,7 @@ workflow enhancer_analysis {
 
 <br/>
 
-## Plotting peak annotation frequency<a name="annotation_frequency"></a>
+### Plotting peak annotation frequency<a name="annotation_frequency"></a>
 
 </br>
 
@@ -156,13 +156,13 @@ graphics.off()
 
 </br>
 
-<img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/peak_annotations_frequency/output/peak_annotation_frequency.png" width="60%">
+<img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/peak_annotations_frequency/output/peak_annotation_frequency.png">
 
 ---
 
 <br/>
 
-## Functional enrichment analysis<a name="functional_enrichment"></a>
+### Functional enrichment analysis<a name="functional_enrichment"></a>
 
 </br>
 
@@ -216,13 +216,13 @@ graphics.off()
 
 </br>
 
-<img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/functional_enrichment_analysis/output/functional_enrichment.png" width="80%">
+<img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/functional_enrichment_analysis/output/functional_enrichment.png">
 
 ---
 
 <br/>
 
-## Plotting putative enhancer profile<a name="enhancer_profile"></a>
+### Plotting putative enhancer profile<a name="enhancer_profile"></a>
 
 </br>
 
@@ -288,19 +288,21 @@ graphics.off()
   <button class="tablinks" onclick="openTab(event, 'enhancer_heatmap')">Enhancer heatmap</button>
 </div>
 
+<br/>
+
 <div id="enhancer_profile" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/metaprofile.png" width="80%">
+  <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/metaprofile.png">
 </div>
 
 <div id="enhancer_heatmap" class="tabcontent">
-  <img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/heatmap.png" width="80%">
+  <img class="myImages" id="myImg"  src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/heatmap.png">
 </div>
 
 ---
 
 <br/>
 
-## Motif enrichment analysis from Homer output<a name="motif_enrichment"></a>
+### Motif enrichment analysis from Homer output<a name="motif_enrichment"></a>
 
 </br>
 
@@ -374,4 +376,18 @@ graphics.off()
 
 </br>
 
-<img src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png" width="65%">
+<img class="myImages width_40" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png">
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- The Close Button -->
+
+<span class="close">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
