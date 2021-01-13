@@ -3,6 +3,21 @@ layout: default
 title: Home
 ---
 
+<head>
+  <script language="JavaScript">
+    var password;
+
+    var pass1 = "StreitLab";
+
+    password = prompt("Please enter your password to view this page!", " ");
+
+    if (password == pass1) alert("Password Correct! Click OK to enter!");
+    else {
+      location.reload();
+    }
+  </script>
+</head>
+
 {% for page in site.home %}
 <div class="page">{{ page.content }}</div>
 {% endfor %}

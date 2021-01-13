@@ -167,7 +167,22 @@
         </div>
       </div>
 
-      <div class="container content">
+      <div class="container content"><head>
+  <script language="JavaScript">
+    var password;
+
+    var pass1 = "StreitLab";
+
+    password = prompt("Please enter your password to view this page!", " ");
+
+    if (password == pass1) alert("Password Correct! Click OK to enter!");
+    else {
+      location.reload();
+    }
+  </script>
+</head>
+
+
 <div class="page"><p>This site documents the analysis for our otic reprogramming project - including the required code to run the sequence alignments and downstream
 analysis.</p>
 <p>For those who would like to re-run the analysis click <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start">here</a>.</p>
