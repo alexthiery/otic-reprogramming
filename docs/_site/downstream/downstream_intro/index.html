@@ -185,9 +185,9 @@
   <!-- <h1 class="page-title">Downstream_intro</h1> -->
   <h2 id="downstream-analysis">Downstream analysis</h2>
 </br>
-<p>In order to maintain reproducibility when carrying out the downstream analysis, we have developed a custom Nextflow pipeline which integrates the alignment outputs into a single Nextflow workflow.</p>
-<p>This workflow makes use of a single custom Docker container which contains all required packages which can be found <a href="https://hub.docker.com/repository/docker/alexthiery/otic-reprogramming-r_analysis">here</a>.</p>
-<p>If you would like to re-run the entire downstream analysis, you will need to first align the data by following the steps in the <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start"><strong><em>Quick start</em></strong></a> guide.</p>
+<p>In order to maintain reproducibility when carrying out the downstream analysis, we have developed a custom Nextflow pipeline which integrates the alignment outputs into a single workflow.</p>
+<p>This workflow makes use of a <a href="https://hub.docker.com/repository/docker/alexthiery/otic-reprogramming-r_analysis">custom Docker container</a> which contains all required packages.</p>
+<p>If you would like to re-run the entire downstream analysis, you will need to first align the data by following the steps in the <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start"><em>Quick start</em></a> guide.</p>
 <p>After aligning the data, you will need to create a samplesheet csv containing the paths to all of the alignment output folders. You can find an example of this <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-downstream_analysis/crick_samplesheet.csv">here</a>.</p>
 <p>The entire downstream analysis can then be carried out by executing using the following shell script.</p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
@@ -200,10 +200,10 @@ nextflow run ./NF-downstream_analysis/main.nf <span class="se">\</span>
 </code></pre></div></div>
 <hr />
 </br>
-<h2 id="interactive-downstream-analysis">Interactive downstream analysis</h2>
+<h2 id="interactive-downstream-analysisa-nameinteractivea">Interactive downstream analysis<a name="interactive"></a></h2>
 </br>
-<p>If do not want to re-run the alignment, but would like to run the downstream analysis from the count files, you can run RStudio from within the Docker container. This will ensure that you have all of the same packages and dependencies required to carry out the analysis.</p>
-<p>If you would like to interactively explore the data, follow these steps:</p>
+<p>If do not want to re-run the alignment, but would like to run the downstream analysis from the count files, you can run RStudio server from within the Docker container. This will ensure that you have all of the same packages and dependencies required to carry out the analysis.</p>
+<p>To interactively explore the data, follow these steps:</p>
 <ol>
 <li>download the relevant alignment output</li>
 <li><a href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip">download</a> our GitHub repository to your local computer</li>

@@ -185,14 +185,14 @@
   <!-- <h1 class="page-title">Smartseq2_alignment</h1> -->
   <h2 id="smartseq2-alignment">SmartSeq2 alignment</h2>
 </br>
-<p><strong>If you would like to re-run the alignment, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#smartseq">here</a>.</strong></p>
 <p>Our SmartSeq2 single cell RNAseq data is aligned using a custom Nextflow pipeline. This pipeline is built using <a href="https://www.nextflow.io/docs/latest/dsl2.html">Nextflow DSL2</a>, which allows for modularisation and re-usability of each tool.</p>
 <p>Each process is configured to run within a separate container, meaning that package versions are hard coded into the pipeline. In order to change these package versions, the container used will need to be changed within the individual process.</p>
-<p>Each of the processes used in the pipeline can be found by following the going to the path in the <code>include {process} from &quot;&lt;PATH&gt;&quot;</code> statements in each of the workflows below.</p>
+<p>Each of the processes used in the pipeline can be found by going to the path in the <code>include {process} from &quot;&lt;PATH&gt;&quot;</code> statements in any of the workflows below.</p>
+<p><em>If you would like to re-run the alignment, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#smartseq">here</a>.</em></p>
 <hr />
 </br>
 <h3 id="workflows">Workflows</h3>
-<p>Our custom pipeline integrates both standard alignment and RNA velocity (<a href="http://velocyto.org/">Velocyto</a>).</p>
+<p>Our custom pipeline integrates both alignment and RNA velocity (<a href="http://velocyto.org/">Velocyto</a>).</p>
 <p>For simplicity, the pipeline is split into four sub-workflows:</p>
 <ul>
 <li><a href="#GFP">Modify genome to add GFP sequence</a></li>
@@ -246,7 +246,7 @@
 <hr />
 </br>
 <p><strong><em>Modify genome to add GFP sequence</em></strong><a name="GFP"></a></p>
-<p>This sub-workdflow takes a GFP sequence from the base repository and appends the genome provided in order to determine the number of GFP reads downstream.</p>
+<p>This sub-workflow takes a GFP sequence from the base repository and appends the genome provided in order to determine the number of GFP reads downstream.</p>
 <details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
@@ -328,7 +328,7 @@
 <hr />
 </br>
 <p><strong><em>Process read counts for input into Antler</em></strong><a name="process_reads"></a></p>
-<p>The merge counts process is a custom R script which formats cell names and generates the phenoData.csv, assayData.csv and gfpData.csv required by our Antler downstream pipeline.</p>
+<p>The merge counts process is a custom R script which formats cell names and generates the phenoData.csv, assayData.csv and gfpData.csv required in our downstream pipeline.</p>
 <details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
@@ -441,7 +441,7 @@
 <hr />
 </br>
 <p><strong><em>Run RNA velocity</em></strong><a name="velocyto"></a></p>
-<p>The RNA velocity sub-workflow takes the output BAM files from HISAT2 and groups all the cells into a single channel input. We then run Velocyto which generates a single Loom file output containing spliced, unspliced and spanning reads.</p>
+<p>The RNA velocity sub-workflow takes the output BAM files from HISAT2 and groups all the cells into a single channel input. We then run Velocyto which generates a single <code>.loom</code> file output containing spliced, unspliced and spanning reads.</p>
 <details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>

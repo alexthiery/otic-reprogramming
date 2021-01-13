@@ -9,11 +9,11 @@ order: 1
 
 </br>
 
-In order to maintain reproducibility when carrying out the downstream analysis, we have developed a custom Nextflow pipeline which integrates the alignment outputs into a single Nextflow workflow.
+In order to maintain reproducibility when carrying out the downstream analysis, we have developed a custom Nextflow pipeline which integrates the alignment outputs into a single workflow.
 
-This workflow makes use of a single custom Docker container which contains all required packages which can be found [here](https://hub.docker.com/repository/docker/alexthiery/otic-reprogramming-r_analysis).
+This workflow makes use of a [custom Docker container](https://hub.docker.com/repository/docker/alexthiery/otic-reprogramming-r_analysis) which contains all required packages.
 
-If you would like to re-run the entire downstream analysis, you will need to first align the data by following the steps in the [**_Quick start_**]({{site.baseurl}}/general/quick_start) guide.
+If you would like to re-run the entire downstream analysis, you will need to first align the data by following the steps in the [_Quick start_]({{site.baseurl}}/general/quick_start) guide.
 
 After aligning the data, you will need to create a samplesheet csv containing the paths to all of the alignment output folders. You can find an example of this [here](https://github.com/alexthiery/otic-reprogramming/blob/master/NF-downstream_analysis/crick_samplesheet.csv).
 
@@ -33,13 +33,13 @@ nextflow run ./NF-downstream_analysis/main.nf \
 
 </br>
 
-## Interactive downstream analysis
+## Interactive downstream analysis<a name="interactive"></a>
 
 </br>
 
-If do not want to re-run the alignment, but would like to run the downstream analysis from the count files, you can run RStudio from within the Docker container. This will ensure that you have all of the same packages and dependencies required to carry out the analysis.
+If do not want to re-run the alignment, but would like to run the downstream analysis from the count files, you can run RStudio server from within the Docker container. This will ensure that you have all of the same packages and dependencies required to carry out the analysis.
 
-If you would like to interactively explore the data, follow these steps:
+To interactively explore the data, follow these steps:
 
 1. download the relevant alignment output
 2. [download](https://github.com/alexthiery/otic-reprogramming/archive/master.zip) our GitHub repository to your local computer

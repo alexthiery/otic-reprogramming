@@ -9,7 +9,17 @@ order: 2
 
 </br>
 
-Automatic switch for running pipeline through Nextflow or interactively in Rstudio
+Embryos at ss3-5 where electroporated with either Lmx1a_E1-EGFP or Sox3U3-EGFP enhancers to genetically label the otic and epibranchial cell populations respectively. At ss18-21 embryos were removed from the egg and EGFP+ cells of each population were collected by FACS and processed for RNAseq and analysed as described below.
+
+---
+
+</br>
+
+### R analysis pipeline
+
+</br>
+
+Automatic switch for running pipeline through Nextflow or interactively in Rstudio.
 
 ```R
 library(getopt)
@@ -35,7 +45,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 
 </br>
 
-Set paths and load data and packages
+Set paths and load data and packages.
 
 ```R
 {
@@ -70,7 +80,7 @@ Set paths and load data and packages
 
 </br>
 
-Data pre-processing
+Data pre-processing.
 
 ```R
 # read in count data and rename columns
@@ -96,7 +106,7 @@ read_counts[,1:2] <- NULL
 
 </br>
 
-Run DESeq2
+Run DESeq2.
 
 ```R
 ### Add sample group to metadata
@@ -120,7 +130,7 @@ deseq <- DESeq(deseq)
 
 </br>
 
-Plot dispersion estimates
+Plot dispersion estimates.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -149,7 +159,7 @@ res$gene_name <- gene_annotations$gene_name[match(rownames(res), gene_annotation
 
 </br>
 
-Plot MA with cutoff for significant genes = padj < 0.05
+Plot MA with cutoff for significant genes = padj < 0.05.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -166,7 +176,7 @@ graphics.off()
 
 </br>
 
-Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5
+Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -222,7 +232,7 @@ graphics.off()
 
 </br>
 
-Generate csv for raw counts, normalised counts, and differential expression output
+Generate csv for raw counts, normalised counts, and differential expression output.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -297,16 +307,16 @@ write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, ro
 </br>
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_1.csv" download>Download
-differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05)</a>
+differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05).</a>
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_2.csv" download>Download
-differential expression results for all genes</a>
+differential expression results for all genes.</a>
 
 </br>
 
 </br>
 
-Plot sample-sample distances, PC plot and correlogram to show relationship between samples
+Plot sample-sample distances, PCA plot and correlogram to show relationship between samples.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -373,7 +383,7 @@ graphics.off()
 
 </br>
 
-Subset differentially expressed genes (adjusted p-value < 0.05, absolute log2FC > 1.5)
+Subset differentially expressed genes (adjusted p-value < 0.05, absolute log2FC > 1.5).
 
 ```R
 res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1.5), ]
@@ -382,7 +392,7 @@ res_sub <- res_sub[order(-res_sub$log2FoldChange),]
 
 </br>
 
-Plot heatmap of differentially expressed genes
+Plot heatmap of differentially expressed genes.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -403,7 +413,7 @@ graphics.off()
 
 </br>
 
-Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981')
+Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981').
 
 ```R
 # Get biomart GO annotations for TFs
@@ -421,7 +431,7 @@ res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
 
 </br>
 
-Generate csv for raw counts, normalised counts, and differential expression output for transcription factors
+Generate csv for raw counts, normalised counts, and differential expression output for transcription factors.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -445,11 +455,11 @@ write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE,
 </br>
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_3.csv" download>Download TF
-differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05)</a>
+differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05).</a>
 
 </br>
 
-Plot heatmap for differentially expressed transcription factors
+Plot heatmap for differentially expressed transcription factors.
 
 <details><summary class="box">Code</summary>
 <p>

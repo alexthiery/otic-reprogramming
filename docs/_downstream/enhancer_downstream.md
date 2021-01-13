@@ -7,6 +7,10 @@ order: 5
 
 ## Enhancer discovery
 
+We performed epigenomic profiling carrying out ChIPseq for H3K27ac, H3K27me3 and H3K4me3 as well as ATACseq of OEP dissected tissue. Below we describe the enhancer discovery pipeline.
+
+---
+
 </br>
 
 Our enhancer discovery pipeline integrates ChIP (H3K27Ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. **If you would like to re-run the downstream analysis pipeline, follow the instructions [here]({{site.baseurl}}/general/quick_start#downstream).**

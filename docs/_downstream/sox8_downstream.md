@@ -9,7 +9,17 @@ order: 4
 
 </br>
 
-Automatic switch for running pipeline through Nextflow or interactively in Rstudio
+In order to study if Sox8 overexpression can confer otic characer, we co-electroporated a combination of Sox8-mCherry and Lmx1aE1-EGFP (Sox8_OE) or constitutive mCherry and EGFP (Control), at head fold stages. Then, at ss12-13, we collected double positive cells of the cranial ectoderm by FACS (heads of embryos were dissected rostral to the otic placode, leaving the otic placode and trunk tissue behind) and processed them for RNAseq. The data were analysed as shown below.
+
+---
+
+</br>
+
+### R analysis pipeline
+
+</br>
+
+Automatic switch for running pipeline through Nextflow or interactively in Rstudio.
 
 ```R
 library(getopt)
@@ -35,7 +45,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 
 </br>
 
-Set paths and load data and packages
+Set paths and load data and packages.
 
 ```R
 {
@@ -71,7 +81,7 @@ Set paths and load data and packages
 
 </br>
 
-Data pre-processing
+Data pre-processing.
 
 ```R
 # read in count data and rename columns
@@ -97,7 +107,7 @@ read_counts[,1:2] <- NULL
 
 </br>
 
-Run DESeq2
+Run DESeq2.
 
 ```R
 # Add sample group to metadata
@@ -122,7 +132,7 @@ deseq <- DESeq(deseq)
 
 </br>
 
-Plot dispersion estimates
+Plot dispersion estimates.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -168,7 +178,7 @@ graphics.off()
 
 </br>
 
-Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5
+Plot volcano plot with padj < 0.05 and abs(fold change) > 1.5.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -228,7 +238,7 @@ graphics.off()
 
 </br>
 
-Generate csv for raw counts, normalised counts, and differential expression output
+Generate csv for raw counts, normalised counts, and differential expression output.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -303,16 +313,16 @@ write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, ro
 </br>
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_1.csv" download>Download
-differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05)</a>
+differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05).</a>
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_2.csv" download>Download
-differential expression results for all genes</a>
+differential expression results for all genes.</a>
 
 </br>
 
 </br>
 
-Plot sample-sample distances, PC plot and correlogram to show relationship between samples
+Plot sample-sample distances, PCA plot and correlogram to show relationship between samples.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -381,7 +391,7 @@ graphics.off()
 
 </br>
 
-Subset differentially expressed genes (adjusted p-value < 0.05, absolute log2FC > 1.5)
+Subset differentially expressed genes (adjusted p-value < 0.05, absolute log2FC > 1.5).
 
 ```R
 res_sub <- res[which(res$padj < 0.05 & abs(res$log2FoldChange) > 1.5), ]
@@ -390,7 +400,7 @@ res_sub <- res_sub[order(-res_sub$log2FoldChange),]
 
 </br>
 
-Plot heatmap of differentially expressed genes
+Plot heatmap of differentially expressed genes.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -399,7 +409,8 @@ Plot heatmap of differentially expressed genes
 png(paste0(output_path, "sox8_oe_hm.png"), height = 30, width = 21, family = 'Arial', units = "cm", res = 400)
 pheatmap(assay(rld)[rownames(res_sub),], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=FALSE,
          show_colnames = F, cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
-         annotation_colors = plot_colours, scale = "row", treeheight_row = 0, treeheight_col = 25, cellheight = 1.5, cellwidth = 75)
+         annotation_colors = plot_colours, scale = "row", treeheight_row = 0, treeheight_col = 25,
+         main = "Sox8OE differentially expressed genes (absolute logFC > 1.5, padj = 0.05)", border_color = NA, cellheight = 1.5, cellwidth = 75)
 graphics.off()
 
 ```
@@ -410,7 +421,7 @@ graphics.off()
 
 </br>
 
-Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981')
+Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981').
 
 ```R
 # Get biomart GO annotations for TFs
@@ -428,7 +439,7 @@ res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
 
 </br>
 
-Generate csv for raw counts, normalised counts, and differential expression output for transcription factors
+Generate csv for raw counts, normalised counts, and differential expression output for transcription factors.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -452,11 +463,11 @@ write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE,
 </br>
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_3.csv" download>Download TF
-differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05)</a>
+differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05).</a>
 
 </br>
 
-Plot heatmap for differentially expressed transcription factors
+Plot heatmap for differentially expressed transcription factors.
 
 <details><summary class="box">Code</summary>
 <p>
@@ -468,10 +479,10 @@ rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_
 # plot DE TFs
 png(paste0(output_path, "sox8_oe_TFs_hm.png"), height = 20, width = 25, family = 'Arial', units = "cm", res = 400)
 pheatmap(rld.plot[res_sub_TF$gene_name,], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=T,
-show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
-annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-scale = "row", main = "Sox8OE enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA,
-cellheight = 10, cellwidth = 75)
+                 show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
+                 annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
+                 scale = "row", main = "Sox8OE differentially expressed TFs (absolute logFC > 1.5, padj = 0.05)", border_color = NA,
+                 cellheight = 10, cellwidth = 75)
 graphics.off()
 ```
 

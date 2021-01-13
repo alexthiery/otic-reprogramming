@@ -9,6 +9,16 @@ order: 3
 
 </br>
 
+To assess the transcriptomic changes that accompany the development of OEPs, we performed single-cell-RNA-seq. To do so, we took advantage of a Pax2E1-EGFP enhancer to genetically label OEP, otic and epibranchial cells. Embryos were electroporated at head-fold stages and EGFP+ collected at ss8-9, ss11-12 and ss14-16 by FACS and processed for SmartSeq2 single cell RNAseq. The data was analysed as follows.
+
+---
+
+</br>
+
+### R analysis pipeline
+
+</br>
+
 ### Load packages, load data and pre-QC
 
 <details><summary class="box">Expand</summary>

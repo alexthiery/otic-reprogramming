@@ -8,13 +8,13 @@ order: 2
 
 </br>
 
-**If you would like to re-run the alignment, follow the instructions [here]({{site.baseurl}}/general/quick_start#smartseq).**
-
 Our SmartSeq2 single cell RNAseq data is aligned using a custom Nextflow pipeline. This pipeline is built using [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html), which allows for modularisation and re-usability of each tool.
 
 Each process is configured to run within a separate container, meaning that package versions are hard coded into the pipeline. In order to change these package versions, the container used will need to be changed within the individual process.
 
-Each of the processes used in the pipeline can be found by following the going to the path in the `include {process} from "<PATH>"` statements in each of the workflows below.
+Each of the processes used in the pipeline can be found by going to the path in the `include {process} from "<PATH>"` statements in any of the workflows below.
+
+_If you would like to re-run the alignment, follow the instructions [here]({{site.baseurl}}/general/quick_start#smartseq)._
 
 ---
 
@@ -22,7 +22,7 @@ Each of the processes used in the pipeline can be found by following the going t
 
 ### Workflows
 
-Our custom pipeline integrates both standard alignment and RNA velocity ([Velocyto](http://velocyto.org/)).
+Our custom pipeline integrates both alignment and RNA velocity ([Velocyto](http://velocyto.org/)).
 
 For simplicity, the pipeline is split into four sub-workflows:
 
@@ -86,7 +86,7 @@ workflow {
 
 **_Modify genome to add GFP sequence_**<a name="GFP"></a>
 
-This sub-workdflow takes a GFP sequence from the base repository and appends the genome provided in order to determine the number of GFP reads downstream.
+This sub-workflow takes a GFP sequence from the base repository and appends the genome provided in order to determine the number of GFP reads downstream.
 
 <details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
@@ -184,7 +184,7 @@ workflow smartseq2_align {
 
 **_Process read counts for input into Antler_**<a name="process_reads"></a>
 
-The merge counts process is a custom R script which formats cell names and generates the phenoData.csv, assayData.csv and gfpData.csv required by our Antler downstream pipeline.
+The merge counts process is a custom R script which formats cell names and generates the phenoData.csv, assayData.csv and gfpData.csv required in our downstream pipeline.
 
 <details open><summary class="simple">Collapse sub-workflow</summary>
 <p>
@@ -310,7 +310,7 @@ write.table(x=phenoData, file=paste0(output_path, 'phenoData.csv'), sep='\t', ro
 
 **_Run RNA velocity_**<a name="velocyto"></a>
 
-The RNA velocity sub-workflow takes the output BAM files from HISAT2 and groups all the cells into a single channel input. We then run Velocyto which generates a single Loom file output containing spliced, unspliced and spanning reads.
+The RNA velocity sub-workflow takes the output BAM files from HISAT2 and groups all the cells into a single channel input. We then run Velocyto which generates a single `.loom` file output containing spliced, unspliced and spanning reads.
 
 <details open><summary class="simple">Collapse sub-workflow</summary>
 <p>

@@ -185,7 +185,12 @@
   <!-- <h1 class="page-title">Sox8_downstream</h1> -->
   <h2 id="sox8-over-expression-differential-expression-analysis">Sox8 over-expression differential expression analysis</h2>
 </br>
-<p>Automatic switch for running pipeline through Nextflow or interactively in Rstudio</p>
+<p>In order to study if Sox8 overexpression can confer otic characer, we co-electroporated a combination of Sox8-mCherry and Lmx1aE1-EGFP (Sox8_OE) or constitutive mCherry and EGFP (Control), at head fold stages. Then, at ss12-13, we collected double positive cells of the cranial ectoderm by FACS (heads of embryos were dissected rostral to the otic placode, leaving the otic placode and trunk tissue behind) and processed them for RNAseq. The data were analysed as shown below.</p>
+<hr />
+</br>
+<h3 id="r-analysis-pipeline">R analysis pipeline</h3>
+</br>
+<p>Automatic switch for running pipeline through Nextflow or interactively in Rstudio.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">getopt</span><span class="p">)</span><span class="w">
 </span><span class="n">spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="w">
   </span><span class="s1">'runtype'</span><span class="p">,</span><span class="w"> </span><span class="s1">'l'</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="s2">"character"</span><span class="p">,</span><span class="w">
@@ -207,7 +212,7 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 </br>
-<p>Set paths and load data and packages</p>
+<p>Set paths and load data and packages.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"user"</span><span class="p">){</span><span class="w">
     </span><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./output/NF-downstream_analysis/sox8_dea/output/"</span><span class="w">
@@ -239,7 +244,7 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 </br>
-<p>Data pre-processing</p>
+<p>Data pre-processing.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read in count data and rename columns</span><span class="w">
 </span><span class="n">read_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.delim</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span><span class="w"> </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
 </span><span class="n">colnames</span><span class="p">(</span><span class="n">read_counts</span><span class="p">)[</span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"gene_id"</span><span class="w">
@@ -261,7 +266,7 @@
 </span><span class="n">read_counts</span><span class="p">[,</span><span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kc">NULL</span><span class="w">
 </span></code></pre></div></div>
 </br>
-<p>Run DESeq2</p>
+<p>Run DESeq2.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Add sample group to metadata</span><span class="w">
 </span><span class="n">col_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">sapply</span><span class="p">(</span><span class="n">colnames</span><span class="p">(</span><span class="n">read_counts</span><span class="p">),</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="n">ifelse</span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"sox8_oe"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="s2">"Sox8_OE"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Control"</span><span class="p">)}))</span><span class="w">
 </span><span class="n">colnames</span><span class="p">(</span><span class="n">col_data</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"Group"</span><span class="w">
@@ -282,7 +287,7 @@
 </span><span class="n">deseq</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">DESeq</span><span class="p">(</span><span class="n">deseq</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 </br>
-<p>Plot dispersion estimates</p>
+<p>Plot dispersion estimates.</p>
 <details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"dispersion_est.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
@@ -310,7 +315,7 @@
 </details>
 <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/MA_plot.png">
 </br>
-<p>Plot volcano plot with padj &lt; 0.05 and abs(fold change) &gt; 1.5</p>
+<p>Plot volcano plot with padj &lt; 0.05 and abs(fold change) &gt; 1.5.</p>
 <details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">volc_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">res</span><span class="p">[,</span><span class="m">-6</span><span class="p">])</span><span class="w">
@@ -362,7 +367,7 @@
 </br>
 <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/volcano.png">
 </br>
-<p>Generate csv for raw counts, normalised counts, and differential expression output</p>
+<p>Generate csv for raw counts, normalised counts, and differential expression output.</p>
 <details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># raw counts dataframe</span><span class="w">
@@ -431,12 +436,12 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
 </details>
 </br>
 <p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_1.csv" download>Download
-differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05)</a></p>
+differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05).</a></p>
 <p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_2.csv" download>Download
-differential expression results for all genes</a></p>
+differential expression results for all genes.</a></p>
 </br>
 </br>
-<p>Plot sample-sample distances, PC plot and correlogram to show relationship between samples</p>
+<p>Plot sample-sample distances, PCA plot and correlogram to show relationship between samples.</p>
 <details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># To prevent the highest expressed genes from dominating when clustering we need to rlog (regularised log) transform the data</span><span class="w">
@@ -491,25 +496,26 @@ differential expression results for all genes</a></p>
 </div>
 </br>
 </br>
-<p>Subset differentially expressed genes (adjusted p-value &lt; 0.05, absolute log2FC &gt; 1.5)</p>
+<p>Subset differentially expressed genes (adjusted p-value &lt; 0.05, absolute log2FC &gt; 1.5).</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res_sub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">padj</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1.5</span><span class="p">),</span><span class="w"> </span><span class="p">]</span><span class="w">
 </span><span class="n">res_sub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_sub</span><span class="p">[</span><span class="n">order</span><span class="p">(</span><span class="o">-</span><span class="n">res_sub</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">),]</span><span class="w">
 </span></code></pre></div></div>
 </br>
-<p>Plot heatmap of differentially expressed genes</p>
+<p>Plot heatmap of differentially expressed genes.</p>
 <details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"sox8_oe_hm.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">21</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">pheatmap</span><span class="p">(</span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)[</span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub</span><span class="p">),],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"#191d73"</span><span class="p">,</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="s2">"#ed7901"</span><span class="p">))(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">),</span><span class="w"> </span><span class="n">cluster_rows</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">show_rownames</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w">
          </span><span class="n">show_colnames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">cluster_cols</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">annotation_col</span><span class="o">=</span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">colData</span><span class="p">(</span><span class="n">deseq</span><span class="p">)[</span><span class="s2">"Group"</span><span class="p">]),</span><span class="w">
-         </span><span class="n">annotation_colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_colours</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"row"</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">cellheight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span><span class="p">,</span><span class="w"> </span><span class="n">cellwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">75</span><span class="p">)</span><span class="w">
+         </span><span class="n">annotation_colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_colours</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"row"</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w">
+         </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Sox8OE differentially expressed genes (absolute logFC &gt; 1.5, padj = 0.05)"</span><span class="p">,</span><span class="w"> </span><span class="n">border_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">cellheight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span><span class="p">,</span><span class="w"> </span><span class="n">cellwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">75</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 
 </span></code></pre></div></div>
 </details>
 <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_hm.png">
 </br>
-<p>Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981')</p>
+<p>Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981').</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Get biomart GO annotations for TFs</span><span class="w">
 </span><span class="n">ensembl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">useMart</span><span class="p">(</span><span class="s2">"ensembl"</span><span class="p">,</span><span class="n">dataset</span><span class="o">=</span><span class="s2">"ggallus_gene_ensembl"</span><span class="p">)</span><span class="w">
 </span><span class="n">TF_subset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getBM</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s2">"ensembl_gene_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"go_id"</span><span class="p">,</span><span class="w"> </span><span class="s2">"name_1006"</span><span class="p">,</span><span class="w"> </span><span class="s2">"namespace_1003"</span><span class="p">),</span><span class="w">
@@ -523,7 +529,7 @@ differential expression results for all genes</a></p>
 </span><span class="n">res_sub_TF</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_sub</span><span class="p">[</span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">TF_subset</span><span class="p">,]</span><span class="w">
 </span></code></pre></div></div>
 </br>
-<p>Generate csv for raw counts, normalised counts, and differential expression output for transcription factors</p>
+<p>Generate csv for raw counts, normalised counts, and differential expression output for transcription factors.</p>
 <details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># subset TFs from all_dat</span><span class="w">
@@ -541,9 +547,9 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
 </details>
 </br>
 <p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_3.csv" download>Download TF
-differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05)</a></p>
+differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05).</a></p>
 </br>
-<p>Plot heatmap for differentially expressed transcription factors</p>
+<p>Plot heatmap for differentially expressed transcription factors.</p>
 <details><summary class="box">Code</summary>
 <p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rld.plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)</span><span class="w">
@@ -552,10 +558,10 @@ differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &
 </span><span class="c1"># plot DE TFs</span><span class="w">
 </span><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"sox8_oe_TFs_hm.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">pheatmap</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">[</span><span class="n">res_sub_TF</span><span class="o">$</span><span class="n">gene_name</span><span class="p">,],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"#191d73"</span><span class="p">,</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="s2">"#ed7901"</span><span class="p">))(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">),</span><span class="w"> </span><span class="n">cluster_rows</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">show_rownames</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w">
-</span><span class="n">show_colnames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">cluster_cols</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w">
-</span><span class="n">annotation_col</span><span class="o">=</span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">col_data</span><span class="p">[</span><span class="s2">"Group"</span><span class="p">]),</span><span class="w"> </span><span class="n">annotation_colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_colours</span><span class="p">,</span><span class="w">
-</span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"row"</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Sox8OE enriched TFs (logFC &gt; 1.5, padj = 0.05)"</span><span class="p">,</span><span class="w"> </span><span class="n">border_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w">
-</span><span class="n">cellheight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">cellwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">75</span><span class="p">)</span><span class="w">
+                 </span><span class="n">show_colnames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">cluster_cols</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w">
+                 </span><span class="n">annotation_col</span><span class="o">=</span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">col_data</span><span class="p">[</span><span class="s2">"Group"</span><span class="p">]),</span><span class="w"> </span><span class="n">annotation_colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_colours</span><span class="p">,</span><span class="w">
+                 </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"row"</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Sox8OE differentially expressed TFs (absolute logFC &gt; 1.5, padj = 0.05)"</span><span class="p">,</span><span class="w"> </span><span class="n">border_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">,</span><span class="w">
+                 </span><span class="n">cellheight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">cellwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">75</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 </details>

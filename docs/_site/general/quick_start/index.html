@@ -187,7 +187,7 @@
 <br/>
 <p>In order to reproduce our analysis, you will need to:</p>
 <ul>
-<li><a href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip">download Github project repository</a></li>
+<li><a href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip">download the Github project repository</a></li>
 <li><a href="https://www.nextflow.io/docs/latest/getstarted.html">install Nextflow</a></li>
 <li><a href="https://www.docker.com/get-started">install Docker Desktop</a> (if running on local PC)</li>
 <li><a href="#download_data">download Galgal6 and sequencing data</a></li>
@@ -195,7 +195,7 @@
 <li><a href="#align">align sequencing data</a></li>
 <li><a href="#downstream">run downstream analysis</a></li>
 </ul>
-<p><strong>Important!!!</strong> All shell scripts are to be executed from the base directory of the project!</p>
+<p><strong>Important!</strong> All shell scripts are to be executed from the base directory of the project!</p>
 <hr />
 <br/>
 <h2 id="download-dataa-namedownloaddataa">Download data<a name="download_data"></a></h2>
@@ -248,12 +248,13 @@ params <span class="o">{</span>
 <hr />
 <br/>
 <h2 id="sequence-alignmentsa-namealigna">Sequence alignments<a name="align"></a></h2>
-<p>When running the nf-core alignments, the pipeline may be interupted as the relevant docker images are downloaded. If this happens, simply re-run the shell script and the pipeline will continue from where it ended.</p>
+<br/>
+<p>When running the NF-core alignments, the pipeline may be interupted as the relevant docker images are downloaded. If this happens, simply re-run the shell script and the pipeline will continue from where it ended.</p>
 <br/>
 <h3 id="chipseq-alignment">ChIPseq alignment</h3>
 <br/>
-<p>Our ChIPseq data was aligned using the nf-core ChIPseq <a href="https://nf-co.re/ChIPseq/1.2.0/usage">v1.2.0</a> Nextflow pipeline.</p>
-<p>Sample fastq paths are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ChIP_alignment/crick_samplesheet.csv">here</a>.</p>
+<p>Our ChIPseq data was aligned using the NF-core ChIPseq <a href="https://nf-co.re/ChIPseq/1.2.0/usage">v1.2.0</a> pipeline.</p>
+<p>Sample FASTQ paths are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ChIP_alignment/crick_samplesheet.csv">here</a>.</p>
 <p>After saving the required files, you can run the alignment with the following shell script.</p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
 
@@ -273,8 +274,8 @@ nextflow run nf-core/chipseq <span class="se">\</span>
 <br/>
 <h3 id="atacseq-alignment">ATACseq alignment</h3>
 <br/>
-<p>Our ATACseq data was aligned using the nf-core ATACseq <a href="https://nf-co.re/ATACseq/1.2.0/usage">v1.2.0</a> Nextflow pipeline.</p>
-<p>Sample fastq paths are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ATAC_alignment/crick_samplesheet.csv">here</a>.</p>
+<p>Our ATACseq data was aligned using the NF-core ATACseq <a href="https://nf-co.re/ATACseq/1.2.0/usage">v1.2.0</a> pipeline.</p>
+<p>Sample FASTQ paths are provided via a samplesheet csv. The template csv used to run this analysis can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-ATAC_alignment/crick_samplesheet.csv">here</a>.</p>
 <p>After saving the required files, you can run the alignment with the following shell script.</p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
 
@@ -294,13 +295,13 @@ nextflow run nf-core/atacseq <span class="se">\</span>
 <br/>
 <h3 id="bulk-rnaseq-alignment">Bulk RNAseq alignment</h3>
 <br/>
-<p>Our bulk RNAseq data were aligned using the nf-core RNAseq <a href="https://nf-co.re/RNAseq/2.0/usage">v2.0</a> Nextflow pipeline.</p>
+<p>Our bulk RNAseq data were aligned using the NF-core RNAseq <a href="https://nf-co.re/RNAseq/2.0/usage">v2.0</a> pipeline.</p>
 <p>We need to align two separate bulk RNAseq datasets.</p>
 <br/>
 <p><strong><em>Lmx1a_E1 vs Sox3U3</em></strong></p>
 <p>First, we collected cells from putative otic and epibranchial fates using Lmx1a_E1 and Sox3U3 enhancers respectively.</p>
-<p>An example samplesheet csv can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-lmx1a_alignment/crick_samplesheet.csv">here</a></p>
-<p>Execute the following shell script to run the Lmx1a overexpression alignment.</p>
+<p>An example samplesheet csv can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-lmx1a_alignment/crick_samplesheet.csv">here</a>.</p>
+<p>Execute the following shell script to run the Lmx1a alignment.</p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
 
 nextflow pull nf-core/rnaseq
@@ -336,9 +337,9 @@ nextflow run nf-core/rnaseq <span class="se">\</span>
 <h3 id="smartseq2-single-cell-rnaseq-alignmenta-namesmartseqa">Smartseq2 single cell RNAseq alignment<a name="smartseq"></a></h3>
 <br/>
 <p>Our Smartseq2 single cell RNAseq data was aligned using a custom DSL2 Nextflow pipeline. Details of the pipeline processes can be found <a href="https://alexthiery.github.io/otic-reprogramming/general/smartseq2_alignment/">here</a>.</p>
-<p>As with the nf-core pipelines above, our custom smartseq2 alignment pipeline passes the sample fastqs via a samplesheet csv. An example samplesheet can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-smartseq2_alignment/crick_samplesheet.csv">here</a>.</p>
-<p>As we have individual fastq files for each cell, it would be cumbersome to list each file individually. Instead we can pass an entire sample fastq directory which is then enumerated by a custom Nextflow process. For this to work, only the paths in column 2 ($data1) in the samplesheet csv should be edited.</p>
-<p>Once you have saved your samplesheet, execute the following shell script to run the Smartseq2 alignment.</p>
+<p>As with the NF-core pipelines above, our custom SmartSeq2 alignment pipeline passes the sample FASTQ files via a samplesheet csv. An example samplesheet can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-smartseq2_alignment/crick_samplesheet.csv">here</a>.</p>
+<p>As we have individual FASTQ files for each cell, it would be cumbersome to list each file individually. Instead we can pass an entire sample FASTQ directory which is then enumerated in Nextflow. For this to work, only the paths in column 2 ($data1) in the samplesheet csv should be edited.</p>
+<p>Once you have saved your samplesheet, execute the following shell script to run the SmartSeq2 alignment.</p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1
 
 nextflow run ./NF-smartseq2_alignment/main.nf <span class="se">\</span>
