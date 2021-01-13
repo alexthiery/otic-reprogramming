@@ -390,7 +390,7 @@ m2$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
 
 </br>
 
-Select gene modules based on the presence of genes known to be involved in differentiation and re-cluster cells
+Here we select gene modules based on the presence of genes known to be involved in the development of ectodermal lineages. After subsetting the gene modules we re-cluster the cells.
 
 ```R
 bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "Pax3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "PRDM1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO-1", "IRX4", "DLX6")
@@ -706,7 +706,7 @@ gene module list</a>
 
 </br>
 
-Select gene modules based on the presence of genes known to be involved in otic and epibranchial differentiation and re-cluster cells
+Select gene modules based on the presence of genes known to be involved in otic and epibranchial development and re-cluster cells
 
 ```R
 bait_genes = c("HOMER2", "LMX1A", "SOHO-1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
