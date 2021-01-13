@@ -5,7 +5,7 @@
     var pass1 = "StreitLab";
 
     if (localStorage.getItem("pass") != pass1) {
-      password = prompt("Please enter your password to view this page!", " ");
+      password = prompt("Please enter your password to view this page!", "");
 
       password === pass1
         ? localStorage.setItem("pass", password)
