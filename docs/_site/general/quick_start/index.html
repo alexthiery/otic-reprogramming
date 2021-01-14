@@ -186,7 +186,7 @@
   <h2 id="quick-start">Quick start</h2>
 <br/>
 <p>Reproducing our analysis is computationally intensive, therefore we recommend to run the pipeline on a HPC.</p>
-<p>The Nextflow alignment pipelines generate numerous temporary files stored within <code>work</code> directories. You can clear these after each alignment without affecting the outputs required for downstream analysis. Without clearing the temporary files, we recommend that you have ~4TB available storage, 16CPUs and 128GB RAM.</p>
+<p>The Nextflow alignment pipelines generate numerous temporary files stored within <code>work</code> directories. You can clear these after each alignment without affecting the outputs required for downstream analysis. Without clearing the temporary files, we recommend that you have at minimum ~4TB available storage, 8CPUs and 64GB RAM.</p>
 <p>In order to reproduce our analysis, you will need to:</p>
 <ul>
 <li><a href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip">download the Github project repository</a></li>
@@ -288,6 +288,7 @@ nextflow run nf-core/atacseq <span class="se">\</span>
     <span class="nt">-c</span> &lt;PATH_TO_CONFIG&gt; <span class="se">\</span>
     <span class="nt">--input</span> &lt;PATH_TO_SAMPLESHEET.CSV&gt; <span class="se">\</span>
     <span class="nt">--macs_gsize</span> 1.05e9 <span class="se">\</span>
+    <span class="nt">--narrow_peak</span> <span class="se">\</span>
     <span class="nt">--skip_diff_analysis</span> <span class="se">\</span>
     <span class="nt">--outdir</span> output/NF-ATAC_alignment <span class="se">\</span>
     <span class="nt">--email</span> &lt;INSERT_EMAIL_ADDRESS&gt; <span class="se">\</span>

@@ -10,7 +10,7 @@ order: 1
 
 Reproducing our analysis is computationally intensive, therefore we recommend to run the pipeline on a HPC.
 
-The Nextflow alignment pipelines generate numerous temporary files stored within `work` directories. You can clear these after each alignment without affecting the outputs required for downstream analysis. Without clearing the temporary files, we recommend that you have ~4TB available storage, 16CPUs and 128GB RAM.
+The Nextflow alignment pipelines generate numerous temporary files stored within `work` directories. You can clear these after each alignment without affecting the outputs required for downstream analysis. Without clearing the temporary files, we recommend that you have at minimum ~4TB available storage, 8CPUs and 64GB RAM.
 
 In order to reproduce our analysis, you will need to:
 
@@ -158,6 +158,7 @@ nextflow run nf-core/atacseq \
     -c <PATH_TO_CONFIG> \
     --input <PATH_TO_SAMPLESHEET.CSV> \
     --macs_gsize 1.05e9 \
+    --narrow_peak \
     --skip_diff_analysis \
     --outdir output/NF-ATAC_alignment \
     --email <INSERT_EMAIL_ADDRESS> \
