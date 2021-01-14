@@ -136,7 +136,7 @@
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/lmx1a_downstream/">Lmx1a DEA</a>
+        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/lmx1a_downstream/">Lmx1aE1 vs Sox3U3 DEA</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
@@ -144,7 +144,7 @@
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/sox8_downstream/">Sox8 DEA</a>
+        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/sox8_downstream/">Sox8OE DEA</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
@@ -223,7 +223,7 @@
 <li>Docker/Singularity activation</li>
 </ul>
 <br/>
-<p>Below is a copy of the config file used to run the pipeline at the Crick. Given that this alignment was run on a HPC, we configure Nextflow to run with Singularity instead of Docker.</p>
+<p>Below is a copy of the config file used to run the pipeline at The Francis Crick Institute HPC. Given that this alignment was run on a HPC, we configure Nextflow to run with Singularity instead of Docker.</p>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env nextflow</span>
 
 singularity <span class="o">{</span>
@@ -300,8 +300,8 @@ nextflow run nf-core/atacseq <span class="se">\</span>
 <p>Our bulk RNAseq data were aligned using the NF-core RNAseq <a href="https://nf-co.re/RNAseq/2.0/usage">v2.0</a> pipeline.</p>
 <p>We need to align two separate bulk RNAseq datasets.</p>
 <br/>
-<p><strong><em>Lmx1a_E1 vs Sox3U3</em></strong></p>
-<p>First, we collected cells from putative otic and epibranchial fates using Lmx1a_E1 and Sox3U3 enhancers respectively.</p>
+<p><strong><em>Lmx1aE1 vs Sox3U3</em></strong></p>
+<p>First, we collected cells from putative otic and epibranchial fates using Lmx1aE1 and Sox3U3 enhancers respectively.</p>
 <p>An example samplesheet csv can be found <a href="https://github.com/alexthiery/otic-reprogramming/blob/master/NF-lmx1a_alignment/crick_samplesheet.csv">here</a>.</p>
 <p>Execute the following shell script to run the Lmx1a alignment.</p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">NXF_VER</span><span class="o">=</span>20.07.1

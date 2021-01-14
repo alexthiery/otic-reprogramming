@@ -67,7 +67,7 @@ In order to re-run the alignments and downstream analysis for this project, you 
 
 <br/>
 
-Below is a copy of the config file used to run the pipeline at the Crick. Given that this alignment was run on a HPC, we configure Nextflow to run with Singularity instead of Docker.
+Below is a copy of the config file used to run the pipeline at The Francis Crick Institute HPC. Given that this alignment was run on a HPC, we configure Nextflow to run with Singularity instead of Docker.
 
 ```bash
 #!/usr/bin/env nextflow
@@ -178,9 +178,9 @@ We need to align two separate bulk RNAseq datasets.
 
 <br/>
 
-**_Lmx1a_E1 vs Sox3U3_**
+**_Lmx1aE1 vs Sox3U3_**
 
-First, we collected cells from putative otic and epibranchial fates using Lmx1a_E1 and Sox3U3 enhancers respectively.
+First, we collected cells from putative otic and epibranchial fates using Lmx1aE1 and Sox3U3 enhancers respectively.
 
 An example samplesheet csv can be found [here](https://github.com/alexthiery/otic-reprogramming/blob/master/NF-lmx1a_alignment/crick_samplesheet.csv).
 

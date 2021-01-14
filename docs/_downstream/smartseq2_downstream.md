@@ -536,7 +536,6 @@ graphics.off()
 all tSNEs</a>
 
 <div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'all_SOX2')">Sox2</button>
   <button class="tablinks" onclick="openTab(event, 'all_SOX10')">Sox10</button>
   <button class="tablinks" onclick="openTab(event, 'all_SOX8')">Sox8</button>
   <button class="tablinks" onclick="openTab(event, 'all_PAX7')">Pax7</button>
@@ -548,10 +547,6 @@ all tSNEs</a>
 </div>
 
 </br>
-
-<div id="all_SOX2" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX2_TSNE.png">
-</div>
 
 <div id="all_SOX10" class="tabcontent">
   <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/tsne/SOX10_TSNE.png">

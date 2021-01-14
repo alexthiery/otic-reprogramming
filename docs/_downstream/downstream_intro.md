@@ -57,7 +57,7 @@ To interactively explore the data, follow these steps:
 
 </br>
 
-- [Lmx1a differential expression analysis]({{site.baseurl}}/downstream/lmx1a_downstream)
+- [Lmx1aE1 vs Sox3U3 differential expression analysis]({{site.baseurl}}/downstream/lmx1a_downstream)
 - [SmartSeq2 scRNAseq analysis]({{site.baseurl}}/downstream/smartseq2_downstream)
-- [Sox8 differential expression analysis]({{site.baseurl}}/downstream/sox8_downstream)
+- [Sox8 over-expression differential expression analysis]({{site.baseurl}}/downstream/sox8_downstream)
 - [Enhancer discovery pipeline]({{site.baseurl}}/downstream/enhancer_discovery)

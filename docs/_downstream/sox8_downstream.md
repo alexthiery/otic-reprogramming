@@ -1,6 +1,6 @@
 ---
 layout: page
-label: Sox8 DEA
+label: Sox8OE DEA
 category: Downstream analysis
 order: 4
 ---
@@ -9,7 +9,7 @@ order: 4
 
 </br>
 
-In order to study if Sox8 overexpression can confer otic characer, we co-electroporated a combination of Sox8-mCherry and Lmx1aE1-EGFP (Sox8_OE) or constitutive mCherry and EGFP (Control), at head fold stages. Then, at ss12-13, we collected double positive cells of the cranial ectoderm by FACS (heads of embryos were dissected rostral to the otic placode, leaving the otic placode and trunk tissue behind) and processed them for RNAseq.
+In order to study if Sox8 overexpression can confer otic characer, we co-electroporated a combination of Sox8-mCherry and Lmx1aE1-EGFP (Sox8OE) or constitutive mCherry and EGFP (Control), at head fold stages. Then, at ss12-13, we collected double positive cells of the cranial ectoderm by FACS (heads of embryos were dissected rostral to the otic placode, leaving the otic placode and trunk tissue behind) and processed them for RNAseq.
 
 Differential expression analysis is carried out using DESeq2 [(Love et al. 2014)](https://doi.org/10.1186/s13059-014-0550-8).
 

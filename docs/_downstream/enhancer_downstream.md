@@ -11,7 +11,7 @@ order: 5
 
 We performed epigenomic profiling carrying out ChIPseq for H3K27ac, H3K27me3 and H3K4me3 as well as ATACseq of OEP dissected tissue. Below we describe the enhancer discovery pipeline.
 
-To view our cloned enhancer tracks, click [here]({{site.baseurl}}/general/quick_start#downstream#enhancer_visualisation).
+To view our cloned enhancer tracks, click [here](#enhancer_visualisation).
 
 ---
 
