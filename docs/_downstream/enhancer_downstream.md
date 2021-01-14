@@ -7,7 +7,11 @@ order: 5
 
 ## Enhancer discovery
 
+</br>
+
 We performed epigenomic profiling carrying out ChIPseq for H3K27ac, H3K27me3 and H3K4me3 as well as ATACseq of OEP dissected tissue. Below we describe the enhancer discovery pipeline.
+
+To view our cloned enhancer tracks, click [here]({{site.baseurl}}/general/quick_start#downstream#enhancer_visualisation).
 
 ---
 
@@ -21,9 +25,11 @@ Our enhancer discovery pipeline integrates ChIP (H3K27Ac and H3K27me3) and ATAC 
 
 ### Sub-workflow
 
+</br>
+
 The sub-workflow uses Bedtools and Homer in order to identify putative enhancers:
 
-- First, we filter our GTF to contain only protein coding genes.
+- First, we subset protein coding genes from our GTF.
 - Next, we use Bedtools to subset ATAC+H3K27Ac-H3K27me3 peaks.
 - Finally, we annotate the remaining peaks to the nearest protein coding gene before removing peaks which fall within promoter or exonic regions, as they are unlikely to be active enhancers.
 
@@ -381,6 +387,62 @@ graphics.off()
 </br>
 
 <img class="myImages width_40" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png">
+
+---
+
+<br/>
+
+## Visualising enhancers in the UCSC genome browser <a name="enhancer_visualisation"></a>
+
+</br>
+
+After identifying putative enhancers, we visualised them in the UCSC genome browser before cloning and validating selected enhancers. Below are the genome tracks of validated cloned enhancers and the correponding ChIP/ATAC peaks.
+
+<a href="{{site.baseurl}}/assets/enhancer_plots/enhancer_plots.zip" download>Download all cloned enhancer tracks.</a>
+
+<br/>
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Lmx1a')">Lmx1a</button>
+  <button class="tablinks" onclick="openTab(event, 'Spry2')">Spry2</button>
+  <button class="tablinks" onclick="openTab(event, 'Zbtb16')">Zbtb16</button>
+  <button class="tablinks" onclick="openTab(event, 'Tfap2a')">Tfap2a</button>
+  <button class="tablinks" onclick="openTab(event, 'Sox13')">Sox13</button>
+  <button class="tablinks" onclick="openTab(event, 'Epha4')">Epha4</button>
+  <button class="tablinks" onclick="openTab(event, 'Pax2')">Pax2</button>
+</div>
+
+<br/>
+
+<div id="Lmx1a" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/enhancer_plots/lmx1a.png">
+</div>
+
+<div id="Spry2" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/enhancer_plots/spry2.png">
+</div>
+
+<div id="Zbtb16" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/enhancer_plots/zbtb16.png">
+</div>
+
+<div id="Tfap2a" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/enhancer_plots/tfap2a.png">
+</div>
+
+<div id="Sox13" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/enhancer_plots/sox13.png">
+</div>
+
+<div id="Epha4" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/enhancer_plots/epha4.png">
+</div>
+
+<div id="Pax2" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/enhancer_plots/pax2.png">
+</div>
+
+</br>
 
 <!-- The Modal -->
 <div id="myModal" class="modal">

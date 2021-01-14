@@ -184,16 +184,19 @@
   <!-- hide auto title generation -->
   <!-- <h1 class="page-title">Enhancer_downstream</h1> -->
   <h2 id="enhancer-discovery">Enhancer discovery</h2>
+</br>
 <p>We performed epigenomic profiling carrying out ChIPseq for H3K27ac, H3K27me3 and H3K4me3 as well as ATACseq of OEP dissected tissue. Below we describe the enhancer discovery pipeline.</p>
+<p>To view our cloned enhancer tracks, click <a href="/general/quick_start#downstream#enhancer_visualisation">here</a>.</p>
 <hr />
 </br>
 <p>Our enhancer discovery pipeline integrates ChIP (H3K27Ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. <strong>If you would like to re-run the downstream analysis pipeline, follow the instructions <a href="/general/quick_start#downstream">here</a>.</strong></p>
 <hr />
 </br>
 <h3 id="sub-workflow">Sub-workflow</h3>
+</br>
 <p>The sub-workflow uses Bedtools and Homer in order to identify putative enhancers:</p>
 <ul>
-<li>First, we filter our GTF to contain only protein coding genes.</li>
+<li>First, we subset protein coding genes from our GTF.</li>
 <li>Next, we use Bedtools to subset ATAC+H3K27Ac-H3K27me3 peaks.</li>
 <li>Finally, we annotate the remaining peaks to the nearest protein coding gene before removing peaks which fall within promoter or exonic regions, as they are unlikely to be active enhancers.</li>
 </ul>
@@ -502,6 +505,45 @@
 </details>
 </br>
 <img class="myImages width_40" id="myImg" src="/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png">
+<hr />
+<br/>
+<h2 id="visualising-enhancers-in-the-ucsc-genome-browser-a-nameenhancervisualisationa">Visualising enhancers in the UCSC genome browser <a name="enhancer_visualisation"></a></h2>
+</br>
+<p>After identifying putative enhancers, we visualised them in the UCSC genome browser before cloning and validating selected enhancers. Below are the genome tracks of validated cloned enhancers and the correponding ChIP/ATAC peaks.</p>
+<p><a href="/assets/enhancer_plots/enhancer_plots.zip" download>Download all cloned enhancer tracks.</a></p>
+<br/>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Lmx1a')">Lmx1a</button>
+  <button class="tablinks" onclick="openTab(event, 'Spry2')">Spry2</button>
+  <button class="tablinks" onclick="openTab(event, 'Zbtb16')">Zbtb16</button>
+  <button class="tablinks" onclick="openTab(event, 'Tfap2a')">Tfap2a</button>
+  <button class="tablinks" onclick="openTab(event, 'Sox13')">Sox13</button>
+  <button class="tablinks" onclick="openTab(event, 'Epha4')">Epha4</button>
+  <button class="tablinks" onclick="openTab(event, 'Pax2')">Pax2</button>
+</div>
+<br/>
+<div id="Lmx1a" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="/assets/enhancer_plots/lmx1a.png">
+</div>
+<div id="Spry2" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="/assets/enhancer_plots/spry2.png">
+</div>
+<div id="Zbtb16" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="/assets/enhancer_plots/zbtb16.png">
+</div>
+<div id="Tfap2a" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="/assets/enhancer_plots/tfap2a.png">
+</div>
+<div id="Sox13" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="/assets/enhancer_plots/sox13.png">
+</div>
+<div id="Epha4" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="/assets/enhancer_plots/epha4.png">
+</div>
+<div id="Pax2" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="/assets/enhancer_plots/pax2.png">
+</div>
+</br>
 <!-- The Modal -->
 <div id="myModal" class="modal">
   <!-- The Close Button -->

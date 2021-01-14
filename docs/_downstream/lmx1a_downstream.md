@@ -9,7 +9,9 @@ order: 2
 
 </br>
 
-Embryos at ss3-5 where electroporated with either Lmx1a_E1-EGFP or Sox3U3-EGFP enhancers to genetically label the otic and epibranchial cell populations respectively. At ss18-21 embryos were removed from the egg and EGFP+ cells of each population were collected by FACS and processed for RNAseq and analysed as described below.
+Embryos at ss3-5 where electroporated with either Lmx1a_E1-EGFP or Sox3U3-EGFP enhancers to genetically label the otic and epibranchial cell populations respectively. At ss18-21 embryos were removed from the egg and EGFP+ cells of each population were collected by FACS and processed for RNAseq.
+
+Differential expression analysis is carried out using DESeq2 [(Love et al. 2014)](https://doi.org/10.1186/s13059-014-0550-8).
 
 ---
 
