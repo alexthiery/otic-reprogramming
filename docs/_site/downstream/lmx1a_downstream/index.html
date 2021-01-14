@@ -29,14 +29,14 @@
   </title>
 
   
-  <link rel="canonical" href="https://alexthiery.github.io/otic-reprogramming/https://alexthiery.github.io/otic-reprogramming/downstream/lmx1a_downstream/" />
+  <link rel="canonical" href="http://0.0.0.0:4000/downstream/lmx1a_downstream/" />
   
 
   <!-- CSS -->
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/poole.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/syntax.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/custom.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/lanyon.css" />
+  <link rel="stylesheet" href="/public/css/poole.css" />
+  <link rel="stylesheet" href="/public/css/syntax.css" />
+  <link rel="stylesheet" href="/public/css/custom.css" />
+  <link rel="stylesheet" href="/public/css/lanyon.css" />
   <link
     rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400"
@@ -48,7 +48,7 @@
     href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
   />
 
-  <link rel="shortcut icon" href="https://alexthiery.github.io/otic-reprogramming/public/favicon.ico" />
+  <link rel="shortcut icon" href="/public/favicon.ico" />
 
   <i class="fas fa-egg"></i>
 
@@ -57,7 +57,7 @@
     rel="alternate"
     type="application/rss+xml"
     title="RSS"
-    href="https://alexthiery.github.io/otic-reprogramming/https://alexthiery.github.io/otic-reprogramming/atom.xml"
+    href="http://0.0.0.0:4000/atom.xml"
   />
 </head>
 
@@ -72,7 +72,7 @@
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <img src="https://alexthiery.github.io/otic-reprogramming/assets/sidebar_icon.png" />
+    <img src="/assets/sidebar_icon.png" />
   </div>
 
   <div id="contact-list" style="text-align: center">
@@ -113,42 +113,42 @@
 
   <!-- sidebar tabs -->
 
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/">Home</a>
+  <a class="sidebar-nav-item" href="/">Home</a>
 
   <!-- add tabs automatically from downstream and general collections-->
 
      
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/general/quick_start/"
+  <a class="sidebar-nav-item" href="/general/quick_start/"
     >Quick start</a
   >
       
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/general/smartseq2_alignment/"
+  <a class="sidebar-nav-item" href="/general/smartseq2_alignment/"
     >SmartSeq2 alignment</a
   >
       
   <li class="sidebar-nav-item">
     
-    <a href="https://alexthiery.github.io/otic-reprogramming/downstream/downstream_intro/">Downstream analysis</a>
+    <a href="/downstream/downstream_intro/">Downstream analysis</a>
     <ul>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/downstream_intro/">Intro</a>
+        <a href="/downstream/downstream_intro/">Intro</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/lmx1a_downstream/">Lmx1a DEA</a>
+        <a href="/downstream/lmx1a_downstream/">Lmx1a DEA</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/smartseq2_downstream/">SmartSeq2 scRNAseq</a>
+        <a href="/downstream/smartseq2_downstream/">SmartSeq2 scRNAseq</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/sox8_downstream/">Sox8 DEA</a>
+        <a href="/downstream/sox8_downstream/">Sox8 DEA</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/enhancer_downstream/">Enhancer discovery</a>
+        <a href="/downstream/enhancer_downstream/">Enhancer discovery</a>
       </li>
       
     </ul>
@@ -174,7 +174,7 @@
       <div class="masthead">
         <div class="container">
           <h3 class="masthead-title">
-            <a href="https://alexthiery.github.io/otic-reprogramming/" title="Home">Otic reprogramming</a>
+            <a href="/" title="Home">Otic reprogramming</a>
             <small>Buzzi et al. 2021</small>
           </h3>
         </div>
@@ -293,7 +293,7 @@
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 </details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/dispersion_est.png">
+<img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/lmx1a_dea/output/dispersion_est.png">
 </br>
 <p>We use the DESeq2 function lfcShrink in order to calculate more accurate log2FC estimates. This uses information across all genes to shrink LFC when a gene has low counts or high dispersion values.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Run lfcShrink</span><span class="w">
@@ -311,7 +311,7 @@
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 </details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/MA_plot.png">
+<img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/lmx1a_dea/output/MA_plot.png">
 </br>
 <p>Plot volcano plot with padj &lt; 0.05 and abs(fold change) &gt; 1.5.</p>
 <details><summary class="box">Code</summary>
@@ -359,7 +359,7 @@
 </span></code></pre></div></div>
 </details>
 </br>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/volcano.png">
+<img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/lmx1a_dea/output/volcano.png">
 </br>
 <p>Generate csv for raw counts, normalised counts, and differential expression output.</p>
 <details><summary class="box">Code</summary>
@@ -429,9 +429,9 @@ padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 sample
 </span></code></pre></div></div>
 </details>
 </br>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_1.csv" download>Download
+<p><a href="/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_1.csv" download>Download
 differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05).</a></p>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_2.csv" download>Download
+<p><a href="/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_2.csv" download>Download
 differential expression results for all genes.</a></p>
 </br>
 </br>
@@ -478,13 +478,13 @@ differential expression results for all genes.</a></p>
 </div>
 </br>
 <div id="Sample Correlogram" class="tabcontent">
-  <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleCorrelogram.png">
+  <img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleCorrelogram.png">
 </div>
 <div id="Sample-Sample Distance" class="tabcontent">
-  <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleDist.png">
+  <img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/lmx1a_dea/output/SampleDist.png">
 </div>
 <div id="Sample PCA" class="tabcontent">
-  <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/SamplePCA.png">
+  <img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/lmx1a_dea/output/SamplePCA.png">
 </div>
 </br>
 </br>
@@ -505,7 +505,7 @@ differential expression results for all genes.</a></p>
 
 </span></code></pre></div></div>
 </details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_hm.png">
+<img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_hm.png">
 </br>
 <p>Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981').</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Get biomart GO annotations for TFs</span><span class="w">
@@ -538,7 +538,7 @@ padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 sample
 </span></code></pre></div></div>
 </details>
 </br>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_3.csv" download>Download TF
+<p><a href="/assets/output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_3.csv" download>Download TF
 differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05).</a></p>
 </br>
 <p>Plot heatmap for differentially expressed transcription factors.</p>
@@ -556,7 +556,7 @@ differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 </details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_TFs_hm.png">
+<img class="myImages" id="myImg" src="/assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_TFs_hm.png">
 <!-- The Modal -->
 <div id="myModal" class="modal">
   <!-- The Close Button -->
@@ -573,6 +573,6 @@ differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &
 
     <label for="sidebar-checkbox" class="sidebar-toggle"></label>
 
-    <script src="https://alexthiery.github.io/otic-reprogramming/public/js/script.js"></script>
+    <script src="/public/js/script.js"></script>
   </body>
 </html>

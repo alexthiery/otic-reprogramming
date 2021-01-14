@@ -30,14 +30,14 @@
   </title>
 
   
-  <link rel="canonical" href="https://alexthiery.github.io/otic-reprogramming/https://alexthiery.github.io/otic-reprogramming/home/home/" />
+  <link rel="canonical" href="http://0.0.0.0:4000/home/home/" />
   
 
   <!-- CSS -->
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/poole.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/syntax.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/custom.css" />
-  <link rel="stylesheet" href="https://alexthiery.github.io/otic-reprogramming/public/css/lanyon.css" />
+  <link rel="stylesheet" href="/public/css/poole.css" />
+  <link rel="stylesheet" href="/public/css/syntax.css" />
+  <link rel="stylesheet" href="/public/css/custom.css" />
+  <link rel="stylesheet" href="/public/css/lanyon.css" />
   <link
     rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400"
@@ -49,7 +49,7 @@
     href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css"
   />
 
-  <link rel="shortcut icon" href="https://alexthiery.github.io/otic-reprogramming/public/favicon.ico" />
+  <link rel="shortcut icon" href="/public/favicon.ico" />
 
   <i class="fas fa-egg"></i>
 
@@ -58,7 +58,7 @@
     rel="alternate"
     type="application/rss+xml"
     title="RSS"
-    href="https://alexthiery.github.io/otic-reprogramming/https://alexthiery.github.io/otic-reprogramming/atom.xml"
+    href="http://0.0.0.0:4000/atom.xml"
   />
 </head>
 
@@ -73,7 +73,7 @@
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <img src="https://alexthiery.github.io/otic-reprogramming/assets/sidebar_icon.png" />
+    <img src="/assets/sidebar_icon.png" />
   </div>
 
   <div id="contact-list" style="text-align: center">
@@ -114,42 +114,42 @@
 
   <!-- sidebar tabs -->
 
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/">Home</a>
+  <a class="sidebar-nav-item" href="/">Home</a>
 
   <!-- add tabs automatically from downstream and general collections-->
 
      
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/general/quick_start/"
+  <a class="sidebar-nav-item" href="/general/quick_start/"
     >Quick start</a
   >
       
-  <a class="sidebar-nav-item" href="https://alexthiery.github.io/otic-reprogramming/general/smartseq2_alignment/"
+  <a class="sidebar-nav-item" href="/general/smartseq2_alignment/"
     >SmartSeq2 alignment</a
   >
       
   <li class="sidebar-nav-item">
     
-    <a href="https://alexthiery.github.io/otic-reprogramming/downstream/downstream_intro/">Downstream analysis</a>
+    <a href="/downstream/downstream_intro/">Downstream analysis</a>
     <ul>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/downstream_intro/">Intro</a>
+        <a href="/downstream/downstream_intro/">Intro</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/lmx1a_downstream/">Lmx1a DEA</a>
+        <a href="/downstream/lmx1a_downstream/">Lmx1a DEA</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/smartseq2_downstream/">SmartSeq2 scRNAseq</a>
+        <a href="/downstream/smartseq2_downstream/">SmartSeq2 scRNAseq</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/sox8_downstream/">Sox8 DEA</a>
+        <a href="/downstream/sox8_downstream/">Sox8 DEA</a>
       </li>
       
       <li class="sidebar-nav-sub-item">
-        <a href="https://alexthiery.github.io/otic-reprogramming/downstream/enhancer_downstream/">Enhancer discovery</a>
+        <a href="/downstream/enhancer_downstream/">Enhancer discovery</a>
       </li>
       
     </ul>
@@ -175,7 +175,7 @@
       <div class="masthead">
         <div class="container">
           <h3 class="masthead-title">
-            <a href="https://alexthiery.github.io/otic-reprogramming/" title="Home">Otic reprogramming</a>
+            <a href="/" title="Home">Otic reprogramming</a>
             <small>Buzzi et al. 2021</small>
           </h3>
         </div>
@@ -190,11 +190,11 @@
 <h3 id="nextflow">Nextflow</h3>
 </br>
 <p>Our analysis uses a combination of NF-core (ChIP, ATAC and bulk RNAseq) pipelines, as well as a custom SmartSeq2 Nextflow pipeline to align our data. We have also developed a custom downstream analysis pipeline in order to integrate the outputs from our datasets into a single reproducible workflow.</p>
-<p>For those who would like to re-run the analysis in Nextflow, including re-aligning any of our data, click <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start">here</a> for instructions.</p>
+<p>For those who would like to re-run the analysis in Nextflow, including re-aligning any of our data, click <a href="/general/quick_start">here</a> for instructions.</p>
 <hr />
 <h3 id="docker">Docker</h3>
 </br>
-<p>Our downstream analysis pipeline makes use of a custom Docker container, which also allows for interactive downstream exploration of the data in RStudio server. This allows you to explore the data within the same computing environment which our analysis was carried out in. You can find instructions on how to run the Docker container for data exploration <a href="https://alexthiery.github.io/otic-reprogramming/downstream/downstream_intro#interactive">here</a>.</p>
+<p>Our downstream analysis pipeline makes use of a custom Docker container, which also allows for interactive downstream exploration of the data in RStudio server. This allows you to explore the data within the same computing environment which our analysis was carried out in. You can find instructions on how to run the Docker container for data exploration <a href="/downstream/downstream_intro#interactive">here</a>.</p>
 
 </div>
 </div>
@@ -202,6 +202,6 @@
 
     <label for="sidebar-checkbox" class="sidebar-toggle"></label>
 
-    <script src="https://alexthiery.github.io/otic-reprogramming/public/js/script.js"></script>
+    <script src="/public/js/script.js"></script>
   </body>
 </html>
