@@ -9,11 +9,9 @@ order: 3
 
 </br>
 
-To assess the transcriptomic changes that accompany the development of OEPs, we performed single-cell-RNA-seq. To do so, we took advantage of a Pax2E1-EGFP enhancer to genetically label OEP, otic and epibranchial cells. Embryos were electroporated at head-fold stages and EGFP+ collected at ss8-9, ss11-12 and ss14-16 by FACS and processed for SmartSeq2 single cell RNAseq.
+To assess the transcriptomic changes that accompany the development of OEPs, we performed single cell RNAseq. To do so, we took advantage of a Pax2E1-EGFP enhancer to genetically label OEP, Otic and Epibranchial cells. Embryos were electroporated at head-fold stages and EGFP+ cells were collected at ss8-9, ss11-12 and ss14-16 by FACS and processed for SmartSeq2 single cell RNAseq.
 
-The data was analysed primarily using the [Antler R package](https://github.com/juliendelile/Antler), which has been developed specifically for analysing single-cell RNAseq experiments. This package aims to perform unbiased data driven analysis.
-
-</br>
+The data was analysed primarily using the [Antler R package](https://github.com/juliendelile/Antler), which has been developed specifically for analysing single cell RNAseq experiments. This package aims to perform unbiased data driven analysis.
 
 The version of Antler used in this analysis corresponds to the version published in [Delile et al. 2019](https://doi.org/10.1242/dev.173807).
 
@@ -34,7 +32,7 @@ RNA velocity is carried out using Velocyto [(La Manno et al. 2018)](https://doi.
 <details><summary class="box">Expand</summary>
 <p>
 
-Automatic switch for running pipeline through Nextflow or interactively in Rstudio
+Automatic switch for running pipeline through Nextflow or interactively in Rstudio.
 
 ```R
 library(getopt)
@@ -128,7 +126,7 @@ stage_cols = setNames(c("#BBBDC1", "#6B98E9", "#05080D"), c('8', '11', '15'))
 
 </br>
 
-Load data and initialise Antler object
+Load data and initialise Antler object.
 
 ```R
 # Load and hygienize dataset
@@ -142,7 +140,7 @@ pData(m$expressionSet)$cells_colors = stage_cols[as.character(pData(m$expression
 
 </br>
 
-Plot pre-QC metrics
+Plot pre-QC metrics.
 
 ```R
 m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", basename="preQC", reads_name="read", cat_colors=unname(stage_cols))
@@ -172,7 +170,7 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
 
 </br>
 
-Some key genes are not annotated in the GTF - manually add these gene names to the annotations file
+Some key genes are not annotated in the GTF - we manually add these gene names to the annotations file.
 
 ```R
 # read in annotations file
@@ -197,7 +195,7 @@ m$setCurrentGeneNames(geneID_mapping_file=paste0(output_path, 'new_annotations.c
 
 </br>
 
-Add list of key genes to Antler object
+Add list of key genes to Antler object.
 
 ```R
 #' Store known genes
@@ -230,7 +228,7 @@ m$favorite_genes <- unique(sort(apriori_genes))
 <details><summary class="box">Expand</summary>
 <p>
 
-Remove gene and cell outliers
+Remove gene and cell outliers.
 
 ```R
 #' Remove outliers genes and cells
@@ -242,7 +240,7 @@ m$removeOutliers( lowread_thres = 5e5,   # select cells with more than 500000 re
 
 </br>
 
-Remove control cells
+Remove control cells.
 
 ```R
 annotations = list(
@@ -256,7 +254,7 @@ m$excludeCellsFromIds(which(m$getCellsNames() %in% unlist(annotations)))
 
 </br>
 
-Remove cells with more than 6% of mitochondrial read counts
+Remove cells with more than 6% of mitochondrial read counts.
 
 ```R
 m$removeGenesFromRatio(
@@ -267,7 +265,7 @@ m$removeGenesFromRatio(
 
 </br>
 
-QC plots
+QC plots.
 
 ```R
 m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", basename="postQC", reads_name="read", cat_colors=unname(stage_cols))
@@ -298,7 +296,7 @@ m$plotReadcountStats(data_status="Raw", by="timepoint", category="timepoint", ba
 
 </br>
 
-Normalize readcounts to CPM and remove genes with <10 CPM
+Normalize readcounts to CPM and remove genes with <10 CPM.
 
 ```R
 m$normalize(method="Count-Per-Million")
@@ -319,7 +317,7 @@ m$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, data_
 <details><summary class="box">Expand</summary>
 <p>
 
-Generate gene-gene correlation matrix
+Generate gene-gene correlation matrix.
 
 ```R
 # change plot folder
@@ -335,7 +333,7 @@ corr.mat = fastCor(t(m$getReadcounts(data_status='Normalized')), method="spearma
 
 **_Identification of modules of co-correlated genes_**
 
-This feature is the prime reason for using the Antler package. Using the Antler package, we are able to cluster genes and identify sets of co-correlated genes termed _gene modules_. This works by heirarchically clustering a gene-gene correlation matrix, followed by iterative filtering of poor quality clusters.
+Using the Antler package, we are able to cluster genes and identify sets of co-correlated genes termed _gene modules_. This works by heirarchically clustering a gene-gene correlation matrix, followed by iterative filtering of poor quality clusters.
 
 For further information on Antler gene module identification, click [here](https://juliendelile.github.io/Antler/articles/Transcriptomic-summary.html#gene-modules-identification).
 
@@ -364,7 +362,7 @@ names(m$topCorr_DR$genemodules) <- paste0("GM ", seq(length(m$topCorr_DR$genemod
 
 </br>
 
-Plot gene modules
+Plot gene modules.
 
 ```R
 # identify cell clusters based on remaining genes
@@ -400,7 +398,7 @@ gene module list</a>
 
 </br>
 
-Filter out cells with low summary counts
+Filter out cells with low summary counts.
 
 ```R
 m2 = m$copy()
@@ -410,7 +408,7 @@ m2$excludeUnexpressedGenes(min.cells=1, data_status="Normalized", verbose=TRUE)
 
 </br>
 
-Here we select gene modules based on the presence of genes known to be involved in the development of ectodermal lineages. After subsetting the gene modules we re-cluster the cells.
+We select gene modules based on the presence of genes known to be involved in the development of ectodermal lineages. After subsetting the gene modules we re-cluster the cells.
 
 ```R
 bait_genes = c("HOXA2", "PAX6", "SOX2", "MSX1", "Pax3", "SALL1", "ETS1", "TWIST1", "HOMER2", "LMX1A", "VGLL2", "EYA2", "PRDM1", "FOXI3", "NELL1", "DLX5", "SOX8", "SOX10", "SOHO-1", "IRX4", "DLX6")
@@ -429,7 +427,7 @@ gfp_counts = read.table(file=paste0(gfp_counts, 'gfpData.csv'), header=TRUE, che
 
 </br>
 
-Plot final clustering of all cells
+Plot final clustering of all cells.
 
 ```R
 m2$plotGeneModules(
@@ -472,7 +470,7 @@ gene module list</a>
 
 </br>
 
-Plot tSNEs of cell clusters and developmental stage
+Plot tSNEs of cell clusters and developmental stage.
 
 ```R
 curr_plot_folder = paste0(plot_path, "all_cells/tsne/")
@@ -512,7 +510,7 @@ graphics.off()
 
 </br>
 
-Plot tSNEs of genes of interest
+Plot tSNEs for genes of interest.
 
 ```R
 gene_list = c('SOX2', 'SOX10', 'SOX8', 'PAX7', 'PAX2', 'LMX1A', 'SOX21', 'SIX1')
@@ -591,7 +589,7 @@ all tSNEs</a>
 
 </br>
 
-Plot dotplot for genes of interest
+Plot dotplot for genes of interest.
 
 ```R
 curr_plot_folder = paste0(plot_path, "all_cells/")
@@ -658,9 +656,9 @@ graphics.off()
 <details><summary class="box">Expand</summary>
 <p>
 
-Clusters 3-5 are composed of non-oep derived populations (they are also mostly PAX2 negative)
+Clusters 3-5 are composed of non-oep derived populations (they are also mostly Pax2 negative).
 
-We exclude these cells from the subsequent analysis
+We exclude these cells from the subsequent analysis.
 
 ```R
 curr_plot_folder = paste0(plot_path, "oep_subset/")
@@ -676,7 +674,7 @@ m_oep$removeLowlyExpressedGenes(expression_threshold=1, selection_theshold=10, d
 
 </br>
 
-Calculate and plot gene modules for OEPs
+Calculate and plot gene modules for OEPs.
 
 ```R
 
@@ -729,7 +727,7 @@ gene module list</a>
 
 </br>
 
-Select gene modules based on the presence of genes known to be involved in otic and epibranchial development and re-cluster cells
+Select gene modules based on the presence of genes known to be involved in Otic and Epibranchial development and re-cluster cells.
 
 ```R
 bait_genes = c("HOMER2", "LMX1A", "SOHO-1", "SOX10", "VGLL2", "FOXI3", 'ZNF385C', 'NELL1', "CXCL14", "EYA4")
@@ -774,7 +772,7 @@ gene module list</a>
 
 </br>
 
-Plot tSNEs of cell clusters and developmental stage
+Plot tSNEs of cell clusters and developmental stage.
 
 ```R
 curr_plot_folder = paste0(plot_path, 'oep_subset/tsne/')
@@ -812,7 +810,7 @@ graphics.off()
 
 </br>
 
-Plot expression of bait genes plus genes from bulk RNAseq and literature on tsne
+Plot tSNEs for bait genes, as well as genes from bulk RNAseq and from the literature.
 
 ```R
 gene_list = c(bait_genes, 'SOX8', 'PAX2', 'TFAP2E', 'SIX1', 'ZBTB16', 'FOXG1', 'PDLIM1')
@@ -883,7 +881,7 @@ all tSNEs</a>
 
 </br>
 
-Plot tSNE co-expression plots
+Plot tSNE co-expression plots.
 
 ```R
 gene_pairs <- list(c("FOXI3", "LMX1A"), c("TFAP2E", "LMX1A"), c("FOXI3", "SOX8"), c("TFAP2E", "SOX8"))
@@ -928,7 +926,7 @@ seed=seed, perplexity=perp, pca=FALSE, eta=eta, height = 15, width = 22, res = 4
 <details><summary class="box">Expand</summary>
 <p>
 
-In order to study the process of differentiation from OEP to Otic and Epibranchial lineages, we order the cells in pseudotime using our subset gene modules identified as important for this process.
+In order to study the process of differentiation from OEP to Otic and Epibranchial lineages, we order the cells in pseudotime.
 
 ```R
 curr_plot_folder = paste0(plot_path, "monocle_plots/")
@@ -962,7 +960,7 @@ HSMM <- orderCells(HSMM, root_state = which.max(table(pData(HSMM)$State, pData(H
 
 </br>
 
-Plot gradient gene expression on Monocle embeddings
+Plot gradient gene expression on Monocle embeddings.
 
 ```R
 curr_plot_folder = paste0(plot_path, "monocle_plots/gradient_plots/")
@@ -1041,7 +1039,7 @@ all Monocle gradient plots</a>
 
 </br>
 
-Plot Monocle co-expression plots
+Plot Monocle co-expression plots.
 
 ```R
 curr_plot_folder = paste0(plot_path, "monocle_plots/coexpression/")
@@ -1082,7 +1080,7 @@ lapply(gene_pairs, function(x) {monocle_coexpression_plot(m_oep, m_oep$topCorr_D
 
 </br>
 
-Plot trajectories
+Plot trajectories.
 
 ```R
 curr_plot_folder = paste0(plot_path, "monocle_plots/")
@@ -1125,7 +1123,7 @@ graphics.off()
 
 </br>
 
-Generate a monocle projection plot for each known gene
+Generate a Monocle projection plot for each known gene.
 
 ```R
 curr_plot_folder = paste0(plot_path, "monocle_plots/all_monocle_projections/")
@@ -1166,7 +1164,7 @@ unlink(curr_plot_folder, recursive=TRUE, force=TRUE)
 
 </br>
 
-Plot dotplot for genes along Monocle branches
+Plot dotplot for genes along Monocle branches.
 
 ```R
 curr_plot_folder = paste0(plot_path, "monocle_plots/")
@@ -1245,9 +1243,9 @@ Plotting the expression of candidate genes, we can easliy classify the Otic, Epi
 <details><summary class="box">Expand</summary>
 <p>
 
-Here we calculate co-expression of key otic and epibranchial markers along each of the Monocle branches. We then test and find that the level of co-expression Otic/Epibranchial markers is higher in the OEP population relative to Otic and Epibranchial branches. This shows that individual OEP cells are co-expressing markers of both lineages - indicative of a bipotent progenenitor population.
+We calculate the co-expression of key Otic and Epibranchial markers along each of the Monocle branches. We then test and find that the level of co-expression of Otic and Epibranchial markers is higher in the OEP population relative to Otic and Epibranchial branches. This shows that individual OEP cells are co-expressing markers of both lineages - indicative of a bipotent progenenitor population.
 
-First we determine the list of genes used for coexpression analysis.
+First we determine the list of genes used for co-expression analysis.
 
 ```R
 otic = c("SOX10", "SOX8", "HOMER2", 'LMX1A')
@@ -1397,7 +1395,7 @@ From these three plots we can see that the co-expression of Epibranchial and Oti
 
 BEAM is used to identify genes with branch dependent expression.
 
-Select genes with high expression and dispersion, and then use BEAM QC to filter and plot.
+We select genes with high expression and dispersion, and then use BEAM QC to filter and plot their expression across pseudotime.
 
 ```R
 
@@ -1434,7 +1432,7 @@ write.csv(BEAM_res %>% dplyr::arrange(pval), paste0(curr_plot_folder, 'beam_scor
 
 </br>
 
-Plot BEAM for original favourite genes
+Plot BEAM for original favourite genes.
 
 ```R
 png(paste0(curr_plot_folder, 'Monocle_Beam_knownGenes.png'), width=20, height=25, family = 'Arial', units = "cm", res = 400)
@@ -1455,7 +1453,7 @@ graphics.off()
 
 </br>
 
-Plot BEAM for selected markers
+Plot BEAM for selected markers.
 
 ```R
 beam_gene_list = c(gene_list, 'SOX13', 'TFAP2A', 'GATA3', 'EPHA4', 'DLX5', 'PRDM1', 'PRDM12', 'EYA1', 'EYA2', 'ETV4')
@@ -1487,7 +1485,9 @@ graphics.off()
 <details><summary class="box">Expand</summary>
 <p>
 
-Read in splice counts (loom data) and filter cells and genes remaining in OEP subset.
+RNA velocity uses the abundance of spliced and un-spliced RNA transcripts, in order to infer the future state of single cells.
+
+First, we read in splice counts (Loom data) and filter cells and genes remaining in OEP subset.
 
 ```R
 curr_plot_folder = paste0(plot_path, "velocyto/")
@@ -1525,7 +1525,7 @@ m_oep_velocyto_dat <- lapply(m_oep_velocyto_dat, function(x){
 
 </br>
 
-Extract count matrices for spliced, unspliced and spanning reads, and calculate RNA velocity
+Extract count matrices for spliced, un-spliced and spanning reads, and calculate RNA velocity.
 
 ```R
 # exonic read (spliced) expression matrix
@@ -1541,7 +1541,7 @@ rvel <- gene.relative.velocity.estimates(emat,nmat,smat=smat, kCells = 5, diagon
 
 </br>
 
-Plot RNA velocity on tSNE embeddings for cell clusters
+Plot RNA velocity on tSNE embeddings for cell clusters.
 
 ```R
 # get tsne embeddings for m_oep cells
@@ -1596,7 +1596,7 @@ graphics.off()
 
 </br>
 
-Plot RNA velocity on tSNE embeddings for developmental stage
+Plot RNA velocity on tSNE embeddings for developmental stage.
 
 ```R
 
@@ -1645,7 +1645,7 @@ graphics.off()
 
 </br>
 
-Plot RNA velocity on Monocle embeddings for cell clusters
+Plot RNA velocity on Monocle embeddings for cell clusters.
 
 ```R
 # return velocity object to plot with ggplot
@@ -1709,7 +1709,7 @@ graphics.off()
 
 </br>
 
-Plot RNA velocity on Monocle embeddings for developmental stage
+Plot RNA velocity on Monocle embeddings for developmental stage.
 
 ```R
 
