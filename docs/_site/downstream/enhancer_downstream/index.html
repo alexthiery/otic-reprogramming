@@ -189,7 +189,7 @@
 <p>To view our cloned enhancer tracks, click <a href="#enhancer_visualisation">here</a>.</p>
 <hr />
 </br>
-<p>Our enhancer discovery pipeline integrates ChIP (H3K27Ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. <strong>If you would like to re-run the downstream analysis pipeline, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#downstream">here</a>.</strong></p>
+<p>Our enhancer discovery pipeline integrates ChIP (H3K27ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. <strong>If you would like to re-run the downstream analysis pipeline, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#downstream">here</a>.</strong></p>
 <hr />
 </br>
 <h3 id="sub-workflow">Sub-workflow</h3>
@@ -197,7 +197,7 @@
 <p>The sub-workflow uses Bedtools and Homer in order to identify putative enhancers:</p>
 <ul>
 <li>First, we subset protein coding genes from our GTF.</li>
-<li>Next, we use Bedtools to subset ATAC+H3K27Ac-H3K27me3 peaks.</li>
+<li>Next, we use Bedtools to subset ATAC+H3K27ac-H3K27me3 peaks.</li>
 <li>Finally, we annotate the remaining peaks to the nearest protein coding gene before removing peaks which fall within promoter or exonic regions, as they are unlikely to be active enhancers.</li>
 </ul>
 <p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers.bed" download>Download putative enhancer co-ordinates</a></p>
@@ -238,7 +238,7 @@
         <span class="c1">// Keep only protein coding genes in gtf</span>
         <span class="n">awk_gtf_filter</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'awk_gtf_filter'</span><span class="o">],</span> <span class="n">gtf</span><span class="o">)</span>
 
-        <span class="c1">// // Intersect ATAC peaks with H3K27Ac peaks</span>
+        <span class="c1">// // Intersect ATAC peaks with H3K27ac peaks</span>
         <span class="n">bedtools_intersect</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'bedtools_intersect'</span><span class="o">],</span> <span class="n">atac_peaks</span><span class="o">.</span><span class="na">filter</span><span class="o">{</span> <span class="n">it</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">sample_id</span> <span class="o">==</span> <span class="s1">'ATAC'</span> <span class="o">},</span> <span class="n">chip_peaks</span><span class="o">.</span><span class="na">filter</span><span class="o">{</span> <span class="n">it</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="na">sample_id</span> <span class="o">==</span> <span class="s1">'H3K27Ac'</span> <span class="o">}.</span><span class="na">map</span><span class="o">{</span> <span class="n">it</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">}</span> <span class="o">)</span>
 
         <span class="c1">// Remove any peaks which also have hits for H3K27me3</span>

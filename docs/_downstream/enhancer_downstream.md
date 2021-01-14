@@ -17,7 +17,7 @@ To view our cloned enhancer tracks, click [here](#enhancer_visualisation).
 
 </br>
 
-Our enhancer discovery pipeline integrates ChIP (H3K27Ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. **If you would like to re-run the downstream analysis pipeline, follow the instructions [here]({{site.baseurl}}/general/quick_start#downstream).**
+Our enhancer discovery pipeline integrates ChIP (H3K27ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. **If you would like to re-run the downstream analysis pipeline, follow the instructions [here]({{site.baseurl}}/general/quick_start#downstream).**
 
 ---
 
@@ -30,7 +30,7 @@ Our enhancer discovery pipeline integrates ChIP (H3K27Ac and H3K27me3) and ATAC 
 The sub-workflow uses Bedtools and Homer in order to identify putative enhancers:
 
 - First, we subset protein coding genes from our GTF.
-- Next, we use Bedtools to subset ATAC+H3K27Ac-H3K27me3 peaks.
+- Next, we use Bedtools to subset ATAC+H3K27ac-H3K27me3 peaks.
 - Finally, we annotate the remaining peaks to the nearest protein coding gene before removing peaks which fall within promoter or exonic regions, as they are unlikely to be active enhancers.
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers.bed" download>Download putative enhancer co-ordinates</a>
@@ -76,7 +76,7 @@ workflow enhancer_analysis {
         // Keep only protein coding genes in gtf
         awk_gtf_filter(params.modules['awk_gtf_filter'], gtf)
 
-        // // Intersect ATAC peaks with H3K27Ac peaks
+        // // Intersect ATAC peaks with H3K27ac peaks
         bedtools_intersect(params.modules['bedtools_intersect'], atac_peaks.filter{ it[0].sample_id == 'ATAC' }, chip_peaks.filter{ it[0].sample_id == 'H3K27Ac' }.map{ it[1] } )
 
         // Remove any peaks which also have hits for H3K27me3
