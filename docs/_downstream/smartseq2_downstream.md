@@ -9,13 +9,23 @@ order: 3
 
 </br>
 
-To assess the transcriptomic changes that accompany the development of OEPs, we performed single-cell-RNA-seq. To do so, we took advantage of a Pax2E1-EGFP enhancer to genetically label OEP, otic and epibranchial cells. Embryos were electroporated at head-fold stages and EGFP+ collected at ss8-9, ss11-12 and ss14-16 by FACS and processed for SmartSeq2 single cell RNAseq. The data was analysed as follows.
+To assess the transcriptomic changes that accompany the development of OEPs, we performed single-cell-RNA-seq. To do so, we took advantage of a Pax2E1-EGFP enhancer to genetically label OEP, otic and epibranchial cells. Embryos were electroporated at head-fold stages and EGFP+ collected at ss8-9, ss11-12 and ss14-16 by FACS and processed for SmartSeq2 single cell RNAseq.
+
+The data was analysed primarily using the [Antler R package](https://github.com/juliendelile/Antler), which has been developed specifically for analysing single-cell RNAseq experiments. This package aims to perform unbiased data driven analysis.
+
+</br>
+
+The version of Antler used in this analysis corresponds to the version published in [Delile et al. 2019](https://doi.org/10.1242/dev.173807).
+
+Pseudotemporal analysis is carried out using Monocle2 [(Qiu et al. 2017)](https://doi.org/10.1038/nmeth.4402).
+
+RNA velocity is carried out using Velocyto [(La Manno et al. 2018)](https://doi.org/10.1038/s41586-018-0414-6).
 
 ---
 
 </br>
 
-### R analysis pipeline
+## R analysis pipeline
 
 </br>
 

@@ -185,10 +185,15 @@
   <!-- <h1 class="page-title">Smartseq2_downstream</h1> -->
   <h2 id="smartseq2-scrnaseq-analysis">SmartSeq2 scRNAseq analysis</h2>
 </br>
-<p>To assess the transcriptomic changes that accompany the development of OEPs, we performed single-cell-RNA-seq. To do so, we took advantage of a Pax2E1-EGFP enhancer to genetically label OEP, otic and epibranchial cells. Embryos were electroporated at head-fold stages and EGFP+ collected at ss8-9, ss11-12 and ss14-16 by FACS and processed for SmartSeq2 single cell RNAseq. The data was analysed as follows.</p>
+<p>To assess the transcriptomic changes that accompany the development of OEPs, we performed single-cell-RNA-seq. To do so, we took advantage of a Pax2E1-EGFP enhancer to genetically label OEP, otic and epibranchial cells. Embryos were electroporated at head-fold stages and EGFP+ collected at ss8-9, ss11-12 and ss14-16 by FACS and processed for SmartSeq2 single cell RNAseq.</p>
+<p>The data was analysed primarily using the <a href="https://github.com/juliendelile/Antler">Antler R package</a>, which has been developed specifically for analysing single-cell RNAseq experiments. This package aims to perform unbiased data driven analysis.</p>
+</br>
+<p>The version of Antler used in this analysis corresponds to the version published in <a href="https://doi.org/10.1242/dev.173807">Delile et al. 2019</a>.</p>
+<p>Pseudotemporal analysis is carried out using Monocle2 <a href="https://doi.org/10.1038/nmeth.4402">(Qiu et al. 2017)</a>.</p>
+<p>RNA velocity is carried out using Velocyto <a href="https://doi.org/10.1038/s41586-018-0414-6">(La Manno et al. 2018)</a>.</p>
 <hr />
 </br>
-<h3 id="r-analysis-pipeline">R analysis pipeline</h3>
+<h2 id="r-analysis-pipeline">R analysis pipeline</h2>
 </br>
 <h3 id="load-packages-load-data-and-pre-qc">Load packages, load data and pre-QC</h3>
 <details><summary class="box">Expand</summary>

@@ -8,6 +8,10 @@ order: 1
 
 <br/>
 
+Reproducing our analysis is computationally intensive, therefore we recommend to run the pipeline on a HPC.
+
+The Nextflow alignment pipelines generate numerous temporary files stored within `work` directories. You can clear these after each alignment without affecting the outputs required for downstream analysis. Without clearing the temporary files, we recommend that you have ~4TB available storage, 16CPUs and 128GB RAM.
+
 In order to reproduce our analysis, you will need to:
 
 - [download the Github project repository](https://github.com/alexthiery/otic-reprogramming/archive/master.zip)
