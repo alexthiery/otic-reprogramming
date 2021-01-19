@@ -113,7 +113,7 @@ plot_data$sample <- factor(plot_data$sample, levels = c('SOX8 MO', 'PAX2 MO', 'L
 png('./qPCR_barplot.png', width = 18, height = 12, res = 200, units = 'cm')
 ggplot(plot_data, aes(y = `2^-ddCt`, x = ID, fill = ID, label = ifelse(sig != 'ns', sig, ''))) +
   geom_bar(stat='identity') +
-  geom_text(aes(y = `2^-ddCt.min`), nudge_y = -0.2, size = 10) +
+  geom_text(aes(y = ifelse(`2^-ddCt` < 1, `2^-ddCt.min`, `2^-ddCt.max`)), nudge_y = ifelse(plot_data$`2^-ddCt` < 1, -0.2, 0.2) , size = 7) +
   geom_errorbar(aes(ymin = `2^-ddCt.min`, ymax = `2^-ddCt.max`), width = 0.5) +
   scale_fill_manual(values = colors[plot_data$ID]) +
   scale_y_continuous(trans = log2_trans()) +
