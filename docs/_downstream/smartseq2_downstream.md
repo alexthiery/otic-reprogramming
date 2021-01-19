@@ -1383,7 +1383,7 @@ From these three plots we can see that the co-expression of Epibranchial and Oti
 
 </br>
 
-### Branched expression analysis modeling (BEAM)
+### Branched expression analysis modelling (BEAM)
 
 <details><summary class="box">Expand</summary>
 <p>
