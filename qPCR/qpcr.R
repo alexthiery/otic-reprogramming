@@ -2,6 +2,9 @@
 # BiocManager::install("NormqPCR")
 # install.packages('rstatix')
 
+data_dir = './data/'
+reformatted_dir = './data/reformatted/'
+dir.create(reformatted_dir, recursive = TRUE)
 
 library(tidyverse)
 library(ReadqPCR)
@@ -9,21 +12,26 @@ library(NormqPCR)
 library(rstatix)
 library(RColorBrewer)
 
+# read in all csv files and re-format
+qPCR_data <- lapply(list.files(data_dir, pattern = '*.csv', full.names = TRUE), function(x){
+  as.data.frame(t(read.csv(x, row.names = 1))) %>%
+    rownames_to_column() %>%
+    # remove rows with NA
+    drop_na() %>%
+    pivot_longer(cols = which(colnames(.) != 'rowname')) %>%
+    setNames(c('Sample', 'Detector', 'Cq'))
+})
+names(qPCR_data) <- sub('*.csv', '', list.files(data_dir, pattern = '*.csv'))
 
-qPCR_data <- as.data.frame(t(read.csv('~/Desktop/qPCR/data/SOX8_MO.csv', row.names = 1))) %>%
-  rownames_to_column() %>%
-  # remove rows with NA
-  drop_na() %>%
-  pivot_longer(cols = which(colnames(.) != 'rowname'))
+# write re-formatted data to re-import with read.qPCR
+lapply(names(qPCR_data), function(x) {write_delim(qPCR_data[[x]], paste0(reformatted_dir, x, '.txt'))} )
+
+# read in new data with read.qPCR package
+qPCR_data <- lapply(list.files(reformatted_dir, pattern = '*.txt', full.names = TRUE), function(x) read.qPCR(x))
+names(qPCR_data) <- sub('*.txt', '', list.files(reformatted_dir, pattern = '*.txt'))
 
 
-
-colnames(qPCR_data) = c('Sample', 'Detector', 'Cq')
-
-write_delim(qPCR_data, '~/Desktop/qPCR/temp.txt')
-
-qPCR_data <- read.qPCR('~/Desktop/qPCR/temp.txt')
-
+# calculate delta ct
 deltact <- deltaCt(qPCRBatch = qPCR_data, hkgs=c('RPLP1', 'GAPDH'), calc="geom")
 
 
