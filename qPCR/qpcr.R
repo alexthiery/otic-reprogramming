@@ -11,6 +11,7 @@ library(ReadqPCR)
 library(NormqPCR)
 library(rstatix)
 library(RColorBrewer)
+library(scales)
 
 # read in all csv files and re-format
 qPCR_data <- lapply(list.files(data_dir, pattern = '*.csv', full.names = TRUE), function(x){
@@ -32,7 +33,6 @@ names(qPCR_data) <- sub('*.txt', '', list.files(reformatted_dir, pattern = '*.tx
 
 # calculate delta ct - if GAPDH then use both RPLP1 and GAPDH, otherwise just RPLP1
 deltact <- lapply(qPCR_data, function(x) if('GAPDH' %in% featureNames(x)){deltaCq(qPCRBatch = x, hkgs=c('RPLP1', 'GAPDH'), calc="geom")} else {deltaCq(qPCRBatch = x, hkgs='RPLP1')})
-
 
 
 # automatically generate comparisons matrix and add column/rownames
@@ -103,19 +103,20 @@ for(x in names(ddct)){
 plot_data <- reduce(plot_data, rbind)
 
 # change experiment order for facet wrap order
-
 plot_data$sample <- sub('_MO', ' MO', plot_data$sample)
-
 plot_data$sample <- factor(plot_data$sample, levels = c('SOX8 MO', 'PAX2 MO', 'LMX1A MO', 'ZBTB16 MO'))
 
 
+# if value is below 1 then -1/value
+# plot_data[,2:4] <- mapply(function(x){ifelse(x < 1, -1/x, x)}, plot_data[,2:4])
 
+png('./qPCR_barplot.png', width = 18, height = 12, res = 200, units = 'cm')
 ggplot(plot_data, aes(y = `2^-ddCt`, x = ID, fill = ID, label = ifelse(sig != 'ns', sig, ''))) +
   geom_bar(stat='identity') +
-  geom_text(aes(y = `2^-ddCt.max` + 0.1), size = 10) +
+  geom_text(aes(y = `2^-ddCt.min`), nudge_y = -0.2, size = 10) +
   geom_errorbar(aes(ymin = `2^-ddCt.min`, ymax = `2^-ddCt.max`), width = 0.5) +
   scale_fill_manual(values = colors[plot_data$ID]) +
-  scale_y_continuous(expand = c(0, 0)) +
+  scale_y_continuous(trans = log2_trans()) +
   theme_classic() +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
@@ -126,7 +127,6 @@ ggplot(plot_data, aes(y = `2^-ddCt`, x = ID, fill = ID, label = ifelse(sig != 'n
         strip.text = element_text(size=10),
         strip.placement = "outside") +
   ylab(bquote(paste('fold change (', 2^-~Delta*Delta*Ct, ' )')))
-
-
+graphics.off()
 
 
