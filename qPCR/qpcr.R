@@ -67,7 +67,6 @@ colors = viridis(5)
 names(colors) = c('LMX1A', 'FOXG1', 'PAX2', 'SOHO1', 'ZBTB16')
 
 for(x in names(ddct)){
-  
   # convert numeric factor values to numeric, and character factor values to character
   ddct[[x]][,2:8] <- lapply(ddct[[x]][,2:8], function(y) as.numeric(as.character(y)))
   ddct[[x]][,1] <- as.character(ddct[[x]][,1])
@@ -103,18 +102,18 @@ for(x in names(ddct)){
 plot_data <- reduce(plot_data, rbind)
 
 # change experiment order for facet wrap order
-plot_data$sample <- sub('_MO', ' MO', plot_data$sample)
-plot_data$sample <- factor(plot_data$sample, levels = c('SOX8 MO', 'PAX2 MO', 'LMX1A MO', 'ZBTB16 MO'))
+plot_data$sample <- sub('_MO', ' asON', plot_data$sample)
+plot_data$sample <- factor(plot_data$sample, levels = c('SOX8 asON', 'PAX2 asON', 'LMX1A asON', 'ZBTB16 asON'))
 
-
-# if value is below 1 then -1/value
-# plot_data[,2:4] <- mapply(function(x){ifelse(x < 1, -1/x, x)}, plot_data[,2:4])
 
 png('./qPCR_barplot.png', width = 18, height = 12, res = 200, units = 'cm')
 ggplot(plot_data, aes(y = `2^-ddCt`, x = ID, fill = ID, label = ifelse(sig != 'ns', sig, ''))) +
+  # hack - conditionally plot max min error bars and then hide symmetrical portion behind bar
+  geom_errorbar(aes(ymin = ifelse(`2^-ddCt` < 1, `2^-ddCt.min`, 1.1), ymax = ifelse(`2^-ddCt` > 1, `2^-ddCt.max`, 0.9)), width = 0.5) +
   geom_bar(stat='identity') +
   geom_text(aes(y = ifelse(`2^-ddCt` < 1, `2^-ddCt.min`, `2^-ddCt.max`)), nudge_y = ifelse(plot_data$`2^-ddCt` < 1, -0.2, 0.2) , size = 7) +
-  geom_errorbar(aes(ymin = `2^-ddCt.min`, ymax = `2^-ddCt.max`), width = 0.5) +
+  # original error bars plotted on top of the bars
+  #geom_errorbar(aes(ymin = `2^-ddCt.min`, ymax = `2^-ddCt.max`), width = 0.5) +
   scale_fill_manual(values = colors[plot_data$ID]) +
   scale_y_continuous(trans = log2_trans()) +
   theme_classic() +
