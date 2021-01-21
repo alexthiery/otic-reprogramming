@@ -1,7 +1,15 @@
 # otic-reprogramming
 
-Repository for the analysis of the specification and reprogramming of the otic lineage in chick
+The vertebrate inner ear is an exclusive vertebrate feature, key to the perception of sound and movement that arises from a pool of ectodermal progenitors. In our study (Buzzi et.al., 2021) we used a multi-omics approach to explore the molecular mechanisms that regulate the commitment of these progenitors and foster the acquisition of otic character.
 
-If you encounter any singularity pull errors relating to images from quai.io, please try to rerun the same alignment script. The -resume flag which is added to the run script will resume the analysis from where it ended and will finish pulling the Docker image.
+This repository contains all of the code required to re-run our analysis.
 
-to clone repo run `git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming`
+Full documentation of our High-Throughput-Sequencing data analysis, from sequence alignments to downstream analysis, can be found [here](https://alexthiery.github.io/otic-reprogramming/)
+
+---
+
+</br>
+
+### qPCR
+
+The script used to run our qPCR analyis can be found [here](./qPCR/qpcr.R)

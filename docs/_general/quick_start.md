@@ -28,7 +28,7 @@ In order to reproduce our analysis, you will need to:
 
 <br/>
 
-## Download GitHub repository<a name="download_data"></a>
+## Download GitHub repository<a name="download_repo"></a>
 
 <br/>
 
