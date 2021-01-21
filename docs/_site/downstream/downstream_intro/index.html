@@ -200,7 +200,7 @@ nextflow run ./NF-downstream_analysis/main.nf <span class="se">\</span>
 <h2 id="interactive-downstream-analysisa-nameinteractivea">Interactive downstream analysis<a name="interactive"></a></h2>
 </br>
 <p>If do not want to re-run the alignment, but would like to run the downstream analysis from the count files, you can run RStudio server from within the Docker container. This will ensure that you have all of the same packages and dependencies required to carry out the analysis.</p>
-<p>RNAseq read counts (Lmx1aE1 vs Sox3U3, SOX8OE and SmartSeq2) and ChIP/ATAC peaks files are embedded in the <a href="https://github.com/alexthiery/otic-reprogramming/alignment_output">repository</a> - they will be downloaded automatically when the repository is cloned.</p>
+<p>RNAseq read counts (Lmx1aE1 vs Sox3U3, SOX8OE and SmartSeq2) and ChIP/ATAC peaks files are embedded in the <a href="https://github.com/alexthiery/otic-reprogramming/tree/master/alignment_output">repository</a> - they will be downloaded automatically when the repository is cloned.</p>
 <p>To interactively explore the data, follow these steps:</p>
 <ol>
 <li>clone our GitHub repository to your local computer - <code>git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming</code></li>
@@ -208,7 +208,7 @@ nextflow run ./NF-downstream_analysis/main.nf <span class="se">\</span>
 <li>within terminal launch a Docker container interactively - <code>docker run --rm -e PASSWORD=password -p 8787:8787 -v &lt;PATH_TO_LOCAL_REPOSITORY&gt;:/home/rstudio alexthiery/otic-reprogramming-r_analysis:latest</code></li>
 <li>go to <code>localhost:8787</code> in the browser to open RStudio</li>
 <li>enter the username <code>rstudio</code> and the password <code>password</code></li>
-<li>access the desired R script in the <code>Files</code> tab in R studio - <code>./NF-downstream_analysis/bin/&lt;FILE_OF_INTEREST&gt;</code></li>
+<li>access the desired R script in the <code>Files</code> tab in R studio by following the path <code>./NF-downstream_analysis/bin/&lt;FILE_OF_INTEREST&gt;</code></li>
 </ol>
 <hr />
 </br>
