@@ -6,7 +6,7 @@ The vertebrate inner ear is an exclusive vertebrate feature, key to the percepti
 
 This repository contains all of the code required to re-run our analysis.
 
-Full documentation of our High-Throughput-Sequencing data analysis, from sequence alignments to downstream analysis, can be found [here](https://alexthiery.github.io/otic-reprogramming/)
+Full documentation of our High-Throughput-Sequencing data analysis, from sequence alignments to downstream analysis, can be found [here](https://alexthiery.github.io/otic-reprogramming/).
 
 ---
 
