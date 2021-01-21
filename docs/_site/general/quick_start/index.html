@@ -158,9 +158,6 @@
   <a class="sidebar-nav-item" href="https://github.com/alexthiery/otic-reprogramming"
     >GitHub repository</a
   >
-  <a class="sidebar-nav-item" href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip"
-    >Download</a
-  >
 
   <div class="sidebar-item">
     <p>&copy; 2021. All rights reserved.</p>
@@ -189,7 +186,7 @@
 <p>The Nextflow alignment pipelines generate numerous temporary files stored within <code>work</code> directories. You can clear these after each alignment without affecting the outputs required for downstream analysis. Without clearing the temporary files, we recommend that you have at minimum ~4TB available storage, 8CPUs and 64GB RAM.</p>
 <p>In order to reproduce our analysis, you will need to:</p>
 <ul>
-<li><a href="https://github.com/alexthiery/otic-reprogramming/archive/master.zip">download the Github project repository</a></li>
+<li><a href="#download_repo">download the GitHub project repository</a></li>
 <li><a href="https://www.nextflow.io/docs/latest/getstarted.html">install Nextflow</a></li>
 <li><a href="https://www.docker.com/get-started">install Docker Desktop</a> (if running on local PC)</li>
 <li><a href="#download_data">download Galgal6 and sequencing data</a></li>
@@ -198,6 +195,13 @@
 <li><a href="#downstream">run downstream analysis</a></li>
 </ul>
 <p><strong>Important!</strong> All shell scripts are to be executed from the base directory of the project!</p>
+<hr />
+<br/>
+<h2 id="download-github-repositorya-namedownloaddataa">Download GitHub repository<a name="download_data"></a></h2>
+<br/>
+<p>In order to reproduce our analysis, you will first need to download our otic-repregramming GitHub repository. To do this run:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone <span class="nt">--recurse-submodules</span> https://github.com/alexthiery/otic-reprogramming
+</code></pre></div></div>
 <hr />
 <br/>
 <h2 id="download-dataa-namedownloaddataa">Download data<a name="download_data"></a></h2>
