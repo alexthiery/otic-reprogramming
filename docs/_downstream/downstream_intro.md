@@ -39,6 +39,8 @@ nextflow run ./NF-downstream_analysis/main.nf \
 
 If do not want to re-run the alignment, but would like to run the downstream analysis from the count files, you can run RStudio server from within the Docker container. This will ensure that you have all of the same packages and dependencies required to carry out the analysis.
 
+RNAseq read counts (Lmx1aE1 vs Sox3U3, SOX8OE and SmartSeq2) and ChIP/ATAC peaks files are embedded in the [repository](https://github.com/alexthiery/otic-reprogramming/alignment_output).
+
 To interactively explore the data, follow these steps:
 
 1. clone our GitHub repository to your local computer - `git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming`
@@ -47,8 +49,6 @@ To interactively explore the data, follow these steps:
 4. go to `localhost:8787` in the browser to open RStudio
 5. enter the username `rstudio` and the password `password`
 6. access the desired R script in the `Files` tab in R studio - `./NF-downstream_analysis/bin/<FILE_OF_INTEREST>`
-
-The required data will be loaded automatically from the repository.
 
 ---
 
