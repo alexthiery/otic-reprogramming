@@ -30,4 +30,4 @@ git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming
 
 <br/>
 
-The script used to run our qPCR analyis can be found [here](./qPCR/qpcr.R)
+The script used to run our qPCR analyis can be found [here](./qPCR/qpcr.R).
