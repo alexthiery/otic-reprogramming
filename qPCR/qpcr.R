@@ -76,6 +76,7 @@ for(x in names(ddct)){
 }
 
 
+
 # t-tests on delta ct
 significance <- lapply(deltact, function(x){
   as.data.frame(t(exprs(x))) %>%
@@ -83,9 +84,12 @@ significance <- lapply(deltact, function(x){
     mutate(rowname = sub('_.*', '', rowname)) %>%
     gather(Gene, dct, 2:length(.)) %>%
     group_by(Gene) %>%
-    pairwise_t_test(dct ~ rowname, p.adjust.method = 'bonferroni')
+    # remove genes which are not to be tested
+    filter(Gene %in% names(colors)) %>%
+    t_test(dct ~ rowname, p.adjust.method = 'none') %>%
+    mutate(padj = p.adjust(p, method = 'BH')) %>%
+    mutate(p.adj.signif = ifelse(padj < 0.01, '**', ifelse(padj < 0.05, '*', 'ns')))
 })
-
 
 plot_data <- list()
 # add significance to ddct dataframe
@@ -102,13 +106,13 @@ for(x in names(ddct)){
 plot_data <- reduce(plot_data, rbind)
 
 # change experiment order for facet wrap order
-plot_data$sample <- sub('_MO', ' asON', plot_data$sample)
-plot_data$sample <- factor(plot_data$sample, levels = c('SOX8 asON', 'PAX2 asON', 'LMX1A asON', 'ZBTB16 asON'))
+plot_data$sample <- sub('_MO', ' aON', plot_data$sample)
+plot_data$sample <- factor(plot_data$sample, levels = c('SOX8 aON', 'PAX2 aON', 'LMX1A aON', 'ZBTB16 aON'))
 
 
 png('./qPCR_barplot.png', width = 18, height = 12, res = 200, units = 'cm')
 ggplot(plot_data, aes(y = `2^-ddCt`, x = ID, fill = ID, label = ifelse(sig != 'ns', sig, ''))) +
-  # hack - conditionally plot max min error bars and then hide symmetrical portion behind bar
+  # hack - conditionally plot max min error bars and then hide symmetrical portion behind bar - doesnt affect results/plot, purely done for aesthetics
   geom_errorbar(aes(ymin = ifelse(`2^-ddCt` < 1, `2^-ddCt.min`, 1.1), ymax = ifelse(`2^-ddCt` > 1, `2^-ddCt.max`, 0.9)), width = 0.5) +
   geom_bar(stat='identity') +
   geom_text(aes(y = ifelse(`2^-ddCt` < 1, `2^-ddCt.min`, `2^-ddCt.max`)), nudge_y = ifelse(plot_data$`2^-ddCt` < 1, -0.2, 0.2) , size = 7) +

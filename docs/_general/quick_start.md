@@ -14,7 +14,7 @@ The Nextflow alignment pipelines generate numerous temporary files stored within
 
 In order to reproduce our analysis, you will need to:
 
-- [download the Github project repository](https://github.com/alexthiery/otic-reprogramming/archive/master.zip)
+- [download the GitHub project repository](#download_repo)
 - [install Nextflow](https://www.nextflow.io/docs/latest/getstarted.html)
 - [install Docker Desktop](https://www.docker.com/get-started) (if running on local PC)
 - [download Galgal6 and sequencing data](#download_data)
@@ -23,6 +23,20 @@ In order to reproduce our analysis, you will need to:
 - [run downstream analysis](#downstream)
 
 **Important!** All shell scripts are to be executed from the base directory of the project!
+
+---
+
+<br/>
+
+## Download GitHub repository<a name="download_data"></a>
+
+<br/>
+
+In order to reproduce our analysis, you will first need to download our otic-repregramming GitHub repository. To do this run:
+
+```shell
+git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming
+```
 
 ---
 
