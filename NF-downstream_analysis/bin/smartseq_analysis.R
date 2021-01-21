@@ -34,13 +34,16 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
     # load custom functions
     sapply(list.files('./NF-downstream_analysis/bin/custom_functions/', full.names = T), source)
     
+    # set input data paths
+    merged_counts_path = './alignment_output/NF-smartseq2_alignment/merged_counts/output/'
+    gfp_counts = './alignment_output/NF-smartseq2_alignment/merged_counts/output/'
+    velocyto_input = './alignment_output/NF-smartseq2_alignment/velocyto/'
+    
+    # set output data paths
     output_path = "./output/NF-downstream_analysis/smartseq_analysis/output/"
     plot_path = "./output/NF-downstream_analysis/smartseq_analysis/output/plots/"
-    merged_counts_path = './output/NF-smartseq2_alignment/merged_counts/output/'
     genome_annotations_path = './output/NF-downstream_analysis/extract_gtf_annotations/'
-    gfp_counts = './output/NF-smartseq2_alignment/merged_counts/output/'
-    velocyto_input = './output/NF-smartseq2_alignment/velocyto/'
-    
+
     # set cores
     ncores = 8
     

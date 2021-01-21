@@ -41,13 +41,14 @@ If do not want to re-run the alignment, but would like to run the downstream ana
 
 To interactively explore the data, follow these steps:
 
-1. download the relevant alignment output
-2. [download](https://github.com/alexthiery/otic-reprogramming/archive/master.zip) our GitHub repository to your local computer
-3. start a terminal session and pull the Docker image from Dockerhub - `docker pull alexthiery/otic-reprogramming-r_analysis:latest`
-4. within terminal launch a Docker container interactively - `docker run --rm -e PASSWORD=password -p 8787:8787 -v <PATH_TO_LOCAL_REPOSITORY>:/home/rstudio alexthiery/otic-reprogramming-r_analysis:latest`
-5. go to `localhost:8787` in the browser to open RStudio
-6. enter the username `rstudio` and the password `password`
-7. change the paths at the beginning of the script you wish to analyse in order to read in the data
+1. clone our GitHub repository to your local computer - `git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming`
+2. start a terminal session and pull the Docker image from Dockerhub - `docker pull alexthiery/otic-reprogramming-r_analysis:latest`
+3. within terminal launch a Docker container interactively - `docker run --rm -e PASSWORD=password -p 8787:8787 -v <PATH_TO_LOCAL_REPOSITORY>:/home/rstudio alexthiery/otic-reprogramming-r_analysis:latest`
+4. go to `localhost:8787` in the browser to open RStudio
+5. enter the username `rstudio` and the password `password`
+6. access the desired R script in the `Files` tab in R studio - `./NF-downstream_analysis/bin/<FILE_OF_INTEREST>`
+
+The required data will be loaded automatically from the repository.
 
 ---
 

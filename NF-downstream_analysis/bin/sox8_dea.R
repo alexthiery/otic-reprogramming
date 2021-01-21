@@ -25,7 +25,7 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 {
   if (opt$runtype == "user"){
     output_path = "./output/NF-downstream_analysis/sox8_dea/output/"
-    input_file <- "./output/NF-sox8_alignment/star/featurecounts.merged.counts.tsv"
+    input_file <- "./alignment_output/NF-sox8_alignment/featurecounts.merged.counts.tsv"
     
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
