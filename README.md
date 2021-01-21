@@ -24,6 +24,16 @@ git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming
 
 ---
 
+<br/>
+
+### Access read counts and peaks
+
+<br/>
+
+RNAseq read counts (Lmx1aE1 vs Sox3U3, SOX8OE and SmartSeq2) and ChIP/ATAC peaks files are embedded in the [repository](https://github.com/alexthiery/otic-reprogramming/alignment_output) - they will be downloaded automatically when the repository is cloned.
+
+---
+
 </br>
 
 ### qPCR

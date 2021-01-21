@@ -214,7 +214,7 @@
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"user"</span><span class="p">){</span><span class="w">
     </span><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./output/NF-downstream_analysis/sox8_dea/output/"</span><span class="w">
-    </span><span class="n">input_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"./output/NF-sox8_alignment/star/featurecounts.merged.counts.tsv"</span><span class="w">
+    </span><span class="n">input_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"./alignment_output/NF-sox8_alignment/featurecounts.merged.counts.tsv"</span><span class="w">
 
   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"nextflow"</span><span class="p">){</span><span class="w">
     </span><span class="n">cat</span><span class="p">(</span><span class="s1">'pipeline running through nextflow\n'</span><span class="p">)</span><span class="w">
