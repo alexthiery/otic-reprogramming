@@ -228,16 +228,16 @@
 
     </span><span class="c1"># load custom functions</span><span class="w">
     </span><span class="n">sapply</span><span class="p">(</span><span class="n">list.files</span><span class="p">(</span><span class="s1">'./NF-downstream_analysis/bin/custom_functions/'</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">),</span><span class="w"> </span><span class="n">source</span><span class="p">)</span><span class="w">
-
+    
     </span><span class="c1"># set input data paths</span><span class="w">
     </span><span class="n">merged_counts_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'./alignment_output/NF-smartseq2_alignment/merged_counts/output/'</span><span class="w">
     </span><span class="n">gfp_counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'./alignment_output/NF-smartseq2_alignment/merged_counts/output/'</span><span class="w">
     </span><span class="n">velocyto_input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'./alignment_output/NF-smartseq2_alignment/velocyto/'</span><span class="w">
-
+    </span><span class="n">genome_annotations_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'./alignment_output/NF-downstream_analysis/extract_gtf_annotations/'</span><span class="w">
+    
     </span><span class="c1"># set output data paths</span><span class="w">
     </span><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./output/NF-downstream_analysis/smartseq_analysis/output/"</span><span class="w">
     </span><span class="n">plot_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"./output/NF-downstream_analysis/smartseq_analysis/output/plots/"</span><span class="w">
-    </span><span class="n">genome_annotations_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'./output/NF-downstream_analysis/extract_gtf_annotations/'</span><span class="w">
 
     </span><span class="c1"># set cores</span><span class="w">
     </span><span class="n">ncores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="w">
