@@ -33,7 +33,6 @@ RUN R -e "install.packages('BiocManager')" && \
     R -e "BiocManager::install('NormqPCR')" && \
     R -e "devtools::install_github('velocyto-team/velocyto.R')" && \
     R -e "devtools::install_github('juliendelile/Antler', ref = 'Development2019')" && \
-    R -e "devtools::install_github('hadley/multidplyr')" && \
     R -e 'install.packages(c("getopt", "ggsignif", "getopt", "plyr", "readr", "RColorBrewer", "VennDiagram", "pheatmap", "ggplot2", "openxlsx", "ggrepel", "ggseqlogo", "cowplot", "gridGraphics", "gprofiler2", "rstatix", "corrgram", "extrafont", "rstatix"))' && \
     # load fonts into R libs
     R -e 'library(extrafont); font_import(prompt = FALSE)'
