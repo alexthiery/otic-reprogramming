@@ -40,4 +40,4 @@ RNAseq read counts (Lmx1aE1 vs Sox3U3, SOX8OE and SmartSeq2) and ChIP/ATAC peaks
 
 <br/>
 
-The script used to run our qPCR analyis can be found [here](./qPCR/qpcr.R).
+The script used to run our qPCR analyis can be found [here](./qPCR/qpcr.R). The docker image used for the multi-omic analysis also contains the required packages to re-run the qPCR analysis `alexthiery/otic-reprogramming-r_analysis:latest`
