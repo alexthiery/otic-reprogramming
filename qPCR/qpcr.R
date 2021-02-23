@@ -1,5 +1,5 @@
-data_dir = './data/'
-reformatted_dir = './data/reformatted/'
+data_dir = './qPCR/data/'
+reformatted_dir = './qPCR/data/reformatted/'
 dir.create(reformatted_dir, recursive = TRUE)
 
 library(tidyverse)
@@ -8,6 +8,7 @@ library(NormqPCR)
 library(rstatix)
 library(RColorBrewer)
 library(scales)
+library(viridis)
 
 # read in all csv files and re-format
 qPCR_data <- lapply(list.files(data_dir, pattern = '*.csv', full.names = TRUE), function(x){
@@ -55,8 +56,6 @@ names(ddct) <- names(qPCR_data)
 
 
 # specify genes and associated colours of interest
-library(viridis)
-
 colors = brewer.pal(n = 5, name = "Pastel1")
 
 colors = viridis(5)
