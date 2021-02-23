@@ -21,6 +21,7 @@ nextflow pull nf-core/rnaseq
 nextflow run nf-core/rnaseq \
   -r 2.0 \
   -c ./configs/crick.config \
+  --aligner star \
   --input ./NF-sox8_alignment/crick_samplesheet.csv \
   --outdir output/NF-sox8_alignment \
   --email alex.thiery@crick.ac.uk \

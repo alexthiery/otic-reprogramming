@@ -209,6 +209,7 @@ nextflow pull nf-core/rnaseq
 nextflow run nf-core/rnaseq \
   -r 2.0 \
   -c <PATH_TO_CONFIG> \
+  --aligner star \
   --input <PATH_TO_LMX1A_SAMPLESHEET.CSV>  \
   --outdir output/NF-lmx1a_alignment \
   --email <INSERT_EMAIL_ADDRESS> \
@@ -235,6 +236,7 @@ nextflow pull nf-core/rnaseq
 nextflow run nf-core/rnaseq \
   -r 2.0 \
   -c <PATH_TO_CONFIG> \
+  --aligner star \
   --input <PATH_TO_SOX8_SAMPLESHEET.CSV>  \
   --outdir output/NF-sox8_alignment \
   --email <INSERT_EMAIL_ADDRESS> \
