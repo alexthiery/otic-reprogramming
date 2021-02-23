@@ -1,7 +1,3 @@
-# BiocManager::install("ReadqPCR")
-# BiocManager::install("NormqPCR")
-# install.packages('rstatix')
-
 data_dir = './data/'
 reformatted_dir = './data/reformatted/'
 dir.create(reformatted_dir, recursive = TRUE)
