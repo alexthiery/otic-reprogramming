@@ -404,7 +404,7 @@ png(paste0(output_path, "Lmx1a_E1_hm.png"), height = 29, width = 21, family = 'A
 pheatmap(assay(rld)[rownames(res_sub),], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=FALSE,
          show_colnames = F, cluster_cols=T, annotation_col=as.data.frame(colData(deseq)["Group"]),
          annotation_colors = plot_colours, scale = "row", treeheight_row = 0, treeheight_col = 25,
-         main = "Lmx1a_E1 and Sox3U3 enriched genes (logFC > 1.5, padj = 0.05)", border_color = NA, cellheight = 1.6, cellwidth = 55)
+         main = "Lmx1a_E1 vs Sox3U3 differentially expressed genes (log2FC > 1.5 and padj (FDR) < 0.05)", border_color = NA, cellheight = 1.6, cellwidth = 55)
 graphics.off()
 
 ```
@@ -475,7 +475,7 @@ png(paste0(output_path, "Lmx1a_E1_TFs_hm.png"), height = 17, width = 25, family 
 pheatmap(rld.plot[res_sub_TF$gene_name,], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
          annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours,
-         scale = "row", main = "Lmx1a_E1 and Sox3U3 enriched TFs (logFC > 1.5, padj = 0.05)", border_color = NA, cellheight = 10, cellwidth = 50)
+         scale = "row", main = "Lmx1a_E1 vs Sox3U3 differentially expressed TFs (log2FC > 1.5 and padj (FDR) < 0.05)", border_color = NA, cellheight = 10, cellwidth = 50)
 graphics.off()
 ```
 
