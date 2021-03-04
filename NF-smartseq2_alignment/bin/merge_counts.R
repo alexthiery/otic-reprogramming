@@ -24,8 +24,8 @@ if(length(commandArgs(trailingOnly = TRUE)) == 0){
 # Set paths and load data
 {
   if (opt$runtype == "user"){
-    output_path = "./output/merge_counts/output/"
-    input_files <- list.files("./testData/process_counts/", pattern = "*.txt", full.names = T)
+    output_path = "./output/NF-smartseq2_alignment/merged_counts/output/"
+    input_files <- list.files("./output/NF-smartseq2_alignment/htseq_count/", pattern = "*.txt", full.names = T)
     
   } else if (opt$runtype == "nextflow"){
     cat('pipeline running through nextflow\n')
