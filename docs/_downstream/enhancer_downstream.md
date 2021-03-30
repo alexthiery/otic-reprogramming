@@ -35,7 +35,7 @@ The sub-workflow uses Bedtools and Homer in order to identify putative enhancers
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers.bed" download>Download putative enhancer co-ordinates</a>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers_annotated.txt download">Download annotated putative enhancers</a>
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers_annotated.txt" download>Download annotated putative enhancers</a>
 
 </br>
 
