@@ -67,35 +67,35 @@ metadata
 
 metadata
     .filter{ it[0].sample_id == 'ChIP_alignment_out' }
-    .map { row -> [row[0], row[1].collect{ file(it+"/bwa/mergedLibrary/bigwig") }] }
+    .map { row -> [row[0], row[1].collect{ file(it+"/bwa/mergedLibrary/bigwig", checkIfExists: true) }] }
     .map { row -> listFiles(row, '.*.bigWig') }
     .flatMap { row -> enumerateDir(row) }
     .set { ch_chip_bigwig }
 
 metadata
     .filter{ it[0].sample_id == 'ATAC_alignment_out' }
-    .map { row -> [row[0], row[1].collect{ file(it+"/bwa/mergedLibrary/bigwig") }] }
+    .map { row -> [row[0], row[1].collect{ file(it+"/bwa/mergedLibrary/bigwig", checkIfExists: true) }] }
     .map { row -> listFiles(row, '.*.bigWig') }
     .flatMap { row -> enumerateDir(row) }
     .set { ch_atac_bigwig }
 
 metadata
     .filter{ it[0].sample_id == 'ChIP_alignment_out' }
-    .map { row -> [row[0], row[1].collect{ file(it+"/bwa/mergedLibrary/macs/broadPeak") }] }
+    .map { row -> [row[0], row[1].collect{ file(it+"/bwa/mergedLibrary/macs/broadPeak", checkIfExists: true) }] }
     .map { row -> listFiles(row, '.*.broadPeak') }
     .flatMap { row -> enumerateDir(row) }
     .set { ch_chip_peaks }
 
 metadata
     .filter{ it[0].sample_id == 'ATAC_alignment_out' }
-    .map { row -> [row[0], row[1].collect{ file(it+"/bwa/mergedLibrary/macs/narrowPeak") }] }
+    .map { row -> [row[0], row[1].collect{ file(it+"/bwa/mergedLibrary/macs/narrowPeak", checkIfExists: true) }] }
     .map { row -> listFiles(row, '.*.narrowPeak') }
     .flatMap { row -> enumerateDir(row) }
     .set { ch_atac_peaks }
 
 metadata
     .filter{ it[0].sample_id == 'smartseq2_alignment_out' }
-    .map { row -> [row[0], row[1].collect{ file(it+"/merged_counts/output") }] }
+    .map { row -> [row[0], row[1].collect{ file(it+"/merged_counts/output", checkIfExists: true) }] }
     .map { row -> listFiles(row, '.*.csv') }
     .flatMap { row -> row[1] }
     .set { ch_smartseq2_counts }
@@ -123,6 +123,12 @@ workflow {
     // Extract gene annotations from gtf
     extract_gtf_annotations( params.modules['extract_gtf_annotations'], ch_gtf )
 
+    // // Create channel containing differentially expressed gene list from Sox8 OE
+    // ch_sox8_dea_genes = sox8_dea.out.map{it[1].findAll{it =~ /rds_files/}[0].listFiles()[0]}
+
+    // //  Run smartseq2 Antler analysis
+    // smartseq_analysis( params.modules['smartseq_analysis'], ch_smartseq2_counts.combine(ch_smartseq2_velocyto).combine(extract_gtf_annotations.out).combine(ch_sox8_dea_genes) )
+    
     //  Run smartseq2 Antler analysis
     smartseq_analysis( params.modules['smartseq_analysis'], ch_smartseq2_counts.combine(ch_smartseq2_velocyto).combine(extract_gtf_annotations.out) )
 }
