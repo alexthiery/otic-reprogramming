@@ -123,10 +123,8 @@ workflow {
     // Extract gene annotations from gtf
     extract_gtf_annotations( params.modules['extract_gtf_annotations'], ch_gtf )
 
-    sox8_dea.out.view()
-
     // Create channel containing differentially expressed gene list from Sox8 OE
-    ch_sox8_dea_genes = sox8_dea.out.map{it[1].findAll{it =~ /csv/}[0].listFiles()[0]}
+    ch_sox8_dea_genes = sox8_dea.out.map{it[1].listFiles().findAll{it =~ /csv/}}
 
     ch_sox8_dea_genes.view()
 
