@@ -1082,6 +1082,7 @@ graphics.off()
 ######  Sox8 OE / Lmx1a bulk RNAseq - plot DE genes heatmap on smartseq data   ######
 #####################################################################################
 
+# Read in differential expression data
 sox8_oe_de <- read.csv('./Sox8_OE_Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
 
 sox8_oe_de_tfs <- read.csv('./Sox8_OE_Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
