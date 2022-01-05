@@ -1765,6 +1765,196 @@ graphics.off()
 
 </details>
 
+
+</br>
+
+### Bulk RNAseq DE gene heatmaps
+
+<details><summary class="box">Expand</summary>
+<p>
+
+
+Sox8 OE / Lmx1a bulk RNAseq - plot DE genes heatmap on smartseq data
+
+Read in differential expression data
+```R
+sox8_oe_de <- read.csv('./Sox8_OE_Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
+
+sox8_oe_de_tfs <- read.csv('./Sox8_OE_Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
+
+lmx1a_oe_de <- read.csv('./Lmx1a_E1_Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
+
+lmx1a_oe_tfs <- read.csv('./Lmx1a_E1_Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
+
+de_genes <- list(sox8_oe_de = sox8_oe_de, sox8_oe_de_tfs = sox8_oe_de_tfs, lmx1a_oe_de = lmx1a_oe_de, lmx1a_oe_tfs = lmx1a_oe_tfs)
+```
+
+Plot heatmap on full dataset
+
+```R
+curr_plot_folder = paste0(plot_path, "all_cells/bulk_rnaseq_hm/")
+dir.create(curr_plot_folder)
+
+
+# Prepare annotation data
+ann_data = data.frame(clusters = as.factor(m2$cellClusters$Mansel$cell_ids))
+
+stage = data.frame(m2$expressionSet@phenoData@data[,'timepoint', drop = FALSE])
+
+ann_data = cbind(ann_data, stage = stage[match(rownames(ann_data), rownames(stage)),1])
+
+ann_data$stage = c('8' = 'ss8-9', '11' = 'ss11-12', '15' = 'ss14-15')[as.character(ann_data$stage)]
+
+
+# Prepare annotation colours
+ann_cols <- list(clusters = c('1' = '#da70d6', '2' = '#c71585', '3' = '#b0c4de', '4' = '#afeeee', '5' = '#5f9ea0'),
+                 stage = c('ss8-9' = "#BBBDC1", 'ss11-12' = "#6B98E9", 'ss14-15' = "#05080D"))
+
+
+# Prepare read count data for plotting
+for(gene_list in names(de_genes)){
+  
+  # Subset upregulated genes present in the full dataset for each gene list
+  goi <- filter(de_genes[[gene_list]], log2FoldChange > 0 & gene_name %in% rownames(m2$getReadcounts(data_status='Normalized'))) %>% dplyr::pull(gene_name)
+  
+  # Get normalised readcounts for goi
+  reads <- as.matrix(log(1+m2$getReadcounts(data_status='Normalized')[goi,]))
+  
+  # Scale reads
+  reads <- t(scale(t(reads)))
+  
+  # Set min and max readcounts
+  reads[reads > 2] <- 2
+  reads[reads < -2] <- -2
+  
+  # Order cells based on original clustering
+  reads <- reads[,rownames(ann_data)]
+  
+  # Plot heatmap
+  if(!grepl('tfs', gene_list)){
+    png(paste0(curr_plot_folder, gene_list, '_hm.png'), height = 25, width = ifelse(grepl('lmx1a', gene_list), 20, 25), family = 'Arial', units = "cm", res = 800)
+    pheatmap::pheatmap(reads, cluster_cols = m2$cellClusters$Mansel$res, annotation_col = ann_data, annotation_names_col = FALSE, treeheight_row = 15, treeheight_col = 75, show_colnames = FALSE, show_rownames = FALSE,
+                       cluster_rows = TRUE, color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 1000), annotation_colors = ann_cols)
+    graphics.off()
+  } else {
+    png(paste0(curr_plot_folder, gene_list, '_hm.png'), height = ifelse(grepl('lmx1a', gene_list), 10, 15), width = ifelse(grepl('lmx1a', gene_list), 20, 25), family = 'Arial', units = "cm", res = 800)
+    pheatmap::pheatmap(reads, cluster_cols = m2$cellClusters$Mansel$res, annotation_col = ann_data, annotation_names_col = FALSE, treeheight_row = 15, treeheight_col = 75, show_colnames = FALSE,
+                       cluster_rows = TRUE, color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 1000), annotation_colors = ann_cols)
+    graphics.off()
+  }
+}
+```
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Full_data_sox8')">Sox8 OE DE genes (all cells)</button>
+  <button class="tablinks" onclick="openTab(event, 'Full_data_sox8_tfs')">Sox8 OE DE TFs (all cells)</button>
+  <button class="tablinks" onclick="openTab(event, 'Full_data_lmx1a')">Lmx1a E1 DE genes (all cells)</button>
+  <button class="tablinks" onclick="openTab(event, 'Full_data_lmx1a_tfs')">Lmx1a E1 DE TFs (all cells)</button>
+</div>
+
+</br>
+
+<div id="Full_data_sox8" class="tabcontent">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_hm.png">
+</div>
+
+<div id="Full_data_sox8_tfs" class="tabcontent">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
+</div>
+
+<div id="Full_data_lmx1a" class="tabcontent">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
+</div>
+
+<div id="Full_data_lmx1a_tfs" class="tabcontent">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
+</div>
+
+
+Plot heatmap on OEP subset
+```R
+curr_plot_folder = paste0(plot_path, "oep_subset/bulk_rnaseq_hm/")
+dir.create(curr_plot_folder)
+
+
+# Prepare annotation data
+ann_data = data.frame(clusters = as.factor(m_oep$cellClusters$Mansel$cell_ids))
+
+stage = data.frame(m_oep$expressionSet@phenoData@data[,'timepoint', drop = FALSE])
+
+ann_data = cbind(ann_data, stage = stage[match(rownames(ann_data), rownames(stage)),1])
+
+ann_data$stage = c('8' = 'ss8-9', '11' = 'ss11-12', '15' = 'ss14-15')[as.character(ann_data$stage)]
+
+
+# Prepare annotation colours
+ann_cols <- list(clusters = c('1' = '#ffa07a', '2' = '#f55f20', '3' = '#dda0dd', '4' = '#48d1cc', '5' = '#b2ffe5'),
+                 stage = c('ss8-9' = "#BBBDC1", 'ss11-12' = "#6B98E9", 'ss14-15' = "#05080D"))
+
+
+# Prepare read count data for plotting
+for(gene_list in names(de_genes)){
+  
+  # Subset upregulated genes present in the full dataset for each gene list
+  goi <- filter(de_genes[[gene_list]], log2FoldChange > 0 & gene_name %in% rownames(m_oep$getReadcounts(data_status='Normalized'))) %>% dplyr::pull(gene_name)
+  
+  # Get normalised readcounts for goi
+  reads <- as.matrix(log(1+m_oep$getReadcounts(data_status='Normalized')[goi,]))
+  
+  # Scale reads
+  reads <- t(scale(t(reads)))
+  
+  # Set min and max readcounts
+  reads[reads > 2] <- 2
+  reads[reads < -2] <- -2
+  
+  # Order cells based on original clustering
+  reads <- reads[,rownames(ann_data)]
+  
+  # Plot heatmap
+  if(!grepl('tfs', gene_list)){
+    png(paste0(curr_plot_folder, gene_list, '_hm.png'), height = 25, width = ifelse(grepl('lmx1a', gene_list), 20, 25), family = 'Arial', units = "cm", res = 800)
+    pheatmap::pheatmap(reads, cluster_cols = m_oep$cellClusters$Mansel$res, annotation_col = ann_data, annotation_names_col = FALSE, treeheight_row = 15, treeheight_col = 75, show_colnames = FALSE, show_rownames = FALSE,
+                       cluster_rows = TRUE, color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 1000), annotation_colors = ann_cols)
+    graphics.off()
+  } else {
+    png(paste0(curr_plot_folder, gene_list, '_hm.png'), height = ifelse(grepl('lmx1a', gene_list), 10, 15), width = ifelse(grepl('lmx1a', gene_list), 20, 25), family = 'Arial', units = "cm", res = 800)
+    pheatmap::pheatmap(reads, cluster_cols = m_oep$cellClusters$Mansel$res, annotation_col = ann_data, annotation_names_col = FALSE, treeheight_row = 15, treeheight_col = 75, show_colnames = FALSE,
+                       cluster_rows = TRUE, color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 1000), annotation_colors = ann_cols)
+    graphics.off()
+  }
+}
+```
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'OEP_data_sox8')">Sox8 OE DE genes (all cells)</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_data_sox8_tfs')">Sox8 OE DE TFs (all cells)</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_data_lmx1a')">Lmx1a E1 DE genes (all cells)</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_data_lmx1a_tfs')">Lmx1a E1 DE TFs (all cells)</button>
+</div>
+
+</br>
+
+<div id="OEP_data_sox8" class="tabcontent">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_hm.png">
+</div>
+
+<div id="OEP_data_sox8_tfs" class="tabcontent">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
+</div>
+
+<div id="OEP_data_lmx1a" class="tabcontent">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
+</div>
+
+<div id="OEP_data_lmx1a_tfs" class="tabcontent">
+  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
+</div>
+
+</details>
+
+
+
 <!-- The Modal -->
 <div id="myModal" class="modal">
 

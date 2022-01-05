@@ -288,8 +288,8 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Supplementary_1.csv"))
-write.table(res_de, paste0(output_path, "Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Sox8_OE_Supplementary_1.csv"))
+write.table(res_de, paste0(output_path, "Sox8_OE_Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
 
 # non-DE genes
@@ -306,18 +306,18 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Supplementary_2.csv"))
-write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Sox8_OE_Supplementary_2.csv"))
+write.table(all_dat, paste0(output_path, "Sox8_OE_Supplementary_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 ```
 
 </details>
 
 </br>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_1.csv" download>Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_Supplementary_1.csv" download>Download
 differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05).</a>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_2.csv" download>Download
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_Supplementary_2.csv" download>Download
 differential expression results for all genes.</a>
 
 </br>
@@ -456,15 +456,15 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Supplementary_3.csv"))
-write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Sox8_OE_Supplementary_3.csv"))
+write.table(all_dat_TF, paste0(output_path, "Sox8_OE_Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 ```
 
 </details>
 
 </br>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Supplementary_3.csv" download>Download TF
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_Supplementary_3.csv" download>Download TF
 differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05).</a>
 
 </br>
