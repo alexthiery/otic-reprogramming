@@ -197,8 +197,8 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
 padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Supplementary_1.csv"))
-write.table(res_de, paste0(output_path, "Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Lmx1a_E1_Supplementary_1.csv"))
+write.table(res_de, paste0(output_path, "Lmx1a_E1_Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
 
 # non-DE genes
@@ -215,8 +215,8 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
 padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Supplementary_2.csv"))
-write.table(all_dat, paste0(output_path, "Supplementary_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Lmx1a_E1_Supplementary_2.csv"))
+write.table(all_dat, paste0(output_path, "Lmx1a_E1_Supplementary_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
 
 ####################################################################################
@@ -297,8 +297,8 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples
 padj: pvalue for differential expression test between Lmx1a_E1 and Sox3U3 samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Supplementary_3.csv"))
-write.table(all_dat_TF, paste0(output_path, "Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Lmx1a_E1_Supplementary_3.csv"))
+write.table(all_dat_TF, paste0(output_path, "Lmx1a_E1_Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
 ##############################################################
 # Plot heatmap for differentially expressed transcription factors
