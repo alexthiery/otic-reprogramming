@@ -1933,10 +1933,10 @@ for(gene_list in names(de_genes)){
 ```
 
 <div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'OEP_data_sox8')">Sox8 OE DE genes (all cells)</button>
-  <button class="tablinks" onclick="openTab(event, 'OEP_data_sox8_tfs')">Sox8 OE DE TFs (all cells)</button>
-  <button class="tablinks" onclick="openTab(event, 'OEP_data_lmx1a')">Lmx1a E1 DE genes (all cells)</button>
-  <button class="tablinks" onclick="openTab(event, 'OEP_data_lmx1a_tfs')">Lmx1a E1 DE TFs (all cells)</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_data_sox8')">Sox8 OE DE genes (OEP subset)</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_data_sox8_tfs')">Sox8 OE DE TFs (OEP subset)</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_data_lmx1a')">Lmx1a E1 DE genes (OEP subset)</button>
+  <button class="tablinks" onclick="openTab(event, 'OEP_data_lmx1a_tfs')">Lmx1a E1 DE TFs (OEP subset)</button>
 </div>
 
 </br>
