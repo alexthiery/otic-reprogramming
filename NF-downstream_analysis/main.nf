@@ -122,12 +122,7 @@ workflow {
 
     // Extract gene annotations from gtf
     extract_gtf_annotations( params.modules['extract_gtf_annotations'], ch_gtf )
-
-    ch_smartseq2_counts
-                                                                .combine(ch_smartseq2_velocyto)
-                                                                .combine(extract_gtf_annotations.out)
-                                                                .combine(sox8_dea.out.map{it.listFiles().findAll{it =~ /csv/}})
-                                                                .combine(lmx1a_dea.out.map{it.listFiles().findAll{it =~ /csv/}}).view()
+    
     //  Run smartseq2 Antler analysis
     smartseq_analysis( params.modules['smartseq_analysis'], ch_smartseq2_counts
                                                                 .combine(ch_smartseq2_velocyto)

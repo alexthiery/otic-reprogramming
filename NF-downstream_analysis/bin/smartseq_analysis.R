@@ -1082,13 +1082,13 @@ graphics.off()
 ######  Sox8 OE / Lmx1a bulk RNAseq - plot DE genes heatmap on smartseq data   ######
 #####################################################################################
 
-sox8_oe_de <- read.csv('./output/NF-downstream_analysis/sox8_dea/output/Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
+sox8_oe_de <- read.csv('./Sox8_OE_Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
 
-sox8_oe_de_tfs <- read.csv('./output/NF-downstream_analysis/sox8_dea/output/Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
+sox8_oe_de_tfs <- read.csv('./Sox8_OE_Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
 
-lmx1a_oe_de <- read.csv('./output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
+lmx1a_oe_de <- read.csv('./Lmx1a_E1_Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
 
-lmx1a_oe_tfs <- read.csv('./output/NF-downstream_analysis/lmx1a_dea/output/Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
+lmx1a_oe_tfs <- read.csv('./Lmx1a_E1_Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
 
 de_genes <- list(sox8_oe_de = sox8_oe_de, sox8_oe_de_tfs = sox8_oe_de_tfs, lmx1a_oe_de = lmx1a_oe_de, lmx1a_oe_tfs = lmx1a_oe_tfs)
 
