@@ -123,7 +123,7 @@ workflow {
     // Extract gene annotations from gtf
     extract_gtf_annotations( params.modules['extract_gtf_annotations'], ch_gtf )
 
-    sox8_dea.out.listFiles().findAll{it =~ /csv/}.view()
+    sox8_dea.out.map{it.listFiles().findAll{it =~ /csv/}}.view()
     // sox8_dea.out.map{it[1]}.view()
     
     // sox8_dea.out.map{it[1][0]}.view()
