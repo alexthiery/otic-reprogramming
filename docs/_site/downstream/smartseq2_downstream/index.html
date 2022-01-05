@@ -1583,6 +1583,7 @@ all Monocle gradient plots</a></p>
   <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/velocyto/Monocle_velocity_stage_vector.png">
 </div>
 </details>
+<hr />
 </br>
 <h3 id="bulk-rnaseq-de-gene-heatmaps">Bulk RNAseq DE gene heatmaps</h3>
 <details><summary class="box">Expand</summary>
@@ -1599,6 +1600,7 @@ all Monocle gradient plots</a></p>
 
 </span><span class="n">de_genes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">sox8_oe_de</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sox8_oe_de</span><span class="p">,</span><span class="w"> </span><span class="n">sox8_oe_de_tfs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sox8_oe_de_tfs</span><span class="p">,</span><span class="w"> </span><span class="n">lmx1a_oe_de</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lmx1a_oe_de</span><span class="p">,</span><span class="w"> </span><span class="n">lmx1a_oe_tfs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lmx1a_oe_tfs</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
+</br>
 <p>Plot heatmap on full dataset</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"all_cells/bulk_rnaseq_hm/"</span><span class="p">)</span><span class="w">
 </span><span class="n">dir.create</span><span class="p">(</span><span class="n">curr_plot_folder</span><span class="p">)</span><span class="w">
@@ -1660,17 +1662,19 @@ all Monocle gradient plots</a></p>
 </div>
 </br>
 <div id="Full_data_sox8" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_hm.png">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_hm.png">
 </div>
 <div id="Full_data_sox8_tfs" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
 </div>
 <div id="Full_data_lmx1a" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
 </div>
 <div id="Full_data_lmx1a_tfs" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
 </div>
+</br>
+</br>
 <p>Plot heatmap on OEP subset</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curr_plot_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"oep_subset/bulk_rnaseq_hm/"</span><span class="p">)</span><span class="w">
 </span><span class="n">dir.create</span><span class="p">(</span><span class="n">curr_plot_folder</span><span class="p">)</span><span class="w">
@@ -1732,16 +1736,16 @@ all Monocle gradient plots</a></p>
 </div>
 </br>
 <div id="OEP_data_sox8" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_hm.png">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_hm.png">
 </div>
 <div id="OEP_data_sox8_tfs" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
 </div>
 <div id="OEP_data_lmx1a" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
 </div>
 <div id="OEP_data_lmx1a_tfs" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
 </div>
 </details>
 <!-- The Modal -->

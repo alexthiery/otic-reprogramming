@@ -1765,6 +1765,7 @@ graphics.off()
 
 </details>
 
+---
 
 </br>
 
@@ -1788,6 +1789,8 @@ lmx1a_oe_tfs <- read.csv('./Lmx1a_E1_Supplementary_3.csv', skip = 8, stringsAsFa
 
 de_genes <- list(sox8_oe_de = sox8_oe_de, sox8_oe_de_tfs = sox8_oe_de_tfs, lmx1a_oe_de = lmx1a_oe_de, lmx1a_oe_tfs = lmx1a_oe_tfs)
 ```
+
+</br>
 
 Plot heatmap on full dataset
 
@@ -1855,21 +1858,24 @@ for(gene_list in names(de_genes)){
 </br>
 
 <div id="Full_data_sox8" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_hm.png">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_hm.png">
 </div>
 
 <div id="Full_data_sox8_tfs" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
 </div>
 
 <div id="Full_data_lmx1a" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
 </div>
 
 <div id="Full_data_lmx1a_tfs" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/all_cells/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
 </div>
 
+</br>
+
+</br>
 
 Plot heatmap on OEP subset
 ```R
@@ -1936,19 +1942,19 @@ for(gene_list in names(de_genes)){
 </br>
 
 <div id="OEP_data_sox8" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_hm.png">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_hm.png">
 </div>
 
 <div id="OEP_data_sox8_tfs" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/sox8_oe_de_tfs_hm.png">
 </div>
 
 <div id="OEP_data_lmx1a" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_de_hm.png">
 </div>
 
 <div id="OEP_data_lmx1a_tfs" class="tabcontent">
-  <img class="myImages width_50" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
+  <img class="myImages width_80" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/smartseq_analysis/output/plots/oep_subset/bulk_rnaseq_hm/lmx1a_oe_tfs_hm.png">
 </div>
 
 </details>
