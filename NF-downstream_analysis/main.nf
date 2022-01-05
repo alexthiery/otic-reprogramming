@@ -123,10 +123,17 @@ workflow {
     // Extract gene annotations from gtf
     extract_gtf_annotations( params.modules['extract_gtf_annotations'], ch_gtf )
 
-    // Create channel containing differentially expressed gene list from Sox8 OE
-    ch_sox8_dea_genes = sox8_dea.out.map{it[1].findAll{it =~ /csv/}[0].listFiles()[0]}
+    sox8_dea.out.map{it[1]}.view()
+    
+    // sox8_dea.out.map{it[1][0]}.view()
 
-    ch_sox8_dea_genes.view()
+
+    // sox8_dea.out.map{it[1][0].listFiles()}.view()
+
+    // // Create channel containing differentially expressed gene list from Sox8 OE
+    // ch_sox8_dea_genes = sox8_dea.out.map{it[1].findAll{it =~ /output/}.listFiles()}
+
+    // ch_sox8_dea_genes.view()
 
     // //  Run smartseq2 Antler analysis
     // smartseq_analysis( params.modules['smartseq_analysis'], ch_smartseq2_counts.combine(ch_smartseq2_velocyto).combine(extract_gtf_annotations.out).combine(ch_sox8_dea_genes) )
