@@ -142,7 +142,7 @@ downreg <- volc_dat %>%
   dplyr::filter(!stringr::str_detect(gene, "ENS"))
 downreg <- downreg[1:10,"gene"]
 
-png(paste0(output_path, "volcano.png"), width = 16, height = 10, family = 'Arial', units = "cm", res = 500)
+png(paste0(output_path, "volcano.png"), width = 11.5, height = 7, family = 'Arial', units = "cm", res = 500)
 ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene)) +
   geom_point(aes(colour = sig, fill = sig), size = 1) +
   scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),
