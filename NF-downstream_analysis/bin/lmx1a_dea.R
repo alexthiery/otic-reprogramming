@@ -144,7 +144,8 @@ ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene))
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         text = element_text(family = "", color = "grey20"),
-        legend.position = "none", legend.title = element_blank()) +
+        legend.position = "none", legend.title = element_blank(),
+        axis.text = element_text(size = 12)) +
   geom_text_repel(data = subset(volc_dat, gene %in% c(otic_genes, epibranchial_genes)), min.segment.length = 0, segment.size  = 0.6, segment.color = "black") +
   xlab('log2FC (Lmx1a_E1 - Sox3U3)') +
   theme(legend.position = "none")
