@@ -336,7 +336,7 @@ graphics.off()
 ###########################################################################
 
 # Download supplementary file 4 from Chen et al. (2017)
-# OEP vs PPR 5/6ss, PPR 5/6ss vs PPR 8/9ss, PPR 8/9ss vs PPR 11/12ss. Dataset is already filtered for transcription factors
+# PPR vs otic 5/6ss, PPR vs otic 8/9ss, PPR vs otic 11/12ss. Dataset is already filtered for transcription factors
 
 temp <- tempfile()
 download.file("http://www.biologists.com/DEV_Movies/DEV148494/TableS4.xlsx", temp)
@@ -358,7 +358,7 @@ otic_enr <- otic_enr[apply(otic_enr, 1, function(x) any(!is.na(x[c("5-6ss_foldCh
 
 
 # compare Sox8OE data vs otic enriched
-# subset genes wich are 1.5FC between either PPR vs 4/5ss, 4/5ss vs 8/9ss, 8/9ss vs 11/12ss
+# subset genes wich are 1.5FC between either PPR vs 4/5ss, PPR vs 8/9ss, PPR vs 11/12ss
 otic_enr <- otic_enr[otic_enr$`5-6ss_foldChange` > 1.5 |
                        otic_enr$`8-9ss_foldChange` > 1.5 |
                        otic_enr$`11-12ss_foldChange` > 1.5,]
@@ -407,7 +407,7 @@ write.table(venn.genes.df, paste0(output_path, "Sox8_OE_Supplementary_4.csv"), a
 
 
 
-# plot heatmap
+#Plot heatmap of all otic enriched genes on Sox8OE data
 rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
