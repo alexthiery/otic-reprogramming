@@ -336,13 +336,13 @@ graphics.off()
 ###########################################################################
 
 # Download supplementary file 4 from Chen et al. (2017)
-# OEP vs PPR 5/6ss, PPR 5/6ss vs PPR 8/9ss, PPR 8/9ss vs PPR 11/12ss. Dataset is already filtered for transcription factors
+# PPR vs otic 5/6ss, PPR vs otic 8/9ss, PPR vs otic 11/12ss. Dataset is already filtered for transcription factors
 
 temp <- tempfile()
 download.file("http://www.biologists.com/DEV_Movies/DEV148494/TableS4.xlsx", temp)
 
 # read xlsx file
-otic_enr <- read.xlsx(temp, startRow = 0)
+otic_enr <- read.xlsx(temp, startRow = 15)
 unlink(temp)
 
 # assign column names
@@ -358,7 +358,7 @@ otic_enr <- otic_enr[apply(otic_enr, 1, function(x) any(!is.na(x[c("5-6ss_foldCh
 
 
 # compare Sox8OE data vs otic enriched
-# subset genes wich are 1.5FC between either PPR vs 4/5ss, 4/5ss vs 8/9ss, 8/9ss vs 11/12ss
+# subset genes wich are 1.5FC between either PPR vs 4/5ss, PPR vs 8/9ss, PPR vs 11/12ss
 otic_enr <- otic_enr[otic_enr$`5-6ss_foldChange` > 1.5 |
                        otic_enr$`8-9ss_foldChange` > 1.5 |
                        otic_enr$`11-12ss_foldChange` > 1.5,]
@@ -366,8 +366,8 @@ otic_enr <- otic_enr[otic_enr$`5-6ss_foldChange` > 1.5 |
 
 #plot venn diagram comparing OOPE and Sox8OE
 venn.diagram(list(otic_enr=rownames(otic_enr), sox8OE=res_sub_TF$gene_name),
-             category.names = c("logFC > 1.5 in any of PPR vs 5/6ss, 5/6ss vs 8/9ss, 8/9ss vs 11/12ss \n(Chen et al. 2017)", "Sox8OE enriched TFs\n(logFC > 1.5, padj = 0.05)"),
-             filename = paste0(output_path, "OticEnr.vs.Sox8OE.png"),
+             category.names = c("logFC > 1.5 in any of PPR vs 5/6ss, PPR vs 8/9ss, PPR vs 11/12ss \n(Chen et al. 2017)", "Sox8OE enriched TFs\n(logFC > 1.5, padj = 0.05)"),
+             filename = paste0(output_path, "otic_enriched_sox8OE_de_venn.png"),
              output = TRUE,
              imagetype = "png",
              height = 1100,
@@ -407,11 +407,11 @@ write.table(venn.genes.df, paste0(output_path, "Sox8_OE_Supplementary_4.csv"), a
 
 
 
-# plot heatmap
+#Plot heatmap of transcription factors which are DE in otic cells (Chen 2017) and DE in Sox8OE relative to control cells
 rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
-png(paste0(output_path, "anyOticvsSox8OE.png"),height = 8, width = 21, units = "cm", res = 200)
+png(paste0(output_path, "otic_enriched_sox8_de_hm.png"),height = 8, width = 21, units = "cm", res = 200)
 pheatmap(rld.plot[venn.genes$Shared,], cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
          annotation_col=as.data.frame(col_data["Group"]), scale = "row",
@@ -419,10 +419,9 @@ pheatmap(rld.plot[venn.genes$Shared,], cluster_rows=T, show_rownames=T,
          border_color = NA)
 graphics.off()
 
+#Plot all transcription factors DE in Chen et al. 2017 abs(1.5 FC) using our data - do not filter genes which are not DE in the Sox8OE
 
-# plot all transcription factors DE in Chen et al. 2017 abs(1.5 FC) using our data - do not filter genes which are not DE in the Sox8OE
-
-png(paste0(output_path, "otic_enr.heatmap.png"),height = 50, width = 21, units = "cm", res = 200)
+png(paste0(output_path, "otic_enriched_sox8_any_hm.png"),height = 40, width = 21, units = "cm", res = 200)
 pheatmap(rld.plot[rownames(otic_enr)[rownames(otic_enr) %in% rownames(rld.plot)],], cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
          annotation_col=as.data.frame(col_data["Group"]), scale = "row",
@@ -453,8 +452,3 @@ pvalue: unadjusted pvalue for differential expression test between Sox8 overexpr
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
     file = paste0(output_path, "Sox8_OE_Supplementary_5.csv"))
 write.table(all_dat_Chen_DE, paste0(output_path, "Sox8_OE_Supplementary_5.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
-
-
-
-
-
