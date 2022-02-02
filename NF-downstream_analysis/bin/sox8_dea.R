@@ -342,7 +342,7 @@ temp <- tempfile()
 download.file("http://www.biologists.com/DEV_Movies/DEV148494/TableS4.xlsx", temp)
 
 # read xlsx file
-otic_enr <- read.xlsx(temp, startRow = 0)
+otic_enr <- read.xlsx(temp, startRow = 15)
 unlink(temp)
 
 # assign column names
