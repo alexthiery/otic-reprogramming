@@ -209,7 +209,7 @@ volc_dat <- volc_dat %>%
 otic_genes <- c('MEF2C', 'SOX10', 'SOX8', 'ZIC1', 'ZIC2', 'DACT2', 'LEF1', 'ZCCHC24', 'RNF122')
 epibranchial_genes <- c('PRDM1', 'VGLL2', 'PDLIM1', 'KRT18', 'ISL1', 'UPK1B', 'TFAP2E', 'NELL1')
 
-png(paste0(output_path, "volcano.png"), width = 16, height = 10, family = 'Arial', units = "cm", res = 500)
+png(paste0(output_path, "volcano.png"), width = 11.5, height = 7, family = 'Arial', units = "cm", res = 500)
 ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene)) +
   geom_point(aes(colour = sig, fill = sig), size = 1) +
   scale_fill_manual(breaks = c("not sig", "downregulated", "upregulated"),

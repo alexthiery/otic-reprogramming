@@ -226,7 +226,8 @@ ggplot(volc_dat, aes(log2FoldChange, `-log10(padj)`, shape=shape, label = gene))
                      values= c(plot_colours$Group[2], "#c1c1c1", plot_colours$Group[1])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        legend.position = "none", legend.title = element_blank()) +
+        legend.position = "none", legend.title = element_blank(),
+        axis.text = element_text(size = 12)) +
   geom_text_repel(data = subset(volc_dat, gene %in% c(otic_genes, downreg, "SNAI1")), min.segment.length = 0, segment.size  = 0.6, segment.color = "black") +
   xlab('log2FC (Sox8_OE - Control)')
 graphics.off()
@@ -491,6 +492,193 @@ graphics.off()
 </details>
 
 <img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_TFs_hm.png">
+
+
+</br>
+
+Compare DE data with DE TFs from Chen et al. (2017) Development
+
+
+```R
+# Download supplementary file 4 from Chen et al. (2017)
+# PPR vs otic 5/6ss, PPR vs otic 8/9ss, PPR vs otic 11/12ss. Dataset is already filtered for transcription factors
+
+temp <- tempfile()
+download.file("http://www.biologists.com/DEV_Movies/DEV148494/TableS4.xlsx", temp)
+
+# read xlsx file
+otic_enr <- read.xlsx(temp, startRow = 15)
+unlink(temp)
+
+# assign column names
+colnames(otic_enr)[1:13] <- paste0(colnames(otic_enr)[1:13], c(rep('_normalised_count', 4), rep('_foldChange', 3),
+                                                               rep('_pval', 3), rep('_padj', 3)))
+
+# assign row names
+rownames(otic_enr) <- otic_enr[,17]
+otic_enr[,17] <- NULL
+
+# remove genes from Chen dataset which are not DE in at least one of the stages (not sure why these are in the supplementary file)
+otic_enr <- otic_enr[apply(otic_enr, 1, function(x) any(!is.na(x[c("5-6ss_foldChange", "8-9ss_foldChange", "11-12ss_foldChange")]))),]
+
+
+# compare Sox8OE data vs otic enriched
+# subset genes wich are 1.5FC between either PPR vs 4/5ss, PPR vs 8/9ss, PPR vs 11/12ss
+otic_enr <- otic_enr[otic_enr$`5-6ss_foldChange` > 1.5 |
+                       otic_enr$`8-9ss_foldChange` > 1.5 |
+                       otic_enr$`11-12ss_foldChange` > 1.5,]
+```
+
+Plot venn diagram comparing OOPE and Sox8OE
+
+<details><summary class="box">Code</summary>
+<p>
+
+```R
+venn.diagram(list(otic_enr=rownames(otic_enr), sox8OE=res_sub_TF$gene_name),
+             category.names = c("logFC > 1.5 in any of PPR vs 5/6ss, PPR vs 8/9ss, PPR vs 11/12ss \n(Chen et al. 2017)", "Sox8OE enriched TFs\n(logFC > 1.5, padj = 0.05)"),
+             filename = paste0(output_path, "otic_enriched_sox8OE_de_venn.png"),
+             output = TRUE,
+             imagetype = "png",
+             height = 1100,
+             width = 1100,
+             resolution = 600,
+             compression = "lzw",
+             lwd = 1,
+             col=c("#440154ff", '#21908dff'),
+             fill = c(alpha("#440154ff",0.3), alpha('#21908dff',0.3)),
+             cex = 0.5,
+             fontfamily = "sans",
+             cat.cex = 0.25,
+             cat.pos = c(0, 0),
+             cat.dist = c(0.03, 0.03),
+             cat.fontfamily = "sans",
+             cat.col = c("#440154ff", '#21908dff'),
+             ext.percent = 0
+)
+```
+
+</details>
+
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/otic_enriched_sox8OE_de_venn.png">
+
+</br>
+
+
+Make csv file of genes in each part of venn diagram
+
+<details><summary class="box">Code</summary>
+<p>
+
+```R
+# when identifying shared genes between current study and previous studies which are alligned using different genome version, match genes using gene name.
+# this is important as some of the Ensembl IDs from past genome versions have been depracated and therefore are absent from our data.
+venn.genes <- list("Otic enriched" = rownames(otic_enr)[!rownames(otic_enr) %in% res_sub_TF$gene_name],
+                   "Sox8OE" = res_sub_TF$gene_name[!res_sub_TF$gene_name %in% rownames(otic_enr)],
+                   "Shared" = res_sub_TF$gene_name[res_sub_TF$gene_name %in% rownames(otic_enr)])
+
+venn.genes.df <- t(plyr::ldply(venn.genes, rbind))
+colnames(venn.genes.df) <- venn.genes.df[1,]
+venn.genes.df <- venn.genes.df[-1,]
+
+
+cat("This table provides a list of genes from each part of the venn diagram.
+Differentially expressed transcription factors between Sox8 overexpression and control samples were cross compared with genes in supplementary table 4 of Chen et al. (2017) Development
+Genes from supplementary table 4 of Chen et al. (2017) Development were filtered and kept if they were found to be differentially expressed (absolute FC > 1.5) between either: PPR vs 5/6ss otic; PPR vs 8/9ss otic; PPR vs 11/12ss otic \n \n",
+    file = paste0(output_path, "Sox8_OE_Supplementary_4.csv"))
+write.table(venn.genes.df, paste0(output_path, "Sox8_OE_Supplementary_4.csv"), append=TRUE, row.names = F, na = '', sep=",")
+```
+
+</details>
+
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_Supplementary_4.csv" download>Download otic enriched and Sox8OE enriched transcription factors presented in the venn diagram above.</a>
+
+</br>
+
+
+
+Plot heatmap of transcription factors which are DE in otic cells (Chen 2017) and DE in Sox8OE relative to control cells
+
+<details><summary class="box">Code</summary>
+<p>
+
+```R
+rld.plot <- assay(rld)
+rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
+
+png(paste0(output_path, "otic_enriched_sox8_de_hm.png"),height = 8, width = 21, units = "cm", res = 200)
+pheatmap(rld.plot[venn.genes$Shared,], cluster_rows=T, show_rownames=T,
+         show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
+         annotation_col=as.data.frame(col_data["Group"]), scale = "row",
+         main = "Shared Otic and Sox8OE enriched TFs \n(logFC > 1.5, padj = 0.05)", cellwidth = 50, cellheight = 10,
+         border_color = NA)
+graphics.off()
+```
+
+</details>
+
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/otic_enriched_sox8_de_hm.png">
+
+</br>
+
+Plot all transcription factors DE in Chen et al. 2017 abs(1.5 FC) using our data - do not filter genes which are not DE in the Sox8OE
+
+<details><summary class="box">Code</summary>
+<p>
+
+```R
+png(paste0(output_path, "otic_enriched_sox8_any_hm.png"),height = 40, width = 21, units = "cm", res = 200)
+pheatmap(rld.plot[rownames(otic_enr)[rownames(otic_enr) %in% rownames(rld.plot)],], cluster_rows=T, show_rownames=T,
+         show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
+         annotation_col=as.data.frame(col_data["Group"]), scale = "row",
+         main = "Otic enriched TFs - not necessarily DE between Sox8 and control \n(logFC > 1.5, padj = 0.05)",
+         border_color = NA)
+graphics.off()
+
+# This heatmap reveals that although many genes are not statistically DE in the Sox8OE - they are clearly upregulated in two of the three Sox8 samples.
+# A possible explanation for this is that the Sox8OE does not necessarily switch on the otic program at the same rate in different samples and different cells.
+# There may be modules of genes which are switched on at different points of otic specification. This variation could explain why these
+# genes are not statistically differentially expressed.
+
+```
+
+</details>
+
+<img class="myImages" id="myImg" src="{{site.baseurl}}/assets/output/NF-downstream_analysis/sox8_dea/output/otic_enriched_sox8_any_hm.png">
+
+</br>
+
+
+
+
+Save CSV norm counts and Sox8OE DEA for genes from Chen et al. 2017
+
+<details><summary class="box">Code</summary>
+<p>
+
+```R
+all_dat_Chen_DE <- all_dat[all_dat$gene_name %in% rownames(otic_enr),]
+
+
+cat("This table shows genes subset from supplementary table 4 of Chen et al. (2017) Development
+These genes were found to be differentially expressed (absolute FC > 1.5) between either: PPR vs 5/6ss otic; PPR vs 8/9ss otic; PPR vs 11/12ss otic
+The data presented in this table are from Sox8 overexpression and control samples
+Genes presented in this table are not necessarily differentially expressed between Sox8 overexpression and control samples \n
+Statistics:
+Normalised count: read counts adjusted for library size
+pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
+padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
+    file = paste0(output_path, "Sox8_OE_Supplementary_5.csv"))
+write.table(all_dat_Chen_DE, paste0(output_path, "Sox8_OE_Supplementary_5.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+```
+
+</details>
+
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_Supplementary_5.csv" download>norm counts and Sox8OE DEA for genes from Chen et al. 2017.</a>
+
+</br>
+
+
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
