@@ -411,10 +411,10 @@ write.table(venn.genes.df, paste0(output_path, "Sox8_OE_process_output_3.csv"), 
 rld.plot <- assay(rld)
 rownames(rld.plot) <- gene_annotations$gene_name[match(rownames(rld.plot), gene_annotations$gene_id)]
 
-png(paste0(output_path, "otic_enriched_sox8_de_hm.png"),height = 8, width = 21, units = "cm", res = 200)
-pheatmap(rld.plot[venn.genes$Shared,], cluster_rows=T, show_rownames=T,
+png(paste0(output_path, "otic_enriched_sox8_de_hm.png"), height = 8, width = 21, units = "cm", res = 200)
+pheatmap(rld.plot[venn.genes$Shared,], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100), cluster_rows=T, show_rownames=T,
          show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
-         annotation_col=as.data.frame(col_data["Group"]), scale = "row",
+         annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours, scale = "row",
          main = "Shared Otic and Sox8OE enriched TFs \n(logFC > 1.5, padj = 0.05)", cellwidth = 50, cellheight = 10,
          border_color = NA)
 graphics.off()
@@ -422,13 +422,12 @@ graphics.off()
 #Plot all transcription factors DE in Chen et al. 2017 abs(1.5 FC) using our data - do not filter genes which are not DE in the Sox8OE
 
 png(paste0(output_path, "otic_enriched_sox8_any_hm.png"),height = 40, width = 21, units = "cm", res = 200)
-pheatmap(rld.plot[rownames(otic_enr)[rownames(otic_enr) %in% rownames(rld.plot)],], cluster_rows=T, show_rownames=T,
-         show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
-         annotation_col=as.data.frame(col_data["Group"]), scale = "row",
+pheatmap(rld.plot[rownames(otic_enr)[rownames(otic_enr) %in% rownames(rld.plot)],], color = colorRampPalette(c("#191d73", "white", "#ed7901"))(n = 100),
+         cluster_rows=T, show_rownames=T, show_colnames = F, cluster_cols=T, treeheight_row = 30, treeheight_col = 30,
+         annotation_col=as.data.frame(col_data["Group"]), annotation_colors = plot_colours, scale = "row",
          main = "Otic enriched TFs - not necessarily DE between Sox8 and control \n(logFC > 1.5, padj = 0.05)",
          border_color = NA)
 graphics.off()
-
 
 # This heatmap reveals that although many genes are not statistically DE in the Sox8OE - they are clearly upregulated in two of the three Sox8 samples.
 # A possible explanation for this is that the Sox8OE does not necessarily switch on the otic program at the same rate in different samples and different cells.
