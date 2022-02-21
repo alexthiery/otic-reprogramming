@@ -206,8 +206,8 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Sox8_OE_Supplementary_1.csv"))
-write.table(res_de, paste0(output_path, "Sox8_OE_Supplementary_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Sox8_OE_process_output_1.csv"))
+write.table(res_de, paste0(output_path, "Sox8_OE_process_output_1.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
 
 # non-DE genes
@@ -224,8 +224,8 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Sox8_OE_Supplementary_2.csv"))
-write.table(all_dat, paste0(output_path, "Sox8_OE_Supplementary_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Sox8_OE_process_output_2.csv"))
+write.table(all_dat, paste0(output_path, "Sox8_OE_process_output_2.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
 
 
@@ -308,8 +308,8 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Sox8_OE_Supplementary_3.csv"))
-write.table(all_dat_TF, paste0(output_path, "Sox8_OE_Supplementary_3.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Sox8_OE_SupplementaryData_5.csv"))
+write.table(all_dat_TF, paste0(output_path, "Sox8_OE_SupplementaryData_5.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
 
 ##############################################################
 # Plot heatmap for differentially expressed transcription factors
@@ -402,8 +402,8 @@ venn.genes.df <- venn.genes.df[-1,]
 cat("This table provides a list of genes from each part of the venn diagram.
 Differentially expressed transcription factors between Sox8 overexpression and control samples were cross compared with genes in supplementary table 4 of Chen et al. (2017) Development
 Genes from supplementary table 4 of Chen et al. (2017) Development were filtered and kept if they were found to be differentially expressed (absolute FC > 1.5) between either: PPR vs 5/6ss otic; PPR vs 8/9ss otic; PPR vs 11/12ss otic \n \n",
-    file = paste0(output_path, "Sox8_OE_Supplementary_4.csv"))
-write.table(venn.genes.df, paste0(output_path, "Sox8_OE_Supplementary_4.csv"), append=TRUE, row.names = F, na = '', sep=",")
+    file = paste0(output_path, "Sox8_OE_process_output_3.csv"))
+write.table(venn.genes.df, paste0(output_path, "Sox8_OE_process_output_3.csv"), append=TRUE, row.names = F, na = '', sep=",")
 
 
 
@@ -450,5 +450,5 @@ Statistics:
 Normalised count: read counts adjusted for library size
 pvalue: unadjusted pvalue for differential expression test between Sox8 overexpression and control samples
 padj: pvalue for differential expression test between Sox8 overexpression and control samples - adjusted for multiple testing (Benjamini and Hochberg) \n \n",
-    file = paste0(output_path, "Sox8_OE_Supplementary_5.csv"))
-write.table(all_dat_Chen_DE, paste0(output_path, "Sox8_OE_Supplementary_5.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")
+    file = paste0(output_path, "Sox8_OE_process_output_4.csv"))
+write.table(all_dat_Chen_DE, paste0(output_path, "Sox8_OE_process_output_4.csv"), append=TRUE, row.names = F, na = 'NA', sep=",")

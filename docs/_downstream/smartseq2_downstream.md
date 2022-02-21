@@ -1779,13 +1779,13 @@ Sox8 OE / Lmx1a bulk RNAseq - plot DE genes heatmap on smartseq data
 
 Read in differential expression data
 ```R
-sox8_oe_de <- read.csv('./Sox8_OE_Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
+sox8_oe_de <- read.csv('./Sox8_OE_process_output_1.csv', skip = 8, stringsAsFactors = FALSE)
 
-sox8_oe_de_tfs <- read.csv('./Sox8_OE_Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
+sox8_oe_de_tfs <- read.csv('./Sox8_OE_process_output_3.csv', skip = 8, stringsAsFactors = FALSE)
 
-lmx1a_oe_de <- read.csv('./Lmx1a_E1_Supplementary_1.csv', skip = 8, stringsAsFactors = FALSE)
+lmx1a_oe_de <- read.csv('./Lmx1a_E1_SupplementaryData_1.csv', skip = 8, stringsAsFactors = FALSE)
 
-lmx1a_oe_tfs <- read.csv('./Lmx1a_E1_Supplementary_3.csv', skip = 8, stringsAsFactors = FALSE)
+lmx1a_oe_tfs <- read.csv('./Lmx1a_E1_process_output_3.csv', skip = 8, stringsAsFactors = FALSE)
 
 de_genes <- list(sox8_oe_de = sox8_oe_de, sox8_oe_de_tfs = sox8_oe_de_tfs, lmx1a_oe_de = lmx1a_oe_de, lmx1a_oe_tfs = lmx1a_oe_tfs)
 ```
