@@ -309,7 +309,7 @@ write.table(all_dat, paste0(output_path, "Lmx1a_E1_process_output_1.csv"), appen
 </br>
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_SupplementaryData_1.csv" download>Download
-differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05).</a>
+differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05) - SuppData1</a>
 
 <a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/lmx1a_dea/output/Lmx1a_E1_process_output_1.csv" download>Download
 differential expression results for all genes.</a>
