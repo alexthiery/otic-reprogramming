@@ -27,6 +27,10 @@ lab:
 
   # Dependencies
 markdown: CommonMarkGhPages
+
+commonmark:
+  options: ["UNSAFE"]
+
 highlighter: rouge
 
 collections:

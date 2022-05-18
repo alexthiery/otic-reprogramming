@@ -181,25 +181,25 @@
   <!-- hide auto title generation -->
   <!-- <h1 class="page-title">Enhancer_downstream</h1> -->
   <h2 id="enhancer-discovery">Enhancer discovery</h2>
-<!-- raw HTML omitted -->
+</br>
 <p>We performed epigenomic profiling carrying out ChIPseq for H3K27ac, H3K27me3 and H3K4me3 as well as ATACseq of OEP dissected tissue. Below we describe the enhancer discovery pipeline.</p>
 <p>To view our cloned enhancer tracks, click <a href="#enhancer_visualisation">here</a>.</p>
 <hr />
-<!-- raw HTML omitted -->
+</br>
 <p>Our enhancer discovery pipeline integrates ChIP (H3K27ac and H3K27me3) and ATAC data into a single Nextflow sub-workflow. This sub-workflow is executed as part of the downstream analysis pipeline. <strong>If you would like to re-run the downstream analysis pipeline, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#downstream">here</a>.</strong></p>
 <hr />
-<!-- raw HTML omitted -->
+</br>
 <h3 id="sub-workflow">Sub-workflow</h3>
-<!-- raw HTML omitted -->
+</br>
 <p>The sub-workflow uses Bedtools and Homer in order to identify putative enhancers:</p>
 <ul>
 <li>First, we subset protein coding genes from our GTF.</li>
 <li>Next, we use Bedtools to subset ATAC+H3K27ac-H3K27me3 peaks.</li>
 <li>Finally, we annotate the remaining peaks to the nearest protein coding gene before removing peaks which fall within promoter or exonic regions, as they are unlikely to be active enhancers.</li>
 </ul>
-<p><!-- raw HTML omitted -->Download putative enhancer co-ordinates<!-- raw HTML omitted --></p>
-<p><!-- raw HTML omitted -->Download annotated putative enhancers<!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
+<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers.bed" download>Download putative enhancer co-ordinates</a></p>
+<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/putative_enhancers/putative_enhancers_annotated.txt" download>Download annotated putative enhancers</a></p>
+</br>
 <p>The sub-workflow also integrates custom R scripts for:</p>
 <ul>
 <li><a href="#annotation_frequency">Plotting peak annotation frequency</a></li>
@@ -207,7 +207,8 @@
 <li><a href="#enhancer_profile">Plotting putative enhancer profile</a></li>
 <li><a href="#motif_enrichment">Motif enrichment analysis from Homer output</a></li>
 </ul>
-<!-- raw HTML omitted -->
+<details open><summary class="simple">Collapse enhancer discovery sub-workflow</summary>
+<p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
 
@@ -275,12 +276,13 @@
         <span class="n">plot_motifs</span><span class="o">(</span> <span class="n">params</span><span class="o">.</span><span class="na">modules</span><span class="o">[</span><span class="s1">'plot_motifs'</span><span class="o">],</span> <span class="n">homer_find_motifs</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">enrichedMotifs</span><span class="o">.</span><span class="na">map</span><span class="o">{</span><span class="n">it</span><span class="o">[</span><span class="mi">1</span><span class="o">]}</span> <span class="o">)</span>
 <span class="o">}</span>
 </code></pre></div></div>
-<!-- raw HTML omitted -->
+</details>
 <hr />
-<!-- raw HTML omitted -->
-<h3 id="plotting-peak-annotation-frequency---raw-html-omitted------raw-html-omitted---">Plotting peak annotation frequency<!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<br/>
+<h3 id="plotting-peak-annotation-frequencya-nameannotationfrequencya">Plotting peak annotation frequency<a name="annotation_frequency"></a></h3>
+</br>
+<details><summary class="box">Code</summary>
+<p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">extrafont</span><span class="p">)</span><span class="w">
 
@@ -310,15 +312,16 @@
   </span><span class="n">scale_y_continuous</span><span class="p">(</span><span class="n">expand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="n">limits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">))</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</details>
+</br>
+<img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/peak_annotations_frequency/output/peak_annotation_frequency.png">
 <hr />
-<!-- raw HTML omitted -->
-<h3 id="functional-enrichment-analysis---raw-html-omitted------raw-html-omitted---">Functional enrichment analysis<!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
-<!-- raw HTML omitted -->
+<br/>
+<h3 id="functional-enrichment-analysisa-namefunctionalenrichmenta">Functional enrichment analysis<a name="functional_enrichment"></a></h3>
+</br>
 <p>To view all of our functional enrichment analysis output in the browser, click <a href="https://biit.cs.ut.ee/gplink/l/IgcsqI0XTi">here</a>.</p>
-<!-- raw HTML omitted -->
+<details><summary class="box">Code</summary>
+<p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">gprofiler2</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
@@ -360,14 +363,15 @@
   </span><span class="n">theme</span><span class="p">(</span><span class="n">plot.margin</span><span class="o">=</span><span class="n">unit</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">0.5</span><span class="p">,</span><span class="m">0.5</span><span class="p">,</span><span class="m">0.5</span><span class="p">,</span><span class="m">0.5</span><span class="p">),</span><span class="s2">"cm"</span><span class="p">))</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</details>
+</br>
+<img class="myImages width_50" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/functional_enrichment_analysis/output/functional_enrichment.png">
 <hr />
-<!-- raw HTML omitted -->
-<h3 id="plotting-putative-enhancer-profile---raw-html-omitted------raw-html-omitted---">Plotting putative enhancer profile<!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<br/>
+<h3 id="plotting-putative-enhancer-profilea-nameenhancerprofilea">Plotting putative enhancer profile<a name="enhancer_profile"></a></h3>
+</br>
+<details><summary class="box">Code</summary>
+<p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ChIPpeakAnno</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">rtracklayer</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">extrafont</span><span class="p">)</span><span class="w">
@@ -416,17 +420,25 @@
 </span><span class="n">featureAlignedHeatmap</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span><span class="w"> </span><span class="n">peaks.recentered</span><span class="p">,</span><span class="w"> </span><span class="n">upstream</span><span class="o">=</span><span class="m">2000</span><span class="p">,</span><span class="w"> </span><span class="n">downstream</span><span class="o">=</span><span class="m">2000</span><span class="p">,</span><span class="w"> </span><span class="n">upper.extreme</span><span class="o">=</span><span class="m">2.5</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</details>
+<br/>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'enhancer_profile')">Enhancer profile</button>
+  <button class="tablinks" onclick="openTab(event, 'enhancer_heatmap')">Enhancer heatmap</button>
+</div>
+<br/>
+<div id="enhancer_profile" class="tabcontent">
+  <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/metaprofile.png">
+</div>
+<div id="enhancer_heatmap" class="tabcontent">
+  <img class="myImages" id="myImg"  src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/enhancer_profile/output/heatmap.png">
+</div>
 <hr />
-<!-- raw HTML omitted -->
-<h3 id="motif-enrichment-analysis-from-homer-output---raw-html-omitted------raw-html-omitted---">Motif enrichment analysis from Homer output<!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<br/>
+<h3 id="motif-enrichment-analysis-from-homer-outputa-namemotifenrichmenta">Motif enrichment analysis from Homer output<a name="motif_enrichment"></a></h3>
+</br>
+<details><summary class="box">Code</summary>
+<p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">ggseqlogo</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">gridExtra</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">cowplot</span><span class="p">)</span><span class="w">
@@ -488,34 +500,57 @@
 </span><span class="n">grid.arrange</span><span class="p">(</span><span class="n">grobs</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="n">gene</span><span class="p">,</span><span class="w"> </span><span class="n">motif_names</span><span class="p">[</span><span class="n">motifs_of_interest</span><span class="p">],</span><span class="w"> </span><span class="n">motif</span><span class="p">,</span><span class="w"> </span><span class="n">motif_logos</span><span class="p">[</span><span class="n">motifs_of_interest</span><span class="p">],</span><span class="w"> </span><span class="n">pval</span><span class="p">,</span><span class="w"> </span><span class="n">motif_pval</span><span class="p">[</span><span class="n">motifs_of_interest</span><span class="p">]),</span><span class="w"> </span><span class="n">ncol</span><span class="o">=</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">widths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">as.table</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</details>
+</br>
+<img class="myImages width_40" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/enhancer_analysis/plot_motifs/output/top20_motifs.png">
 <hr />
-<!-- raw HTML omitted -->
-<h2 id="visualising-enhancers-in-the-ucsc-genome-browser----raw-html-omitted------raw-html-omitted---">Visualising enhancers in the UCSC genome browser <!-- raw HTML omitted --><!-- raw HTML omitted --></h2>
-<!-- raw HTML omitted -->
+<br/>
+<h2 id="visualising-enhancers-in-the-ucsc-genome-browser-a-nameenhancervisualisationa">Visualising enhancers in the UCSC genome browser <a name="enhancer_visualisation"></a></h2>
+</br>
 <p>After identifying putative enhancers, we visualised them in the UCSC genome browser before cloning and validating selected enhancers. Below are the genome tracks of validated cloned enhancers and the correponding ChIP/ATAC peaks.</p>
-<p><!-- raw HTML omitted -->Download all cloned enhancer tracks.<!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p><!-- raw HTML omitted -->×<!-- raw HTML omitted --></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/enhancer_plots/enhancer_plots.zip" download>Download all cloned enhancer tracks.</a></p>
+<br/>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Lmx1a')">Lmx1a</button>
+  <button class="tablinks" onclick="openTab(event, 'Spry2')">Spry2</button>
+  <button class="tablinks" onclick="openTab(event, 'Zbtb16')">Zbtb16</button>
+  <button class="tablinks" onclick="openTab(event, 'Tfap2a')">Tfap2a</button>
+  <button class="tablinks" onclick="openTab(event, 'Sox13')">Sox13</button>
+  <button class="tablinks" onclick="openTab(event, 'Epha4')">Epha4</button>
+  <button class="tablinks" onclick="openTab(event, 'Pax2')">Pax2</button>
+</div>
+<br/>
+<div id="Lmx1a" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/enhancer_plots/lmx1a.png">
+</div>
+<div id="Spry2" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/enhancer_plots/spry2.png">
+</div>
+<div id="Zbtb16" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/enhancer_plots/zbtb16.png">
+</div>
+<div id="Tfap2a" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/enhancer_plots/tfap2a.png">
+</div>
+<div id="Sox13" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/enhancer_plots/sox13.png">
+</div>
+<div id="Epha4" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/enhancer_plots/epha4.png">
+</div>
+<div id="Pax2" class="tabcontent">
+  <img class="myImages width_80" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/enhancer_plots/pax2.png">
+</div>
+</br>
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <!-- The Close Button -->
+<p><span class="close">×</span></p>
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>
 
 </div>
 </div>

@@ -181,13 +181,13 @@
   <!-- hide auto title generation -->
   <!-- <h1 class="page-title">Smartseq2_alignment</h1> -->
   <h2 id="smartseq2-alignment">SmartSeq2 alignment</h2>
-<!-- raw HTML omitted -->
+</br>
 <p>Our SmartSeq2 single cell RNAseq data is aligned using a custom Nextflow pipeline. This pipeline is built using <a href="https://www.nextflow.io/docs/latest/dsl2.html">Nextflow DSL2</a>, which allows for modularisation and re-usability of each tool.</p>
 <p>Each process is configured to run within a separate container, meaning that package versions are hard coded into the pipeline. In order to change these package versions, the container used will need to be changed within the individual process.</p>
 <p>Each of the processes used in the pipeline can be found by going to the path in the <code>include {process} from &quot;&lt;PATH&gt;&quot;</code> statements in any of the workflows below.</p>
 <p><em>If you would like to re-run the alignment, follow the instructions <a href="https://alexthiery.github.io/otic-reprogramming/general/quick_start#smartseq">here</a>.</em></p>
 <hr />
-<!-- raw HTML omitted -->
+</br>
 <h3 id="workflows">Workflows</h3>
 <p>Our custom pipeline integrates both alignment and RNA velocity (<a href="http://velocyto.org/">Velocyto</a>).</p>
 <p>For simplicity, the pipeline is split into four sub-workflows:</p>
@@ -197,9 +197,10 @@
 <li><a href="#process_reads">Process readcounts for downstream</a></li>
 <li><a href="#velocyto">Run RNA velocity</a></li>
 </ul>
-<!-- raw HTML omitted -->
+</br>
 <p>The main workflow integrates each of these sub-workflows.</p>
-<!-- raw HTML omitted -->
+<details open><summary class="simple">Collapse main workflow</summary>
+<p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
 
@@ -238,12 +239,13 @@
     <span class="n">velocyto_smartseq2</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">velocyto_counts</span> <span class="o">|</span> <span class="n">view</span>
 <span class="o">}</span>
 </code></pre></div></div>
-<!-- raw HTML omitted -->
+</details>
 <hr />
-<!-- raw HTML omitted -->
-<p><strong><em>Modify genome to add GFP sequence</em></strong><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+</br>
+<p><strong><em>Modify genome to add GFP sequence</em></strong><a name="GFP"></a></p>
 <p>This sub-workflow takes a GFP sequence from the base repository and appends the genome provided in order to determine the number of GFP reads downstream.</p>
-<!-- raw HTML omitted -->
+<details open><summary class="simple">Collapse sub-workflow</summary>
+<p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
 
@@ -271,12 +273,13 @@
         <span class="n">gtf</span> <span class="o">=</span> <span class="n">add_gtf_gfp</span><span class="o">.</span><span class="na">out</span>
 <span class="o">}</span>
 </code></pre></div></div>
-<!-- raw HTML omitted -->
+</details>
 <hr />
-<!-- raw HTML omitted -->
-<p><strong><em>Align reads</em></strong><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+</br>
+<p><strong><em>Align reads</em></strong><a name="align"></a></p>
 <p>First we trim adaptor sequences using Cutadapt v2.10. We then align reads to GalGal6 with HISAT2 v2.2.1. Samtools v1.10 is used to convert SAM to BAM, before finally obtaining gene counts with HTSeq v0.12.4.</p>
-<!-- raw HTML omitted -->
+<details open><summary class="simple">Collapse sub-workflow</summary>
+<p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
 
@@ -318,12 +321,13 @@
         <span class="n">htseq_count_files</span> <span class="o">=</span> <span class="n">htseq_count</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">counts</span>
 <span class="o">}</span>
 </code></pre></div></div>
-<!-- raw HTML omitted -->
+</details>
 <hr />
-<!-- raw HTML omitted -->
-<p><strong><em>Process read counts for input into Antler</em></strong><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+</br>
+<p><strong><em>Process read counts for input into Antler</em></strong><a name="process_reads"></a></p>
 <p>The merge counts process is a custom R script which formats cell names and generates the phenoData.csv, assayData.csv and gfpData.csv required in our downstream pipeline.</p>
-<!-- raw HTML omitted -->
+<details open><summary class="simple">Collapse sub-workflow</summary>
+<p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
 
@@ -354,9 +358,10 @@
         <span class="n">processed_counts</span> <span class="o">=</span> <span class="n">merge_counts</span><span class="o">.</span><span class="na">out</span>
 <span class="o">}</span>
 </code></pre></div></div>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</details>
+</br>
+<details><summary class="simple">Collapse merge_counts.R</summary>
+<p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env Rscript</span><span class="w">
 
 </span><span class="c1"># Define arguments for Rscript</span><span class="w">
@@ -429,12 +434,13 @@
 </span><span class="n">write.table</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">assayData</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">=</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s1">'assayData.csv'</span><span class="p">),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">'\t'</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">quote</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">col.names</span><span class="o">=</span><span class="kc">NA</span><span class="p">)</span><span class="w">
 </span><span class="n">write.table</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">phenoData</span><span class="p">,</span><span class="w"> </span><span class="n">file</span><span class="o">=</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s1">'phenoData.csv'</span><span class="p">),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">'\t'</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">quote</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">col.names</span><span class="o">=</span><span class="kc">NA</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<!-- raw HTML omitted -->
+</details>
 <hr />
-<!-- raw HTML omitted -->
-<p><strong><em>Run RNA velocity</em></strong><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+</br>
+<p><strong><em>Run RNA velocity</em></strong><a name="velocyto"></a></p>
 <p>The RNA velocity sub-workflow takes the output BAM files from HISAT2 and groups all the cells into a single channel input. We then run Velocyto which generates a single <code>.loom</code> file output containing spliced, unspliced and spanning reads.</p>
-<!-- raw HTML omitted -->
+<details open><summary class="simple">Collapse sub-workflow</summary>
+<p>
 <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Define DSL2</span>
 <span class="n">nextflow</span><span class="o">.</span><span class="na">enable</span><span class="o">.</span><span class="na">dsl</span><span class="o">=</span><span class="mi">2</span>
 
@@ -464,8 +470,8 @@
         <span class="n">velocyto_counts</span> <span class="o">=</span> <span class="n">velocyto_run_smartseq2</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">velocyto</span>
 <span class="o">}</span>
 </code></pre></div></div>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+</details>
+</br>
 
 </div>
 </div>
