@@ -181,13 +181,13 @@
   <!-- hide auto title generation -->
   <!-- <h1 class="page-title">Sox8_downstream</h1> -->
   <h2 id="sox8-over-expression-differential-expression-analysis">Sox8 over-expression differential expression analysis</h2>
-</br>
+<!-- raw HTML omitted -->
 <p>In order to study if Sox8 overexpression can confer otic characer, we co-electroporated a combination of Sox8-mCherry and Lmx1aE1-EGFP (Sox8OE) or constitutive mCherry and EGFP (Control), at head fold stages. Then, at ss12-13, we collected double positive cells of the cranial ectoderm by FACS (heads of embryos were dissected rostral to the otic placode, leaving the otic placode and trunk tissue behind) and processed them for RNAseq.</p>
 <p>Differential expression analysis is carried out using DESeq2 <a href="https://doi.org/10.1186/s13059-014-0550-8">(Love et al. 2014)</a>.</p>
 <hr />
-</br>
+<!-- raw HTML omitted -->
 <h3 id="r-analysis-pipeline">R analysis pipeline</h3>
-</br>
+<!-- raw HTML omitted -->
 <p>Automatic switch for running pipeline through Nextflow or interactively in Rstudio.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">getopt</span><span class="p">)</span><span class="w">
 </span><span class="n">spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="w">
@@ -209,7 +209,7 @@
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
-</br>
+<!-- raw HTML omitted -->
 <p>Set paths and load data and packages.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">runtype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"user"</span><span class="p">){</span><span class="w">
@@ -241,7 +241,7 @@
   </span><span class="n">library</span><span class="p">(</span><span class="n">extrafont</span><span class="p">)</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
-</br>
+<!-- raw HTML omitted -->
 <p>Data pre-processing.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read in count data and rename columns</span><span class="w">
 </span><span class="n">read_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.delim</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span><span class="w"> </span><span class="n">stringsAsFactors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
@@ -263,7 +263,7 @@
 </span><span class="n">rownames</span><span class="p">(</span><span class="n">read_counts</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_counts</span><span class="o">$</span><span class="n">gene_id</span><span class="w">
 </span><span class="n">read_counts</span><span class="p">[,</span><span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kc">NULL</span><span class="w">
 </span></code></pre></div></div>
-</br>
+<!-- raw HTML omitted -->
 <p>Run DESeq2.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Add sample group to metadata</span><span class="w">
 </span><span class="n">col_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">sapply</span><span class="p">(</span><span class="n">colnames</span><span class="p">(</span><span class="n">read_counts</span><span class="p">),</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span><span class="n">ifelse</span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"sox8_oe"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="s2">"Sox8_OE"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Control"</span><span class="p">)}))</span><span class="w">
@@ -284,17 +284,16 @@
 </span><span class="c1"># Run deseq test - size factors for normalisation during this step are calculated using median of ratios method</span><span class="w">
 </span><span class="n">deseq</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">DESeq</span><span class="p">(</span><span class="n">deseq</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-</br>
+<!-- raw HTML omitted -->
 <p>Plot dispersion estimates.</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"dispersion_est.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">plotDispEsts</span><span class="p">(</span><span class="n">deseq</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-</details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/dispersion_est.png">
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>We use the DESeq2 function lfcShrink in order to calculate more accurate log2FC estimates. This uses information across all genes to shrink LFC when a gene has low counts or high dispersion values.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Run lfcShrink</span><span class="w">
 </span><span class="n">res</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lfcShrink</span><span class="p">(</span><span class="n">deseq</span><span class="p">,</span><span class="w"> </span><span class="n">coef</span><span class="o">=</span><span class="s2">"Group_Sox8_OE_vs_Control"</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s2">"apeglm"</span><span class="p">)</span><span class="w">
@@ -302,20 +301,18 @@
 </span><span class="c1"># Add gene names to shrunken LFC dataframe</span><span class="w">
 </span><span class="n">res</span><span class="o">$</span><span class="n">gene_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_name</span><span class="p">[</span><span class="n">match</span><span class="p">(</span><span class="n">rownames</span><span class="p">(</span><span class="n">res</span><span class="p">),</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_id</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
-</br>
+<!-- raw HTML omitted -->
 <p>Plot MA with cutoff for significant genes = padj &lt; 0.05</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"MA_plot.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">DESeq2</span><span class="o">::</span><span class="n">plotMA</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-</details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/MA_plot.png">
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Plot volcano plot with padj &lt; 0.05 and abs(fold change) &gt; 1.5.</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">volc_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">res</span><span class="p">[,</span><span class="m">-6</span><span class="p">])</span><span class="w">
 
 </span><span class="c1"># add gene name to volcano data</span><span class="w">
@@ -362,13 +359,12 @@
   </span><span class="n">xlab</span><span class="p">(</span><span class="s1">'log2FC (Sox8_OE - Control)'</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-</details>
-</br>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/volcano.png">
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Generate csv for raw counts, normalised counts, and differential expression output.</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># raw counts dataframe</span><span class="w">
 </span><span class="n">raw_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">counts</span><span class="p">(</span><span class="n">deseq</span><span class="p">))</span><span class="w">
 </span><span class="n">colnames</span><span class="p">(</span><span class="n">raw_counts</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"counts_"</span><span class="p">,</span><span class="w"> </span><span class="n">colnames</span><span class="p">(</span><span class="n">raw_counts</span><span class="p">))</span><span class="w">
@@ -432,17 +428,14 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
     </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8_OE_process_output_1.csv"</span><span class="p">))</span><span class="w">
 </span><span class="n">write.table</span><span class="p">(</span><span class="n">all_dat</span><span class="p">,</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8_OE_process_output_1.csv"</span><span class="p">),</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NA'</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s2">","</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-</details>
-</br>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_SupplementaryData_5.csv" download>Download
-differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05) - SuppData5</a></p>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_process_output_1.csv" download>Download
-differential expression results for all genes.</a></p>
-</br>
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->Download differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05) - SuppData5<!-- raw HTML omitted --></p>
+<p><!-- raw HTML omitted -->Download differential expression results for all genes.<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Plot sample-sample distances, PCA plot and correlogram to show relationship between samples.</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># To prevent the highest expressed genes from dominating when clustering we need to rlog (regularised log) transform the data</span><span class="w">
 </span><span class="n">rld</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rlog</span><span class="p">(</span><span class="n">deseq</span><span class="p">,</span><span class="w"> </span><span class="n">blind</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
 
@@ -475,34 +468,23 @@ differential expression results for all genes.</a></p>
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 
 </span></code></pre></div></div>
-</br>
-</details>
-</br>
-<div class="tab">
-  <button class="tablinks" style="display: block;" onclick="openTab(event, 'Sample Correlogram')">Sample Correlogram</button>
-  <button class="tablinks" onclick="openTab(event, 'Sample-Sample Distance')">Sample-Sample Distance</button>
-  <button class="tablinks" onclick="openTab(event, 'Sample PCA')">Sample PCA</button>
-</div>
-</br>
-<div id="Sample Correlogram" class="tabcontent">
-  <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/SampleCorrelogram.png">
-</div>
-<div id="Sample-Sample Distance" class="tabcontent">
-  <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/SampleDist.png">
-</div>
-<div id="Sample PCA" class="tabcontent">
-  <img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/SamplePCA.png">
-</div>
-</br>
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Subset differentially expressed genes (adjusted p-value &lt; 0.05, absolute log2FC &gt; 1.5).</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res_sub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res</span><span class="p">[</span><span class="n">which</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">padj</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.05</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">res</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1.5</span><span class="p">),</span><span class="w"> </span><span class="p">]</span><span class="w">
 </span><span class="n">res_sub</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_sub</span><span class="p">[</span><span class="n">order</span><span class="p">(</span><span class="o">-</span><span class="n">res_sub</span><span class="o">$</span><span class="n">log2FoldChange</span><span class="p">),]</span><span class="w">
 </span></code></pre></div></div>
-</br>
+<!-- raw HTML omitted -->
 <p>Plot heatmap of differentially expressed genes.</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"sox8_oe_hm.png"</span><span class="p">),</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">21</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">400</span><span class="p">)</span><span class="w">
 </span><span class="n">pheatmap</span><span class="p">(</span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)[</span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub</span><span class="p">),],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"#191d73"</span><span class="p">,</span><span class="w"> </span><span class="s2">"white"</span><span class="p">,</span><span class="w"> </span><span class="s2">"#ed7901"</span><span class="p">))(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">),</span><span class="w"> </span><span class="n">cluster_rows</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">show_rownames</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span><span class="w">
          </span><span class="n">show_colnames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">cluster_cols</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">annotation_col</span><span class="o">=</span><span class="n">as.data.frame</span><span class="p">(</span><span class="n">colData</span><span class="p">(</span><span class="n">deseq</span><span class="p">)[</span><span class="s2">"Group"</span><span class="p">]),</span><span class="w">
@@ -511,9 +493,9 @@ differential expression results for all genes.</a></p>
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 
 </span></code></pre></div></div>
-</details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_hm.png">
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Subset differentially expressed transcription factors based on GO terms ('GO:0003700', 'GO:0043565', 'GO:0000981').</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Get biomart GO annotations for TFs</span><span class="w">
 </span><span class="n">ensembl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">useMart</span><span class="p">(</span><span class="s2">"ensembl"</span><span class="p">,</span><span class="n">dataset</span><span class="o">=</span><span class="s2">"ggallus_gene_ensembl"</span><span class="p">)</span><span class="w">
@@ -527,10 +509,9 @@ differential expression results for all genes.</a></p>
 
 </span><span class="n">res_sub_TF</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">res_sub</span><span class="p">[</span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">TF_subset</span><span class="p">,]</span><span class="w">
 </span></code></pre></div></div>
-</br>
+<!-- raw HTML omitted -->
 <p>Generate csv for raw counts, normalised counts, and differential expression output for transcription factors.</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># subset TFs from all_dat</span><span class="w">
 </span><span class="n">all_dat_TF</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_dat</span><span class="p">[</span><span class="n">all_dat</span><span class="o">$</span><span class="n">gene_id</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">res_sub_TF</span><span class="p">),]</span><span class="w">
 
@@ -543,14 +524,12 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
     </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8_OE_SupplementaryData_6.csv"</span><span class="p">))</span><span class="w">
 </span><span class="n">write.table</span><span class="p">(</span><span class="n">all_dat_TF</span><span class="p">,</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8_OE_SupplementaryData_6.csv"</span><span class="p">),</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NA'</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s2">","</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-</details>
-</br>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_SupplementaryData_6.csv" download>Download TF
-differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05) - SuppData6</a></p>
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->Download TF differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &lt; 0.05) - SuppData6<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
 <p>Plot heatmap for differentially expressed transcription factors.</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rld.plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)</span><span class="w">
 </span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_name</span><span class="p">[</span><span class="n">match</span><span class="p">(</span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">),</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_id</span><span class="p">)]</span><span class="w">
 
@@ -563,9 +542,9 @@ differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &
                  </span><span class="n">cellheight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">cellwidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">75</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-</details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/sox8_oe_TFs_hm.png">
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Compare DE data with DE TFs from Chen et al. (2017) Development</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Download supplementary file 4 from Chen et al. (2017)</span><span class="w">
 </span><span class="c1"># PPR vs otic 5/6ss, PPR vs otic 8/9ss, PPR vs otic 11/12ss. Dataset is already filtered for transcription factors</span><span class="w">
@@ -596,8 +575,7 @@ differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &
                        </span><span class="n">otic_enr</span><span class="o">$</span><span class="n">`11-12ss_foldChange`</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1.5</span><span class="p">,]</span><span class="w">
 </span></code></pre></div></div>
 <p>Plot venn diagram comparing OOPE and Sox8OE</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">venn.diagram</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">otic_enr</span><span class="o">=</span><span class="n">rownames</span><span class="p">(</span><span class="n">otic_enr</span><span class="p">),</span><span class="w"> </span><span class="n">sox8OE</span><span class="o">=</span><span class="n">res_sub_TF</span><span class="o">$</span><span class="n">gene_name</span><span class="p">),</span><span class="w">
              </span><span class="n">category.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"logFC &gt; 1.5 in any of PPR vs 5/6ss, PPR vs 8/9ss, PPR vs 11/12ss \n(Chen et al. 2017)"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8OE enriched TFs\n(logFC &gt; 1.5, padj = 0.05)"</span><span class="p">),</span><span class="w">
              </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"otic_enriched_sox8OE_de_venn.png"</span><span class="p">),</span><span class="w">
@@ -620,12 +598,11 @@ differential expression results (absolute log2FC &gt; 1.5 and adjusted p-value &
              </span><span class="n">ext.percent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="w">
 </span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-</details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/otic_enriched_sox8OE_de_venn.png">
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Make csv file of genes in each part of venn diagram</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># when identifying shared genes between current study and previous studies which are alligned using different genome version, match genes using gene name.</span><span class="w">
 </span><span class="c1"># this is important as some of the Ensembl IDs from past genome versions have been depracated and therefore are absent from our data.</span><span class="w">
 </span><span class="n">venn.genes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="s2">"Otic enriched"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">otic_enr</span><span class="p">)[</span><span class="o">!</span><span class="n">rownames</span><span class="p">(</span><span class="n">otic_enr</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">res_sub_TF</span><span class="o">$</span><span class="n">gene_name</span><span class="p">],</span><span class="w">
@@ -643,12 +620,11 @@ Genes from supplementary table 4 of Chen et al. (2017) Development were filtered
     </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8_OE_process_output_2.csv"</span><span class="p">))</span><span class="w">
 </span><span class="n">write.table</span><span class="p">(</span><span class="n">venn.genes.df</span><span class="p">,</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8_OE_process_output_2.csv"</span><span class="p">),</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">''</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s2">","</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-</details>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_process_output_2.csv" download>Download otic enriched and Sox8OE enriched transcription factors presented in the venn diagram above.</a></p>
-</br>
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->Download otic enriched and Sox8OE enriched transcription factors presented in the venn diagram above.<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
 <p>Plot heatmap of transcription factors which are DE in otic cells (Chen 2017) and DE in Sox8OE relative to control cells</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rld.plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">assay</span><span class="p">(</span><span class="n">rld</span><span class="p">)</span><span class="w">
 </span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_name</span><span class="p">[</span><span class="n">match</span><span class="p">(</span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">),</span><span class="w"> </span><span class="n">gene_annotations</span><span class="o">$</span><span class="n">gene_id</span><span class="p">)]</span><span class="w">
 
@@ -660,12 +636,11 @@ Genes from supplementary table 4 of Chen et al. (2017) Development were filtered
          </span><span class="n">border_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span><span class="p">)</span><span class="w">
 </span><span class="n">graphics.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-</details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/otic_enriched_sox8_de_hm.png">
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Plot all transcription factors DE in Chen et al. 2017 abs(1.5 FC) using our data - do not filter genes which are not DE in the Sox8OE</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">png</span><span class="p">(</span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"otic_enriched_sox8_any_hm.png"</span><span class="p">),</span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">40</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">21</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cm"</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">200</span><span class="p">)</span><span class="w">
 </span><span class="n">pheatmap</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">[</span><span class="n">rownames</span><span class="p">(</span><span class="n">otic_enr</span><span class="p">)[</span><span class="n">rownames</span><span class="p">(</span><span class="n">otic_enr</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">rld.plot</span><span class="p">)],],</span><span class="w"> </span><span class="n">cluster_rows</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">show_rownames</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w">
          </span><span class="n">show_colnames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">cluster_cols</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w"> </span><span class="n">treeheight_col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span><span class="w">
@@ -680,12 +655,11 @@ Genes from supplementary table 4 of Chen et al. (2017) Development were filtered
 </span><span class="c1"># genes are not statistically differentially expressed.</span><span class="w">
 
 </span></code></pre></div></div>
-</details>
-<img class="myImages" id="myImg" src="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/otic_enriched_sox8_any_hm.png">
-</br>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>Save CSV norm counts and Sox8OE DEA for genes from Chen et al. 2017</p>
-<details><summary class="box">Code</summary>
-<p>
+<!-- raw HTML omitted -->
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">all_dat_Chen_DE</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">all_dat</span><span class="p">[</span><span class="n">all_dat</span><span class="o">$</span><span class="n">gene_name</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">otic_enr</span><span class="p">),]</span><span class="w">
 
 
@@ -700,18 +674,17 @@ padj: pvalue for differential expression test between Sox8 overexpression and co
     </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8_OE_process_output_3.csv"</span><span class="p">))</span><span class="w">
 </span><span class="n">write.table</span><span class="p">(</span><span class="n">all_dat_Chen_DE</span><span class="p">,</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span><span class="w"> </span><span class="s2">"Sox8_OE_process_output_3.csv"</span><span class="p">),</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">F</span><span class="p">,</span><span class="w"> </span><span class="n">na</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'NA'</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s2">","</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-</details>
-<p><a href="https://alexthiery.github.io/otic-reprogramming/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_process_output_3.csv" download>norm counts and Sox8OE DEA for genes from Chen et al. 2017.</a></p>
-</br>
-<!-- The Modal -->
-<div id="myModal" class="modal">
-  <!-- The Close Button -->
-<p><span class="close">×</span></p>
-  <!-- Modal Content (The Image) -->
-  <img class="modal-content" id="img01">
-  <!-- Modal Caption (Image Text) -->
-  <div id="caption"></div>
-</div>
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->norm counts and Sox8OE DEA for genes from Chen et al. 2017.<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->×<!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 
 </div>
 </div>

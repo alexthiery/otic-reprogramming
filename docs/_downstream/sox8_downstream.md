@@ -315,11 +315,9 @@ write.table(all_dat, paste0(output_path, "Sox8_OE_process_output_1.csv"), append
 
 </br>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_SupplementaryData_5.csv" download>Download
-differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05) - SuppData5</a>
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_SupplementaryData_5.csv" download>Download differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05) - SuppData5</a>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_process_output_1.csv" download>Download
-differential expression results for all genes.</a>
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_process_output_1.csv" download>Download differential expression results for all genes.</a>
 
 </br>
 
@@ -465,8 +463,7 @@ write.table(all_dat_TF, paste0(output_path, "Sox8_OE_SupplementaryData_6.csv"), 
 
 </br>
 
-<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_SupplementaryData_6.csv" download>Download TF
-differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05) - SuppData6</a>
+<a href="{{ site.baseurl }}/assets/output/NF-downstream_analysis/sox8_dea/output/Sox8_OE_SupplementaryData_6.csv" download>Download TF differential expression results (absolute log2FC > 1.5 and adjusted p-value < 0.05) - SuppData6</a>
 
 </br>
 
