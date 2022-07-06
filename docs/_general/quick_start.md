@@ -35,7 +35,7 @@ In order to reproduce our analysis, you will need to:
 In order to reproduce our analysis, you will first need to download our otic-repregramming GitHub repository. To do this run:
 
 ```shell
-git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming
+git clone https://github.com/alexthiery/otic-reprogramming
 ```
 
 ---
@@ -45,6 +45,8 @@ git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming
 ## Download data<a name="download_data"></a>
 
 <br/>
+
+NGS files (fastqs) are available on GEO under the accession [GSE168089](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE168089)
 
 To download the Galgal6 genome from Ensembl, run:
 
@@ -59,8 +61,6 @@ rsync -av rsync://ftp.ensembl.org/ensembl/pub/release-97/gtf/gallus_gallus/Gallu
 ```
 
 Once the genome files have been downloaded, they need to be unzipped before running the alignment.
-
-**ADD SEQUENCING DATA DOWNLOAD PATHS**
 
 ---
 

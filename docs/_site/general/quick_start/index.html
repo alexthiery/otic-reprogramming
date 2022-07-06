@@ -200,12 +200,13 @@
 <h2 id="download-github-repositorya-namedownloadrepoa">Download GitHub repository<a name="download_repo"></a></h2>
 <br/>
 <p>In order to reproduce our analysis, you will first need to download our otic-repregramming GitHub repository. To do this run:</p>
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone <span class="nt">--recurse-submodules</span> https://github.com/alexthiery/otic-reprogramming
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/alexthiery/otic-reprogramming
 </code></pre></div></div>
 <hr />
 <br/>
 <h2 id="download-dataa-namedownloaddataa">Download data<a name="download_data"></a></h2>
 <br/>
+<p>NGS files (fastqs) are available on GEO under the accession <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE168089">GSE168089</a></p>
 <p>To download the Galgal6 genome from Ensembl, run:</p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync <span class="nt">-av</span> rsync://ftp.ensembl.org/ensembl/pub/release-97/fasta/gallus_gallus/dna/Gallus_gallus.GRCg6a.dna.toplevel.fa.gz &lt;LOCAL_PATH&gt;
 </code></pre></div></div>
@@ -213,7 +214,6 @@
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync <span class="nt">-av</span> rsync://ftp.ensembl.org/ensembl/pub/release-97/gtf/gallus_gallus/Gallus_gallus.GRCg6a.97.gtf.gz &lt;LOCAL_PATH&gt;
 </code></pre></div></div>
 <p>Once the genome files have been downloaded, they need to be unzipped before running the alignment.</p>
-<p><strong>ADD SEQUENCING DATA DOWNLOAD PATHS</strong></p>
 <hr />
 <br/>
 <h2 id="nextflow-configuration-filea-nameconfiga">Nextflow configuration file<a name="config"></a></h2>
