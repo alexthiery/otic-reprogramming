@@ -19,7 +19,7 @@ Full documentation of our High-Throughput-Sequencing data analysis, from sequenc
 In order to reproduce our analysis, you will first need to download our otic-repregramming GitHub repository. To do this run:
 
 ```shell
-git clone --recurse-submodules https://github.com/alexthiery/otic-reprogramming
+git clone https://github.com/alexthiery/otic-reprogramming
 ```
 
 ---
