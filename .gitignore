@@ -11,3 +11,4 @@ testData
 .local
 .conda
 enhancers
+.DS_store
