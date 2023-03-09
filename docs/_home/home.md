@@ -4,7 +4,7 @@ label: Home
 order: 1
 ---
 
-The vertebrate inner ear is an exclusive vertebrate feature, key to the perception of sound and movement that arises from a pool of ectodermal progenitors. In our study (Buzzi et.al., 2021) we used a multi-omics approach to explore the molecular mechanisms that regulate the commitment of these progenitors and foster the acquisition of otic character.
+The vertebrate inner ear is an exclusive vertebrate feature, key to the perception of sound and movement that arises from a pool of ectodermal progenitors. In our study ([Buzzi et.al., 2022](https://doi.org/10.1073/pnas.2118938119)) we used a multi-omics approach to explore the molecular mechanisms that regulate the commitment of these progenitors and foster the acquisition of otic character.
 
 In this website you will find the documentation of our High-Throughput-Sequencing data analysis, from sequence alignments to downstream analysis.
 
