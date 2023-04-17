@@ -36,6 +36,16 @@ RNAseq read counts (Lmx1aE1 vs Sox3U3, SOX8OE and SmartSeq2) and ChIP/ATAC peak 
 
 </br>
 
+### Genome browser tracks
+
+</br>
+
+Genome browser tracks for out ATAC and ChIPseq data can be found [here](https://genome.ucsc.edu/s/alexthiery/Sox8_otic_reprogramming).
+
+---
+
+</br>
+
 ### qPCR
 
 <br/>
