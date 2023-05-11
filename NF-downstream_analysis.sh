@@ -6,12 +6,12 @@
 
 ## LOAD REQUIRED MODULES
 ml purge
-ml Nextflow/20.07.1
-ml Singularity/3.4.2
+ml Nextflow/21.10.6
+ml Singularity/3.6.4
 ml Graphviz
 
 export TERM=xterm
-export NXF_VER=20.07.1
+export NXF_VER=21.10.6
 export NXF_SINGULARITY_CACHEDIR=/camp/home/thierya/working/NF_singularity
 
 nextflow run ./NF-downstream_analysis/main.nf \
