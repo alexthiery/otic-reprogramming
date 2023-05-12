@@ -277,12 +277,15 @@ pheatmap(assay(rld)[rownames(res_sub),], color = colorRampPalette(c("#191d73", "
          main = "Sox8OE vs Control differentially expressed genes (log2FC > 1.5 and padj (FDR) < 0.05)", border_color = NA, cellheight = 1.5, cellwidth = 75)
 graphics.off()
 
-
 #########
 # Get biomart GO annotations for TFs
 #########
 
-ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
+# Get biomart ids for specific genome version
+ensembl <- useEnsembl(biomart = 'ensembl', 
+                      dataset = 'ggallus_gene_ensembl',
+                      version = 104)
+
 TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
                    filters = 'ensembl_gene_id',
                    values = rownames(res_sub),
@@ -292,7 +295,6 @@ TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namesp
 TF_subset <- TF_subset$ensembl_gene_id[TF_subset$go_id %in% c('GO:0003700', 'GO:0043565', 'GO:0000981')]
 
 res_sub_TF <- res_sub[rownames(res_sub) %in% TF_subset,]
-
 
 ##############################################################
 ## Save CSV for differentially expressed transcription factors

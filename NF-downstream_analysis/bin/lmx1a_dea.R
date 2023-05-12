@@ -272,7 +272,10 @@ graphics.off()
 # Get biomart GO annotations for TFs
 #########
 
-ensembl = useMart("ensembl",dataset="ggallus_gene_ensembl")
+ensembl <- useEnsembl(biomart = 'ensembl', 
+                      dataset = 'ggallus_gene_ensembl',
+                      version = 104)
+                      
 TF_subset <- getBM(attributes=c("ensembl_gene_id", "go_id", "name_1006", "namespace_1003"),
                    filters = 'ensembl_gene_id',
                    values = rownames(res_sub),
